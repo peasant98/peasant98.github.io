@@ -8,20 +8,14 @@ redirect_from:
   - /about.html
 ---
 
-Hi folks!
+Hello!
 
-I'm Matt, and I'm a robotics researcher and software engineer. I'm a senior in CS at the University of Colorado Boulder. I relentlessly pursue both solid research and robust, maintainable code.
+I'm Matt (司马修), and I'm a software engineer at Microsoft and robotics researcher.
 
+During my undergrad at the University of Colorado Boulder, I worked in the [HIRO](https://hiro-group.ronc.one) group as an undergraduate researcher, advised by Professor [Alessandro Roncone](https://alessandro.ronc.one/). I was also a researcher in the [SBS](https://www.colorado.edu/lab/sbs) lab, advised by Professor [Wangda Zuo](https://www.colorado.edu/ceae/wangda-zuo). Along the way, I interned a couple of times at Microsoft.
 
-At CU, I work as an undergraduate researcher in the [HIRO](https://hiro-group.ronc.one/) and [SBS](https://www.colorado.edu/lab/sbs/) labs.
+My research involves enabling perception and autonomy for physical human-robot interaction. On the side, I work on leveraging machine learning as applied to building energy modeling.
 
-My research in the HIRO lab encompasses two directions:
+I enjoy biking, yoga, running, swimming, and hiking.
 
-1. Research on the calibration and application of a flexible robotic skin for robotic manipulators
-
-2. Soft hiearchical reinforcement learning (HRL) with quadrotors for improved learning.
-
-My work in the SBS lab is primarily targeted at building energy simulation, via machine learning and deep learning models. 
-
-
-In my free time, I enjoy running, biking, swimming, and working out.
+My best languages: Python, C++, Typescript, C#, 中文 (in progress)
