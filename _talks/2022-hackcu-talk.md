@@ -8,4 +8,10 @@ date: 2022-03-05
 location: "remote"
 ---
 
-At HackCU 2022, I was invited as a workshop speaker to give a talk on an Introduction to Robotics
+
+
+At HackCU 2022, I was invited as a workshop speaker to give a talk on an Introduction to Robotics.
+
+ <img src="/files/talks_images/robotics-talk-image.png" alt="A visual diagram of our method"> 
+
+[View presentation](/files/talks/robotics-talk.pdf)
