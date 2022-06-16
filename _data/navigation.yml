@@ -10,7 +10,7 @@ main:
     url: /year-archive/
     
   - title: "CV"
-    url: /cv/
+    url: /cv.pdf
 
   - title: "Fun"
     url: /fun/
