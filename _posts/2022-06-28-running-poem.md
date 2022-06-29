@@ -39,9 +39,6 @@ The imaginary gatorade will satisfy me<br>
 The energy bars will save me.<br>
 
 <i>But I don’t want that.<br>
-
 <i>I’m enjoying this vibe<br>
-
 <i>Because even though my body’s dead inside<br>
-
 <i>Mentally, I’ve never felt more alive.<br>
