@@ -1,7 +1,7 @@
 ---
 title: 'Welcome'
 date: 2022-06-13
-permalink: /posts/2022/08/blog-post-1-welcome/
+permalink: /posts/2022/06/blog-post-1-welcome/
 tags:
   - welcome
   - poetry
