@@ -14,6 +14,6 @@ During my undergrad at the University of Colorado Boulder, I worked in the [HIRO
 
 My research involves enabling perception and autonomy for physical human-robot interaction. On the side, I work on leveraging machine learning as applied to building energy modeling.
 
-I enjoy running, biking, swimming, hiking, and some climbing. Check out my [Strava](https://www.strava.com/athletes/26495451)!
+I enjoy running, trail running, biking, swimming, and hiking. Check out my [Strava](https://www.strava.com/athletes/26495451)!
 
 My best languages: Python, C++, Typescript, C#, 中文 (in progress)
