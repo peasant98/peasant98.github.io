@@ -11,7 +11,7 @@ tags:
 Memories from Advanta
 
 
-All the way back in fall 2018, at the beginning of my sophomore year, I was able to sneak through with some fairly easy coding questions and get my first paid internship at Microsoft. Getting that internship validated all of my hard work during my freshman year and the summer after -- those weekends spent cooped up in my dorm fumbling my way through Django, or the long summer days at King Soopers spent ruminating about how I'd reach the optimal time complexity on a Leetcode problem that always seemed to involved arrays and integers. 
+All the way back in fall 2018, at the beginning of my sophomore year, I was able to sneak through with some fairly easy coding questions and get my first paid internship at Microsoft. Getting that internship validated all of my hard work during my freshman year and the summer after -- those weekends spent cooped up in my dorm fumbling my way through Django, or the long summer days at King Soopers spent ruminating about how I'd reach the optimal time complexity on a Leetcode problem that always seemed to involve arrays and integers. 
 
 More than anything, saying that I was going to be a "Microsoft Intern" made me feel special and like I was one of the best. You know those Microsoft hoodies that they gave out during the internship interview? Yeah. I was wearing that at my university on a daily basis.
 
