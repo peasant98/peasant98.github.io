@@ -8,12 +8,12 @@ redirect_from:
   - /about.html
 ---
 
-I'm Matt (司马修), and I'm a software engineer at Microsoft and robotics researcher.
+**I'm a Computer Science PhD in Robotics and AI student at Stanford University**. I am currently advised by [Monroe Kennedy](https://profiles.stanford.edu/monroe-kennedy) and planning to be co-advised by [Jeanette Bohg](https://web.stanford.edu/~bohg/).
 
-During my undergrad at the University of Colorado Boulder, I worked in the [HIRO](https://hiro-group.ronc.one) group as an undergraduate researcher, advised by Professor [Alessandro Roncone](https://alessandro.ronc.one/). I was also a researcher in the [SBS](https://www.colorado.edu/lab/sbs) lab, advised by Professor [Wangda Zuo](https://www.colorado.edu/ceae/wangda-zuo). Along the way, I interned a couple of times at Microsoft.
+Prior to this, I worked at **Microsoft as a Software Engineer** in Redmond on the Customer Experience Platform. Before this, during my undergrad at the University of Colorado Boulder, I worked in the [HIRO](https://hiro-group.ronc.one) group as an undergraduate researcher, advised by Professor [Alessandro Roncone](https://alessandro.ronc.one/). I was also a researcher in the [SBS](https://www.colorado.edu/lab/sbs) lab, advised by Professor [Wangda Zuo](https://www.colorado.edu/ceae/wangda-zuo).
 
-My research involves enabling perception and autonomy for physical human-robot interaction. On the side, I work on leveraging machine learning as applied to building energy modeling.
+My research involves enabling perception and autonomy for physical human-robot interaction.
 
-I enjoy running, trail running, biking, swimming, and hiking. Check out my [Strava](https://www.strava.com/athletes/26495451)!
+I enjoy running, trail running, frisbee, biking, swimming, and hiking. Check out my [Strava](https://www.strava.com/athletes/26495451)!
 
 My best languages: Python, C++, Typescript, C#, 中文 (in progress)
