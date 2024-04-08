@@ -8,7 +8,7 @@ date: 2024-03-23
 venue: 'Arxiv (submitted to IROS 2024)'
 ---
 
-Check out our website: [TouchGS](https://armlabstanford.github.io/touch-gs)!
+Check out our website: [TouchGS](https://armlabstanford.github.io/touch-gs)! Arxiv [here](https://arxiv.org/abs/2403.09875)
 
 <video id="splash-video" autoplay controls muted loop playsinline
               preload="metadata" width="100%">
