@@ -4,7 +4,7 @@ collection: publications
 permalink: /publication/next-best-sense
 excerpt: 'Next Best Sense draws upon state of the art vision models to train few-shot Gaussian Splatting scenes, and turns to impressive next best view selection methods to guide robotic manipulator next best view and touch selection in the wild.'
 date: 2025-10-24
-venue: '2025 IEEE/International Conference on Robotics and Automation [ICRA], submitted'
+venue: '2025 IEEE/International Conference on Robotics and Automation [ICRA]'
 ---
 
 Check out our website: [NextBestSense](https://arm.stanford.edu/next-best-sense)! Arxiv [here](https://arxiv.org/abs/2410.04680)
