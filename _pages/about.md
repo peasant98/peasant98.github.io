@@ -14,6 +14,6 @@ Prior to this, I worked at **Microsoft as a Software Engineer** in Redmond on th
 
  
 
-I enjoy running, basketball (following+playing), driving my Corolla, frisbee, Beat Saber, and hiking. Check out my [Strava](https://www.strava.com/athletes/26495451)!
+I enjoy running, basketball (following+playing), driving my Corolla, frisbee, lifting, Beat Saber, and hiking. Check out my [Strava](https://www.strava.com/athletes/26495451)!
 
 My best languages: Python, C++, Typescript, C#, 中文 (in progress)
