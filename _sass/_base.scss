@@ -14,6 +14,8 @@ body {
   color: $text-color;
   font-family: $global-font-family;
   line-height: 1.5;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 50%, #e6f2ff 100%);
+  background-attachment: fixed;
 
   &.overflow--hidden {
     /* when primary navigation is visible, the content in the background won't scroll */
