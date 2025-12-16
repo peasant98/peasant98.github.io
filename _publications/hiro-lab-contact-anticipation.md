@@ -5,6 +5,8 @@ permalink: /publication/hiro-lab-contact-anticipation
 excerpt: 'A system for enabling robotic manipulators with onboard proximity sensors to anticipate and react on contact.'
 date: 2021-09-27
 venue: '2021 IEEE/RSJ International Conference on Intelligent Robots and Systems [IROS]'
+header:
+  teaser: /files/paper_images/hiro-lab-contact-anticipation-image.png
 ---
 
  <img src="/files/paper_images/hiro-lab-contact-anticipation-image.png" alt="A visual diagram of our method"> 

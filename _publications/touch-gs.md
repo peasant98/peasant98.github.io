@@ -1,11 +1,12 @@
 ---
-title: "Touch-GS: Visual-Tactile Supervised 3D Gaussian Splatting
-"
+title: "Touch-GS: Visual-Tactile Supervised 3D Gaussian Splatting"
 collection: publications
 permalink: /publication/touch-gs
 excerpt: 'Touch-GS combines the power of vision and touch to generate high-quality few-shot and challenging scenes, such as few-view object centric scenes, mirrors, and transparent objects.'
 date: 2024-03-23
 venue: '2024 IEEE/RSJ International Conference on Intelligent Robots and Systems [IROS]'
+header:
+  teaser: /files/paper_images/touch-gs-method.png
 ---
 
 Check out our website: [TouchGS](https://armlabstanford.github.io/touch-gs)! Arxiv [here](https://arxiv.org/abs/2403.09875)
