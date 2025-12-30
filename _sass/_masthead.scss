@@ -10,8 +10,7 @@
   -webkit-animation-delay: 0.15s;
           animation-delay: 0.15s;
   z-index: 20;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 50%, #e6f2ff 100%);
 
   &__inner-wrap {
     @include container;
