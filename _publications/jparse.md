@@ -5,6 +5,13 @@ permalink: /publication/jparse
 excerpt: 'J-PARSE is a method for smooth first-order inverse kinematic control of serial manipulators near kinematic singularities, expanding the available workspace for applications in servoing, teleoperation, and learning.'
 date: 2025-05-01
 venue: 'ArXiv'
+authors: "Shivani Guptasarma, Matthew Strong, HongHao Zhen, Monroe Kennedy III"
+teaser: "/assets/teasers/jparse.mp4"
+teaser_poster: "/assets/teasers/jparse.jpg"
+featured: true
+links:
+  website: "https://jparse-manip.github.io/"
+  arxiv: "https://arxiv.org/abs/2505.00306"
 ---
 
 Check out our website: [J-PARSE](https://jparse-manip.github.io/)! Arxiv [here](https://arxiv.org/abs/2505.00306)

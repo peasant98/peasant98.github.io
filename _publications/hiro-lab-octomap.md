@@ -1,10 +1,16 @@
 ---
 title: "Volumetric Data Fusion of External Depth and Onboard Proximity Data For Occluded Space Reduction"
 collection: publications
+category: workshop
 permalink: /publication/hiro-lab-octomap
-excerpt: 'A system for calibrating and implementing a arbitrally placed robotic skin for physical human-robot interaction.'
+excerpt: 'A probabilistic fusion of external depth and onboard proximity data into a volumetric 3-D map of a robot’s environment, reducing the space a manipulator must treat as unknown.'
 date: 2021-09-27
 venue: '2021 IEEE/RSJ International Conference on Intelligent Robots and Systems [IROS] 4th Workshop on Proximity Perception'
+authors: "Matthew Strong*, Caleb Escobedo*, Alessandro Roncone"
+teaser: "/files/paper_images/hiro-lab-octomap-image.png"
+links:
+  arxiv: "https://arxiv.org/abs/2110.11512"
+  paper: "/files/papers/hiro-lab-octomap.pdf"
 ---
 
  <img src="/files/paper_images/hiro-lab-octomap-image.png" alt="A visual diagram of our method"> 

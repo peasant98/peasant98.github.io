@@ -1,0 +1,52 @@
+{% comment %}
+  One publication row: teaser media on the left, details on the right.
+  Expects `include.pub` (a _publications document). Renders a looping muted
+  video when `teaser` ends in .mp4, otherwise an image.
+{% endcomment %}
+
+{% assign pub = include.pub %}
+{% assign authors = pub.authors | replace: "Matthew Strong", "<b>Matthew Strong</b>" | replace: "Matt Strong", "<b>Matt Strong</b>" %}
+
+<div class="sw-pub">
+  {% if pub.teaser %}
+    <div class="sw-pub__media">
+      {% if pub.teaser contains ".mp4" %}
+        <video autoplay muted loop playsinline preload="metadata"
+               {% if pub.teaser_poster %}poster="{{ pub.teaser_poster }}"{% endif %}>
+          <source src="{{ pub.teaser }}" type="video/mp4">
+          {% if pub.teaser_poster %}<img src="{{ pub.teaser_poster }}" alt="{{ pub.title | escape }}">{% endif %}
+        </video>
+      {% else %}
+        <img src="{{ pub.teaser }}" alt="{{ pub.title | escape }}" loading="lazy">
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="sw-pub__body">
+    <h3 class="sw-pub__title">
+      <a href="{{ pub.url | relative_url }}">{{ pub.title }}</a>
+    </h3>
+
+    {% if pub.authors %}<p class="sw-pub__authors">{{ authors }}</p>{% endif %}
+
+    <p class="sw-pub__venue">
+      {{ pub.venue }}{% if pub.date %}, {{ pub.date | date: "%B %Y" }}{% endif %}
+    </p>
+
+    {% if pub.excerpt and include.show_blurb != false %}
+      <p class="sw-pub__blurb">{{ pub.excerpt | strip_html | strip }}</p>
+    {% endif %}
+
+    {% if pub.links %}
+      <ul class="sw-links">
+        {% if pub.links.website %}<li><a href="{{ pub.links.website }}">Website</a></li>{% endif %}
+        {% if pub.links.arxiv %}<li><a href="{{ pub.links.arxiv }}">arXiv</a></li>{% endif %}
+        {% if pub.links.paper %}<li><a href="{{ pub.links.paper }}">Paper</a></li>{% endif %}
+        {% if pub.links.camera_ready %}<li><a href="{{ pub.links.camera_ready }}">IEEE</a></li>{% endif %}
+        {% if pub.links.code %}<li><a href="{{ pub.links.code }}">Code</a></li>{% endif %}
+        {% if pub.links.video %}<li><a href="{{ pub.links.video }}">Video</a></li>{% endif %}
+        {% if pub.links.bibtex %}<li><a href="{{ pub.links.bibtex }}">BibTeX</a></li>{% endif %}
+      </ul>
+    {% endif %}
+  </div>
+</div>

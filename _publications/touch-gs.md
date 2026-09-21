@@ -4,8 +4,16 @@ title: "Touch-GS: Visual-Tactile Supervised 3D Gaussian Splatting
 collection: publications
 permalink: /publication/touch-gs
 excerpt: 'Touch-GS combines the power of vision and touch to generate high-quality few-shot and challenging scenes, such as few-view object centric scenes, mirrors, and transparent objects.'
-date: 2024-03-23
-venue: '2024 IEEE/RSJ International Conference on Intelligent Robots and Systems [IROS]'
+authors: "Aiden Swann*, Matthew Strong*, Won Kyung Do, Gadiel Sznaier Camps, Mac Schwager, Monroe Kennedy III"
+venue: "IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)"
+date: 2024-10-01
+teaser: "/assets/teasers/touch-gs.mp4"
+teaser_poster: "/assets/teasers/touch-gs.jpg"
+featured: true
+links:
+  website: "https://touch-gs.github.io/"
+  arxiv: "https://arxiv.org/abs/2403.09875"
+  camera_ready: "https://ieeexplore.ieee.org/abstract/document/10802412"
 ---
 
 Check out our website: [TouchGS](https://armlabstanford.github.io/touch-gs)! Arxiv [here](https://arxiv.org/abs/2403.09875)

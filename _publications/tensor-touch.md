@@ -3,8 +3,16 @@ title: "TensorTouch: Calibration of Tactile Sensors for High Resolution Stress T
 collection: publications
 permalink: /publication/tensor-touch
 excerpt: 'TensorTouch is a comprehensive framework for stress tensor estimation from 3D optical tactile sensors, combining finite element analysis with deep learning to extract detailed contact information including stress tensors, deformation fields, and force distributions at pixel-level resolution.'
-date: 2025-06-01
-venue: 'ArXiv'
+authors: "Won Kyung Do, Matthew Strong, Aiden Swann, Boshu Lei, Monroe Kennedy III"
+venue: "IEEE Transactions on Robotics (T-RO)"
+date: 2026-04-01
+teaser: "/assets/teasers/tensor-touch.mp4"
+teaser_poster: "/assets/teasers/tensor-touch.jpg"
+featured: true
+links:
+  website: "https://tensor-touch.github.io/"
+  arxiv: "https://arxiv.org/abs/2506.08291"
+  camera_ready: "https://ieeexplore.ieee.org/document/11488915"
 ---
 
 Check out our website: [TensorTouch](https://tensor-touch.github.io/)! Arxiv [here](https://arxiv.org/abs/2506.08291)

@@ -5,6 +5,10 @@ permalink: /publication/sbs-lab-gan-models
 excerpt: 'A comprehensive evaluation of different types of GANs at scale for building power demand prediction.'
 date: 2022-05-30
 venue: 'Energy and Buildings'
+authors: "Yunyang Ye, Matthew Strong, Yingli Lou, Cary A. Faulkner, Wangda Zuo, Satish Upadhyaya"
+teaser: "/files/paper_images/sbs-lab-gan-models-image.png"
+links:
+  paper: "/files/papers/sbs-lab-gan-models.pdf"
 ---
 
  <img src="/files/paper_images/sbs-lab-gan-models-image.png" alt="A visual diagram of our method"> 

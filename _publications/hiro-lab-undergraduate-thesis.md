@@ -1,10 +1,15 @@
 ---
 title: "Enabling Close Proximity Human Robot Collaboration via Distributed, Self-Calibrating Robotic Skin"
 collection: publications
+category: thesis
 permalink: /publication/hiro-lab-undergraduate-thesis
 excerpt: 'My undergraduate thesis covering my prior 2 years of robotics research.'
 date: 2021-05-07
 venue: 'University of Colorado Boulder Undergraduate Thesis in Computer Science'
+authors: "Matthew Strong"
+teaser: "/files/paper_images/hiro-lab-undergraduate-thesis-image.png"
+links:
+  paper: "/files/papers/hiro-lab-undergraduate-thesis.pdf"
 ---
 
  <img src="/files/paper_images/hiro-lab-undergraduate-thesis-image.png" alt="A visual diagram of our method"> 

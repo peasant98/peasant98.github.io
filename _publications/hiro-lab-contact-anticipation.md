@@ -5,6 +5,11 @@ permalink: /publication/hiro-lab-contact-anticipation
 excerpt: 'A system for enabling robotic manipulators with onboard proximity sensors to anticipate and react on contact.'
 date: 2021-09-27
 venue: '2021 IEEE/RSJ International Conference on Intelligent Robots and Systems [IROS]'
+authors: "Caleb Escobedo*, Matthew Strong*, Mary West, Ander Aramburu, Alessandro Roncone"
+teaser: "/files/paper_images/hiro-lab-contact-anticipation-image.png"
+links:
+  arxiv: "https://arxiv.org/abs/2110.11516"
+  paper: "/files/papers/hiro-lab-contact-anticipation.pdf"
 ---
 
  <img src="/files/paper_images/hiro-lab-contact-anticipation-image.png" alt="A visual diagram of our method"> 

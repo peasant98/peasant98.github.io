@@ -5,6 +5,10 @@ permalink: /publication/sbs-lab-empirical-baselines
 excerpt: 'The evaluation of empirical baselines for evaluating the energy performance of multiple buildings.'
 date: 2022-10-26
 venue: 'Science and Technology for the Built Environment'
+authors: "Yingli Lou, Yunyang Ye, Yizhi Yang, Wangda Zuo, Gang Wang, Matthew Strong, Satish Upadhyaya, Chris Payne"
+teaser: "/files/paper_images/sbs-lab-empirical-baselines-image.png"
+links:
+  paper: "/files/papers/sbs-lab-empirical-baselines.pdf"
 ---
 
  <img src="/files/paper_images/sbs-lab-empirical-baselines-image.png" alt="A visual diagram of our method"> 

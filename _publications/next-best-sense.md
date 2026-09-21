@@ -3,8 +3,15 @@ title: "Next Best Sense: Guiding Vision and Touch with FisherRF for 3D Gaussian 
 collection: publications
 permalink: /publication/next-best-sense
 excerpt: 'Next Best Sense draws upon state of the art vision models to train few-shot Gaussian Splatting scenes, and turns to impressive next best view selection methods to guide robotic manipulator next best view and touch selection in the wild.'
-date: 2025-10-24
-venue: '2025 IEEE/International Conference on Robotics and Automation [ICRA]'
+authors: "Matthew Strong*, Boshu Lei*, Aiden Swann, Wen Jiang, Kostas Daniilidis, Monroe Kennedy III"
+venue: "IEEE International Conference on Robotics and Automation (ICRA)"
+date: 2025-05-01
+teaser: "/assets/teasers/next-best-sense.jpg"
+featured: true
+links:
+  website: "https://armlabstanford.github.io/next-best-sense"
+  arxiv: "https://arxiv.org/abs/2410.04680"
+  camera_ready: "https://ieeexplore.ieee.org/abstract/document/11127233"
 ---
 
 Check out our website: [NextBestSense](https://arm.stanford.edu/next-best-sense)! Arxiv [here](https://arxiv.org/abs/2410.04680)

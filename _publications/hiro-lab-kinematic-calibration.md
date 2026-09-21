@@ -5,6 +5,11 @@ permalink: /publication/hiro-lab-kinematic-calibration
 excerpt: 'A system for calibrating and implementing a arbitrally placed robotic skin for physical human-robot interaction.'
 date: 2021-09-27
 venue: '2021 IEEE/RSJ International Conference on Intelligent Robots and Systems [IROS]'
+authors: "Kandai Watanabe, Matthew Strong, Mary West, Caleb Escobedo, Ander Aramburu, Krishna Chaitanya Kodur, Alessandro Roncone"
+teaser: "/files/paper_images/hiro-lab-kinematic-calibration-image.png"
+links:
+  arxiv: "https://arxiv.org/abs/2110.14516"
+  paper: "/files/papers/hiro-lab-kinematic-calibration.pdf"
 ---
 
  <img src="/files/paper_images/hiro-lab-kinematic-calibration-image.png" alt="A visual diagram of our method"> 

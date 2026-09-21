@@ -6,6 +6,10 @@ permalink: /publication/sbs-lab-baseline-models
 excerpt: 'The construction of new models for energy usage prediction for medium office buildings in various environments.'
 date: 2020-05-05
 venue: 'Science and Technology for the Built Environment, Volume 26, Issue 9'
+authors: "Yunyang Ye, Yingli Lou, Matthew Strong, Satish Upadhyaya, Wangda Zuo, Gang Wang"
+teaser: "/files/paper_images/sbs-lab-baseline-models-image.png"
+links:
+  paper: "/files/papers/sbs-lab-baseline-models.pdf"
 ---
 
  <img src="/files/paper_images/sbs-lab-baseline-models-image.png" alt="A visual diagram of our method"> 
