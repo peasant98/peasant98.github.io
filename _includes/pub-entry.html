@@ -30,7 +30,8 @@
     {% if pub.authors %}<p class="sw-pub__authors">{{ authors }}</p>{% endif %}
 
     <p class="sw-pub__venue">
-      {{ pub.venue }}{% if pub.date %}, {{ pub.date | date: "%B %Y" }}{% endif %}
+      {{ pub.venue }}{% if pub.date %}, {{ pub.date | date: "%B %Y" }}{% endif %}{% if pub.badge %}
+      <span class="sw-badge">{{ pub.badge }}</span>{% endif %}
     </p>
 
     {% if pub.excerpt and include.show_blurb != false %}

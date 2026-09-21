@@ -22,7 +22,7 @@ redirect_from:
     </ul>
   </div>
   <div class="sw-hero__photo">
-    <img src="/images/matt_supreme.jpg" alt="Matt Strong">
+    <img src="/images/matt_stanford.jpg" alt="Matt Strong">
   </div>
 </div>
 

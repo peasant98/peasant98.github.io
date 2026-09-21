@@ -8,6 +8,7 @@ venue: "IEEE International Conference on Robotics and Automation (ICRA)"
 date: 2025-05-01
 teaser: "/assets/teasers/next-best-sense.jpg"
 featured: true
+badge: "Oral"
 links:
   website: "https://armlabstanford.github.io/next-best-sense"
   arxiv: "https://arxiv.org/abs/2410.04680"

@@ -10,6 +10,7 @@ date: 2024-10-01
 teaser: "/assets/teasers/touch-gs.mp4"
 teaser_poster: "/assets/teasers/touch-gs.jpg"
 featured: true
+badge: "Oral"
 links:
   website: "https://touch-gs.github.io/"
   arxiv: "https://arxiv.org/abs/2403.09875"

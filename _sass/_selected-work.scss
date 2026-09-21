@@ -157,6 +157,21 @@
   }
 }
 
+/* distinction (oral, spotlight, best paper) — cardinal against the blue */
+.sw-badge {
+  display: inline-block;
+  margin-left: .45em;
+  padding: .1em .55em;
+  border-radius: 999px;
+  font-size: .78em;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: #fff;
+  background: linear-gradient(135deg, #b32d3a, #8c1515);
+  box-shadow: 0 1px 4px rgba(140, 21, 21, .28);
+}
+
 /* ---------- archive lists (talks, blog posts) get the same card treatment ---------- */
 
 .archive__item {
