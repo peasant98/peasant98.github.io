@@ -1,15 +1,17 @@
 {% comment %}
   One publication row: teaser media on the left, details on the right.
+  Title and teaser both link to the project website, else the publication page.
   Expects `include.pub` (a _publications document). Renders a looping muted
   video when `teaser` ends in .mp4, otherwise an image.
 {% endcomment %}
 
 {% assign pub = include.pub %}
+{% if pub.links.website %}{% assign pub_href = pub.links.website %}{% else %}{% assign pub_href = pub.url | relative_url %}{% endif %}
 {% assign authors = pub.authors | replace: "Matthew Strong", "<b>Matthew Strong</b>" | replace: "Matt Strong", "<b>Matt Strong</b>" %}
 
 <div class="sw-pub">
   {% if pub.teaser %}
-    <div class="sw-pub__media">
+    <a class="sw-pub__media" href="{{ pub_href }}" tabindex="-1" aria-hidden="true">
       {% if pub.teaser contains ".mp4" %}
         <video autoplay muted loop playsinline preload="metadata"
                {% if pub.teaser_poster %}poster="{{ pub.teaser_poster }}"{% endif %}>
@@ -19,12 +21,12 @@
       {% else %}
         <img src="{{ pub.teaser }}" alt="{{ pub.title | escape }}" loading="lazy">
       {% endif %}
-    </div>
+    </a>
   {% endif %}
 
   <div class="sw-pub__body">
     <h3 class="sw-pub__title">
-      <a href="{{ pub.url | relative_url }}">{{ pub.title }}</a>
+      <a href="{{ pub_href }}">{{ pub.title }}</a>
     </h3>
 
     {% if pub.authors %}<p class="sw-pub__authors">{{ authors }}</p>{% endif %}

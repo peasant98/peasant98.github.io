@@ -110,18 +110,36 @@
     transform: translateY(-2px);
   }
 
+  /* teaser: same-shape frame for every paper, links to the project site */
   &__media {
+    display: block;
     flex: 0 0 300px;
     max-width: 300px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--sw-blue-50);
+    box-shadow: 0 4px 14px rgba(31, 79, 131, .14);
+    transition: box-shadow .2s ease, transform .2s ease;
 
     video, img {
       display: block;
       width: 100%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 14px rgba(31, 79, 131, .14);
+      height: 100%;
+      object-fit: contain;
+      transition: transform .35s ease;
+    }
+
+    &:hover, &:focus-visible {
+      box-shadow: 0 0 0 3px var(--sw-blue-400), 0 10px 24px rgba(31, 79, 131, .24);
+      transform: translateY(-2px);
+
+      video, img { transform: scale(1.03); }
     }
   }
+
+  /* hovering the teaser highlights the title it shares a link with */
+  &:has(.sw-pub__media:hover) .sw-pub__title a { text-decoration: underline; }
 
   &__body { flex: 1 1 auto; min-width: 0; }
 
@@ -154,6 +172,32 @@
     margin: .45em 0 0;
     font-size: .88em;
     color: var(--sw-muted);
+  }
+}
+
+/* "See all publications" button under Selected Work */
+.sw-more {
+  margin: 1.4em 0 0;
+  text-align: center;
+
+  a {
+    display: inline-block;
+    padding: .5em 1.3em;
+    border-radius: 999px;
+    font-size: .88em;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--sw-blue-700);
+    background: linear-gradient(135deg, var(--sw-blue-100), var(--sw-blue-50));
+    border: 1px solid var(--sw-blue-200);
+    transition: background .18s ease, color .18s ease, transform .18s ease;
+
+    &:hover, &:focus-visible {
+      color: #fff;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--sw-blue-600), var(--sw-blue-400));
+      transform: translateY(-1px);
+    }
   }
 }
 
@@ -263,6 +307,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sw-pub, .sw-links a { transition: none; }
-  .sw-pub:hover, .sw-links a:hover { transform: none; }
+  .sw-pub, .sw-links a, .sw-pub__media, .sw-pub__media img, .sw-pub__media video { transition: none; }
+  .sw-pub:hover, .sw-links a:hover, .sw-pub__media:hover, .sw-pub__media:hover img, .sw-pub__media:hover video { transform: none; }
 }

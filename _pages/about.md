@@ -43,4 +43,4 @@ My best languages: Python, C++, Typescript, C#, 中文 (in progress)
   {% include pub-entry.html pub=pub %}
 {% endfor %}
 
-<p style="margin-top:1.2em"><a href="/publications/">See all publications &rarr;</a></p>
+<p class="sw-more"><a href="/publications/">See all publications &rarr;</a></p>
