@@ -13,15 +13,9 @@ author_profile: true
 
 {% assign pubs = site.publications | sort: "date" | reverse %}
 
-{% assign papers = pubs | where_exp: "p", "p.category == nil" %}
+{% comment %} Conference, journal and workshop papers in one date-ordered list; each venue line already names the workshop. {% endcomment %}
+{% assign papers = pubs | where_exp: "p", "p.category != 'thesis'" %}
 {% for pub in papers %}
-  {% include pub-entry.html pub=pub %}
-{% endfor %}
-
-<h2 class="sw-section-title">Workshop Papers</h2>
-
-{% assign workshops = pubs | where: "category", "workshop" %}
-{% for pub in workshops %}
   {% include pub-entry.html pub=pub %}
 {% endfor %}
 
