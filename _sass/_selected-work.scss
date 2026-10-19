@@ -22,7 +22,7 @@
   margin: 0 0 2em;
   padding: 1.75em 1.9em;
   border-radius: 18px;
-  background: linear-gradient(135deg, var(--sw-blue-100) 0%, var(--sw-blue-50) 45%, #fff 100%);
+  background: linear-gradient(135deg, var(--sw-blue-100) 0%, var(--sw-blue-50) 45%, var(--sw-surface) 100%);
   border: 1px solid var(--sw-blue-200);
 
   &__text { flex: 1 1 auto; }
@@ -46,7 +46,7 @@
     height: 150px;
     object-fit: cover;
     border-radius: 50%;
-    border: 3px solid #fff;
+    border: 3px solid var(--sw-surface);
     box-shadow: 0 6px 18px rgba(43, 108, 176, .18);
   }
 }
@@ -105,7 +105,7 @@
   transition: background .2s ease, border-color .2s ease, transform .2s ease;
 
   &:hover {
-    background: linear-gradient(135deg, var(--sw-blue-50), #fff);
+    background: linear-gradient(135deg, var(--sw-blue-50), var(--sw-surface));
     border-color: var(--sw-blue-200);
     transform: translateY(-2px);
   }
@@ -226,7 +226,7 @@
   transition: background .2s ease, border-color .2s ease, transform .2s ease;
 
   &:hover {
-    background: linear-gradient(135deg, var(--sw-blue-50), #fff);
+    background: linear-gradient(135deg, var(--sw-blue-50), var(--sw-surface));
     border-color: var(--sw-blue-200);
     transform: translateY(-2px);
   }

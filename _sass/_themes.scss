@@ -1,0 +1,92 @@
+/* ==========================================================================
+   Colour themes (day, sunset, forest, rain, night), cycled by the masthead
+   button. Day is the original light-blue look and the default.
+   ========================================================================== */
+
+:root {
+  --pg-a: #ffffff; --pg-b: #f0f8ff; --pg-c: #e6f2ff;
+  --pg-ink: #494e52; --pg-line: #e4e6e7;
+  --sw-surface: #fff;
+}
+:root[data-theme="sunset"] {
+  --pg-a: #fffaf5; --pg-b: #fbeee2; --pg-c: #f6e2cf;
+  --pg-ink: #4a3a30; --pg-link: #b0560f; --pg-line: #ecd8c4;
+  --sw-surface: #fffaf5;
+  --sw-blue-50: #fff7ef; --sw-blue-100: #fbe9d8; --sw-blue-200: #f0d3b6;
+  --sw-blue-400: #e6a15c; --sw-blue-600: #b0560f; --sw-blue-700: #8a430c;
+  --sw-ink: #3a2c24; --sw-muted: #6e5a4c;
+}
+:root[data-theme="forest"] {
+  --pg-a: #f7faf4; --pg-b: #ebf2e5; --pg-c: #dfe9d6;
+  --pg-ink: #33433a; --pg-link: #3d7a4a; --pg-line: #d3dfca;
+  --sw-surface: #f9fbf6;
+  --sw-blue-50: #f3f8ef; --sw-blue-100: #e3eddb; --sw-blue-200: #c9dabd;
+  --sw-blue-400: #8cbf6a; --sw-blue-600: #3d7a4a; --sw-blue-700: #2f6b3f;
+  --sw-ink: #26342b; --sw-muted: #56644f;
+}
+:root[data-theme="rain"] {
+  --pg-a: #f4f6f8; --pg-b: #e5eaee; --pg-c: #d6dee3;
+  --pg-ink: #35424c; --pg-link: #4f7f99; --pg-line: #c9d4db;
+  --sw-surface: #f6f8fa;
+  --sw-blue-50: #f1f4f7; --sw-blue-100: #e1e8ed; --sw-blue-200: #c6d2da;
+  --sw-blue-400: #7fa8bd; --sw-blue-600: #4f7f99; --sw-blue-700: #345a70;
+  --sw-ink: #26323b; --sw-muted: #4f5d68;
+}
+:root[data-theme="night"] {
+  color-scheme: dark;
+  --pg-a: #060a14; --pg-b: #0a1222; --pg-c: #0f1a2e;
+  --pg-ink: #d9dde3; --pg-link: #5aaeff; --pg-line: #27324a;
+  --sw-surface: #0f1622;
+  --sw-blue-50: #111a2a; --sw-blue-100: #16223a; --sw-blue-200: #27324a;
+  --sw-blue-400: #3d6fa8; --sw-blue-600: #2997ff; --sw-blue-700: #8cc6ff;
+  --sw-ink: #eef1f5; --sw-muted: #a1a9b4;
+}
+
+body, .masthead, .page__footer {
+  background: linear-gradient(135deg, var(--pg-a) 0%, var(--pg-b) 50%, var(--pg-c) 100%);
+  transition: background-color .35s, color .35s;
+}
+body { background-attachment: fixed; color: var(--pg-ink); }
+.masthead { border-bottom-color: var(--pg-line); }
+.page__footer { border-top-color: var(--pg-line); }
+/* day keeps the theme's own link colours; the other shades tint them */
+:root[data-theme]:not([data-theme="day"]) {
+  a, a:visited { color: var(--pg-link); }
+  a:hover { color: var(--sw-blue-700); }
+  .masthead a, .masthead a:visited { color: var(--sw-muted); }
+  .masthead__menu-item--lg a, .masthead a:hover { color: var(--sw-ink); }
+  .author__urls a, .author__urls a:visited { color: var(--pg-ink); }
+}
+:root[data-theme="night"] .author__urls .fa-map-marker,
+:root[data-theme="night"] .author__urls .fa-map-marker-alt,
+:root[data-theme="night"] .author__urls .fa-github { color: var(--sw-muted); }
+.greedy-nav .hidden-links { background: var(--sw-surface); border-color: var(--pg-line); }
+:root[data-theme="night"] {
+  h1, h2, h3, h4, h5, h6, .page__title, .author__name, b, strong { color: var(--sw-ink); }
+  .greedy-nav a, .masthead__menu-item a, .author__urls a, .page__footer, .page__footer a { color: var(--sw-muted); }
+  .greedy-nav button .navicon, .greedy-nav button .navicon:before, .greedy-nav button .navicon:after { background: var(--sw-muted); }
+  hr { border-color: var(--pg-line); }
+}
+
+/* ---------- the switch ---------- */
+.masthead__inner-wrap { position: relative; }
+.masthead__menu { margin-right: 92px; }   /* keep the nav (and its overflow menu button) clear of the switch */
+#theme {
+  position: absolute; right: 1em; top: 50%; transform: translateY(-50%); z-index: 11;
+  display: flex; align-items: center; gap: 7px; height: 32px; padding: 0 11px;
+  border: 1px solid var(--sw-blue-200); border-radius: 40px; cursor: pointer;
+  background: var(--sw-surface); color: var(--sw-blue-600);
+  svg { display: none; width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.9;
+        stroke-linecap: round; stroke-linejoin: round; }
+  .steps { display: flex; gap: 2px; align-items: center; }
+  .steps i { width: 4px; height: 4px; border-radius: 2px; border: 1px solid var(--sw-muted); transition: width .25s; }
+  &:hover { border-color: var(--sw-blue-400); }
+}
+:root:not([data-theme]) #theme .day, :root[data-theme="day"] #theme .day,
+:root[data-theme="sunset"] #theme .sunset, :root[data-theme="forest"] #theme .forest,
+:root[data-theme="rain"] #theme .rain, :root[data-theme="night"] #theme .night { display: block; }
+:root:not([data-theme]) #theme .steps i:nth-child(1), :root[data-theme="day"] #theme .steps i:nth-child(1),
+:root[data-theme="sunset"] #theme .steps i:nth-child(2), :root[data-theme="forest"] #theme .steps i:nth-child(3),
+:root[data-theme="rain"] #theme .steps i:nth-child(4), :root[data-theme="night"] #theme .steps i:nth-child(5) {
+  width: 9px; background: var(--sw-blue-600); border-color: var(--sw-blue-600);
+}

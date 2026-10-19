@@ -19,5 +19,22 @@
         <ul class="hidden-links hidden"></ul>
       </nav>
     </div>
+    <button id="theme" type="button" aria-label="Change colour theme" title="Change colour theme">
+      <svg class="day" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.3M12 19.3v2.3M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.4 12h2.3M19.3 12h2.3M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+      <svg class="sunset" viewBox="0 0 24 24"><path d="M12 10V2M4.93 10.93l1.41 1.41M2 18h2M20 18h2M19.07 10.93l-1.41 1.41M22 22H2M8 6l4-4 4 4M16 18a4 4 0 0 0-8 0"/></svg>
+      <svg class="forest" viewBox="0 0 24 24"><path d="m17 14 3 3.3a1 1 0 0 1-.7 1.7H4.7a1 1 0 0 1-.7-1.7L7 14h-.3a1 1 0 0 1-.7-1.7L9 9h-.2A1 1 0 0 1 8 7.3L12 3l4 4.3a1 1 0 0 1-.8 1.7H15l3 3.3a1 1 0 0 1-.7 1.7H17ZM12 22v-3"/></svg>
+      <svg class="rain" viewBox="0 0 24 24"><path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2M16 14v6M8 14v6M12 16v6"/></svg>
+      <svg class="night" viewBox="0 0 24 24"><path d="M20.5 14.5A8.6 8.6 0 0 1 9.5 3.5a8.6 8.6 0 1 0 11 11z"/></svg>
+      <span class="steps" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+    </button>
   </div>
 </div>
+<script>
+  document.getElementById('theme').addEventListener('click', function(){
+    var order=['day','sunset','forest','rain','night'];
+    var r=document.documentElement, cur=r.getAttribute('data-theme') || 'day';
+    var next = order[(order.indexOf(cur)+1) % order.length];
+    r.setAttribute('data-theme', next);
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
+</script>
