@@ -1,0 +1,76 @@
+{
+ "tools": [
+  {
+   "id": "dexjoco_tongs",
+   "name": "DexJoCo \u201ctongs\u201d (benchmark mesh model)",
+   "blurb": "The tongs model from the DexJoCo MuJoCo benchmark (Pinch Tongs task), shown as published. Its mesh is a pair of cutting pliers; each part collides as one convex hull (tick <i>Collision geometry</i>) and the hinge has no damping or friction.",
+   "xml": "models/dexjoco_tongs.xml",
+   "files": [
+    "models/dexjoco_tongs/original-10.obj",
+    "models/dexjoco_tongs/original-11.obj",
+    "models/dexjoco_tongs/original-12.obj",
+    "models/dexjoco_tongs/original-13.obj",
+    "models/dexjoco_tongs/original-15.obj",
+    "models/dexjoco_tongs/original-16.obj",
+    "models/dexjoco_tongs/original-3.obj",
+    "models/dexjoco_tongs/original-4.obj",
+    "models/dexjoco_tongs/original-6.obj",
+    "models/dexjoco_tongs/original-7.obj"
+   ],
+   "joint": "joint_0",
+   "grip": [
+    "grip_a",
+    "grip_b"
+   ],
+   "tips": [
+    "tip_a",
+    "tip_b"
+   ],
+   "tipLabel": "Handle-end gap",
+   "maxForce": 15.0,
+   "gripLever": 0.20461265110489285,
+   "params": [
+    [
+     "Joint",
+     "hinge, -11.5\u00b0 to +11.5\u00b0",
+     "<a href=\"#src-1\">[1]</a>"
+    ],
+    [
+     "Spring",
+     "k = 2 N\u00b7m/rad toward 22.9\u00b0",
+     "<a href=\"#src-1\">[1]</a>"
+    ],
+    [
+     "Damping / friction",
+     "0 / 0",
+     "<a href=\"#src-1\">[1]</a>"
+    ],
+    [
+     "Mass",
+     "80 g",
+     "<a href=\"#src-1\">[1]</a>"
+    ],
+    [
+     "Length",
+     "24.5 cm",
+     "<a href=\"#src-1\">[1]</a>"
+    ],
+    [
+     "Collision",
+     "convex hull of each mesh part",
+     "<a href=\"#src-1\">[1]</a>"
+    ]
+   ],
+   "sources": [
+    {
+     "title": "DexJoCo benchmark (GitHub, MIT)",
+     "url": "https://github.com/brave-eai/dexjoco"
+    },
+    {
+     "title": "DexJoCo project page",
+     "url": "https://dexjoco.github.io"
+    }
+   ]
+  }
+ ]
+}

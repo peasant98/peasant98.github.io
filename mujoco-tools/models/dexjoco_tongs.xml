@@ -1,0 +1,66 @@
+<!-- DexJoCo tongs (https://github.com/brave-eai/dexjoco, MIT License, Copyright (c) 2026 Dexjoco
+     contributors). Modified for the hand-tools page: mesh paths, root position, grip/tip sites. -->
+<mujoco model="tongs">
+  <compiler angle="radian" eulerseq="zyx" autolimits="true" />
+  <default>
+    <default class="tongs">
+      <mesh scale="0.15 0.15 0.15" />
+      <default class="tongs/visual">
+        <geom condim="1" contype="0" conaffinity="0" group="2" />
+      </default>
+      <default class="tongs/collision">
+        <geom condim="4" contype="1" conaffinity="14" friction="0.9 0.2 0.2" solref="0.001 2" group="4" />
+      </default>
+    </default>
+  </default>
+  <asset>
+    <mesh file="dexjoco_tongs/original-10.obj" name="tongs_original-10" class="tongs" />
+    <mesh file="dexjoco_tongs/original-11.obj" name="tongs_original-11" class="tongs" />
+    <mesh file="dexjoco_tongs/original-12.obj" name="tongs_original-12" class="tongs" />
+    <mesh file="dexjoco_tongs/original-13.obj" name="tongs_original-13" class="tongs" />
+    <mesh file="dexjoco_tongs/original-15.obj" name="tongs_original-15" class="tongs" />
+    <mesh file="dexjoco_tongs/original-16.obj" name="tongs_original-16" class="tongs" />
+    <mesh file="dexjoco_tongs/original-15.obj" name="tongs_original-15_cover" scale="0.151 0.151 0.151" />
+    <mesh file="dexjoco_tongs/original-16.obj" name="tongs_original-16_cover" scale="0.151 0.151 0.151" />
+    <mesh file="dexjoco_tongs/original-3.obj" name="tongs_original-3" class="tongs" />
+    <mesh file="dexjoco_tongs/original-3.obj" name="tongs_original-3_cover" class="tongs" scale="0.151 0.151 0.151" />
+    <mesh file="dexjoco_tongs/original-4.obj" name="tongs_original-4" class="tongs" />
+    <mesh file="dexjoco_tongs/original-6.obj" name="tongs_original-6" class="tongs" />
+    <mesh file="dexjoco_tongs/original-7.obj" name="tongs_original-7" class="tongs" />
+    <mesh file="dexjoco_tongs/original-6.obj" name="tongs_original-6_cover" scale="0.151 0.151 0.151" />
+    <mesh file="dexjoco_tongs/original-7.obj" name="tongs_original-7_cover" scale="0.151 0.151 0.151" />
+  </asset>
+  <worldbody>
+    <!-- Tongs object -->
+    <body name="link_1" pos="0 0 0.03" quat="0.2705980501 0.2705980501 0.6532814824 0.6532814824" childclass="tongs">
+      <site name="grip_b" pos="0.03383 -0.00557 -0.07186" size="0.004" rgba="0.2 0.5 1 0.8" group="5"/>
+      <site name="tip_b" pos="0.04511 -0.00743 -0.13910" size="0.004" rgba="0.2 0.5 1 0.8" group="5"/>
+    <freejoint name="tongs_root"/>
+      <body name="link_0" pos="0.0 0.0 0.6498597294837243">
+      <site name="grip_a" pos="-0.03655 -0.00552 -0.72241" size="0.004" rgba="0.2 0.5 1 0.8" group="5"/>
+      <site name="tip_a" pos="-0.04873 -0.00736 -0.78988" size="0.004" rgba="0.2 0.5 1 0.8" group="5"/>
+        <joint name="joint_0" pos="0 0 -0.52" axis="0 1 0" range="-0.2 0.2" stiffness="2" springref="0.4" damping="0" type="hinge" limited="true"/>
+        <geom type="mesh" mesh="tongs_original-10" class="tongs/visual" rgba="0.1 0.1 0.1 1" pos="0 0 -0.6498597294837243" mass="0" /> 
+        <geom type="mesh" mesh="tongs_original-15_cover" class="tongs/visual" rgba="0.1 0.1 0.1 1" pos="0 0 -0.6498597294837243" mass="0" /> 
+        <geom type="mesh" mesh="tongs_original-16_cover" class="tongs/visual" rgba="0.4 0 0 1" pos="0.001 0 -0.6498597294837243" mass="0" />
+        <geom type="mesh" mesh="tongs_original-10" class="tongs/collision" pos="0 0 -0.6498597294837243" mass="0.01" />
+        <geom type="mesh" mesh="tongs_original-15_cover" class="tongs/collision" pos="0 0 -0.6498597294837243" mass="0.01" />
+        <geom type="mesh" mesh="tongs_original-16_cover" class="tongs/collision" pos="0 0 -0.6498597294837243" mass="0.01" />
+      </body>
+      <geom type="mesh" mesh="tongs_original-3_cover" class="tongs/visual" rgba="0.1 0.1 0.1 1" mass="0" />
+      <geom type="mesh" mesh="tongs_original-4" class="tongs/visual" rgba="0.1 0.1 0.1 1" mass="0" />
+      <geom type="mesh" mesh="tongs_original-6" class="tongs/visual" rgba="0.1 0.1 0.1 1" mass="0" />
+      <geom type="mesh" mesh="tongs_original-7" class="tongs/visual" rgba="0.4 0 0 1" mass="0" />
+      <geom type="mesh" mesh="tongs_original-6_cover" class="tongs/visual" rgba="0.1 0.1 0.1 1" pos="-0.001 0 0" mass="0" />
+      <geom type="mesh" mesh="tongs_original-7_cover" class="tongs/visual" rgba="0.4 0 0 1" mass="0" />
+      <geom type="mesh" mesh="tongs_original-11" class="tongs/visual" rgba="0 0 0 1" mass="0" />
+      <geom name="tongs" type="mesh" mesh="tongs_original-13" pos="0 -0.005 0" class="tongs/visual" rgba="0 0 0 1" mass="0" />
+      <geom type="mesh" mesh="tongs_original-3_cover" class="tongs/collision" mass="0.01" />
+      <geom type="mesh" mesh="tongs_original-4" class="tongs/collision" mass="0.01" />
+      <geom type="mesh" mesh="tongs_original-6" class="tongs/collision" mass="0.01" />
+      <geom type="mesh" mesh="tongs_original-7" class="tongs/collision" mass="0.01" />
+      <geom type="mesh" mesh="tongs_original-11" class="tongs/collision" mass="0.01" />
+
+    </body>
+  </worldbody>
+</mujoco>

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MuJoCo Hand Tools</title>
+<meta name="description" content="Articulated hand tools (tongs, scissors, pliers, tweezers, clothespin, syringe) with real-world dimensions, masses and springs, simulated live in the browser with MuJoCo WebAssembly. Each MJCF is downloadable.">
+<style>
+  :root {
+    --bg: #f4f7fb; --panel: #ffffff; --ink: #1b2430; --muted: #5d6b7c; --line: #dbe3ec;
+    --accent: #2f6fb3; --accent-soft: #e6effa; --warn: #b4441c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #141a22; --panel: #1b232d; --ink: #e6edf5; --muted: #9aa9ba; --line: #2c3845;
+            --accent: #7fb2ec; --accent-soft: #223246; --warn: #f0905e; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--bg); color: var(--ink); font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  header { display: flex; align-items: baseline; gap: 14px; padding: 12px 18px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  header h1 { margin: 0; font-size: 17px; font-weight: 650; }
+  header p { margin: 0; color: var(--muted); font-size: 13px; flex: 1; }
+  header a { color: var(--accent); text-decoration: none; font-size: 13px; white-space: nowrap; }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) 380px; height: calc(100% - 50px); }
+  .view { position: relative; min-height: 0; }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+  #status { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 15px; pointer-events: none; }
+  .hint { position: absolute; left: 12px; bottom: 10px; color: var(--muted); font-size: 12px; background: color-mix(in srgb, var(--panel) 80%, transparent); padding: 4px 8px; border-radius: 6px; }
+  aside { overflow-y: auto; background: var(--panel); border-left: 1px solid var(--line); padding: 14px 16px 24px; }
+  aside h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 18px 0 6px; font-weight: 600; }
+  select, input[type=range] { width: 100%; }
+  select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+  #blurb { color: var(--muted); margin: 8px 0 0; }
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .modes input { position: absolute; opacity: 0; pointer-events: none; }
+  .modes label { text-align: center; padding: 6px 4px; cursor: pointer; font-size: 13px; }
+  .modes label:not(:first-of-type) { border-left: 1px solid var(--line); }
+  .modes input:checked + label { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .modes input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .row { margin-top: 10px; }
+  .row .lbl { display: flex; justify-content: space-between; font-size: 13px; }
+  .row output { font-variant-numeric: tabular-nums; color: var(--accent); }
+  body:not([data-mode=angle]) #angle-row, body:not([data-mode=physics]) #force-row { display: none; }
+  .checks { display: flex; gap: 16px; margin-top: 10px; font-size: 13px; }
+  #readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
+  #readouts div { background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; display: flex; flex-direction: column; }
+  #readouts span { font-size: 11px; color: var(--muted); }
+  #readouts b { font-variant-numeric: tabular-nums; font-weight: 600; }
+  #download { display: inline-block; margin-top: 12px; padding: 6px 12px; border: 1px solid var(--accent); color: var(--accent); border-radius: 6px; text-decoration: none; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { text-align: left; vertical-align: top; padding: 4px 6px 4px 0; border-bottom: 1px solid var(--line); }
+  th { font-weight: 500; color: var(--muted); width: 38%; }
+  td.src { color: var(--muted); font-size: 11.5px; width: 30%; }
+  td.src a, #sources a { color: var(--accent); }
+  #sources { padding-left: 18px; font-size: 12px; margin: 0; word-break: break-word; }
+  .est { color: var(--warn); }
+  footer { color: var(--muted); font-size: 12px; margin-top: 18px; }
+  footer a { color: var(--accent); }
+  @media (max-width: 820px) {
+    header p { display: none; }
+    main { grid-template-columns: 1fr; grid-template-rows: 56vh auto; height: auto; }
+    aside { border-left: 0; border-top: 1px solid var(--line); overflow: visible; }
+  }
+</style>
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<header>
+  <h1>MuJoCo hand tools</h1>
+  <p>Real-size articulated tools simulated live in your browser (MuJoCo 3.15 WebAssembly)</p>
+  <a href="/">← peasant98.github.io</a>
+</header>
+<main>
+  <section class="view">
+    <canvas id="c"></canvas>
+    <div id="status">Loading…</div>
+    <div class="hint">Drag a moving part to pull it · drag elsewhere to orbit · scroll to zoom</div>
+  </section>
+  <aside>
+    <select id="tool" aria-label="Tool"></select>
+    <p id="blurb"></p>
+
+    <h2>Motion</h2>
+    <div class="modes" role="radiogroup" aria-label="Mode">
+      <input type="radio" name="mode" id="mode-animate" value="animate" checked><label for="mode-animate">Animate</label>
+      <input type="radio" name="mode" id="mode-angle" value="angle"><label for="mode-angle">Set angle</label>
+      <input type="radio" name="mode" id="mode-physics" value="physics"><label for="mode-physics">Physics</label>
+    </div>
+    <div class="row" id="angle-row">
+      <div class="lbl"><span id="angle-label">Hinge angle</span><output id="angle-out"></output></div>
+      <input type="range" id="angle">
+    </div>
+    <div class="row" id="force-row">
+      <div class="lbl"><span>Squeeze force at the grip</span><output id="force-out"></output></div>
+      <input type="range" id="force" min="0" value="0">
+    </div>
+    <div class="checks">
+      <label><input type="checkbox" id="show-visual" checked> Visual</label>
+      <label><input type="checkbox" id="show-collision"> Collision geometry</label>
+    </div>
+
+    <h2>Live state</h2>
+    <div id="readouts"></div>
+    <a id="download" href="#">Download MJCF</a>
+
+    <h2>Physical parameters</h2>
+    <table><tbody id="params"></tbody></table>
+    <div id="sources-wrap">
+      <h2>Sources</h2>
+      <ol id="sources"></ol>
+    </div>
+    <footer>
+      Values marked <span class="est">estimate</span> have no direct measurement; the reasoning is given.
+      Physics: <a href="https://github.com/google-deepmind/mujoco" target="_blank" rel="noopener">MuJoCo</a> (Apache-2.0).
+    </footer>
+  </aside>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
