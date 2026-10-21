@@ -1,9 +1,480 @@
 {
  "tools": [
   {
+   "id": "kitchen_tongs",
+   "name": "Kitchen tongs, 12 in (OXO Good Grips type)",
+   "blurb": "Spring-loaded stainless tongs. The spring holds them open against a stop; squeezing the handles at the grip closes the scalloped heads. 2.45 N closes them, as measured at MIT for America's Test Kitchen.",
+   "xml": "models/kitchen_tongs.xml",
+   "files": [],
+   "joint": "hinge",
+   "jointLabel": "Hinge angle",
+   "grip": [
+    "grip_a",
+    "grip_b"
+   ],
+   "tips": [
+    "tip_a",
+    "tip_b"
+   ],
+   "tipLabel": "Tip gap",
+   "maxForce": 6.0,
+   "gripLever": 0.1,
+   "initial": 0.33,
+   "volumePerMeter": null,
+   "params": [
+    [
+     "Length",
+     "305 mm",
+     "<a href=\"#src-1\">[1]</a>"
+    ],
+    [
+     "Mass",
+     "145 g (one arm 65 g)",
+     "<a href=\"#src-2\">[2]</a><a href=\"#src-3\">[3]</a>; split: estimate, symmetric stamped arms"
+    ],
+    [
+     "Arm section",
+     "20 mm wide \u00d7 4 mm channel; heads 38 mm wide",
+     "<span class=\"est\">estimate</span>: from photos and the 1.5 in listing width"
+    ],
+    [
+     "Opening",
+     "0 to 19\u00b0 (0.33 rad): ~100 mm at the tips",
+     "<span class=\"est\">estimate</span>: typical 12 in tongs"
+    ],
+    [
+     "Force to close",
+     "2.45 N at the grip (100 mm from the hinge)",
+     "<a href=\"#src-4\">[4]</a>; lever: estimate"
+    ],
+    [
+     "Spring",
+     "k = 0.371 N\u00b7m/rad, rest angle 38\u00b0 (0.66 rad)",
+     "derived from <a href=\"#src-4\">[4]</a> with 50% preload at full open (estimate; springs are pre-compressed <a href=\"#src-6\">[6]</a>)"
+    ],
+    [
+     "Damping",
+     "\u03b6 = 0.1",
+     "<span class=\"est\">estimate</span>: lightly damped steel spring"
+    ],
+    [
+     "Friction",
+     "steel 0.5, Santoprene sleeves 0.7",
+     "<a href=\"#src-5\">[5]</a> at 10\u201320 N normal force"
+    ]
+   ],
+   "sources": [
+    {
+     "title": "OXO 12\" tongs product page",
+     "url": "https://www.oxo.com/products/cooking-baking/tongs/12-tongs"
+    },
+    {
+     "title": "OXO 12\" tongs listing (5.3 oz)",
+     "url": "https://www.desertcart.co/products/1042360"
+    },
+    {
+     "title": "Retail listing, 137 g",
+     "url": "https://advantage-catering-equipment.co.uk/products/oxo-good-grips-locking-tongs-with-silicone-12"
+    },
+    {
+     "title": "America's Test Kitchen tongs review: tension 0.55 lb (MIT uniaxial tester)",
+     "url": "https://www.americastestkitchen.com/equipment_reviews/1859-kitchen-tongs"
+    },
+    {
+     "title": "Fingertip friction on metal and rubber vs. normal force (PMC6756432)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6756432"
+    },
+    {
+     "title": "Tong spring pre-compression (patent US20230037008)",
+     "url": "https://patents.justia.com/patent/20230037008"
+    }
+   ]
+  },
+  {
+   "id": "scissors",
+   "name": "Office scissors, 8 in (Fiskars Classic type)",
+   "blurb": "Two blade-and-handle halves on a pivot screw, no spring. The screw's rubbing friction holds any opening; squeezing the finger loops closes the blades.",
+   "xml": "models/scissors.xml",
+   "files": [],
+   "joint": "hinge",
+   "jointLabel": "Hinge angle",
+   "grip": [
+    "grip_a",
+    "grip_b"
+   ],
+   "tips": [
+    "tip_a",
+    "tip_b"
+   ],
+   "tipLabel": "Tip gap",
+   "maxForce": 8.0,
+   "gripLever": 0.085,
+   "initial": 0.55,
+   "volumePerMeter": null,
+   "params": [
+    [
+     "Length \u00d7 width",
+     "211 \u00d7 80 mm",
+     "<a href=\"#src-1\">[1]</a>"
+    ],
+    [
+     "Mass",
+     "83 g (\u2248 41 g per half)",
+     "<a href=\"#src-1\">[1]</a><a href=\"#src-2\">[2]</a>; split: estimate"
+    ],
+    [
+     "Blade",
+     "100 mm pivot to tip, 18 \u2192 6 mm wide, 2 mm thick",
+     "<a href=\"#src-2\">[2]</a>; widths: estimate"
+    ],
+    [
+     "Opening",
+     "0 to 40\u00b0 (0.70 rad)",
+     "<span class=\"est\">estimate</span>: 35\u201345\u00b0 typical"
+    ],
+    [
+     "Pivot friction",
+     "0.1 N\u00b7m (Coulomb)",
+     "<a href=\"#src-3\">[3]</a>: 0.10\u20130.12 N\u00b7m measured near closing; real friction varies with angle"
+    ],
+    [
+     "Friction",
+     "steel blades 0.5, plastic loops 0.4",
+     "<a href=\"#src-4\">[4]</a><a href=\"#src-5\">[5]</a>"
+    ]
+   ],
+   "sources": [
+    {
+     "title": "Fiskars Classic 21 cm: 211 \u00d7 80 mm, 83 g",
+     "url": "https://royaldesign.co.uk/classic-universal-scissors-21-cm"
+    },
+    {
+     "title": "Fiskars 8 in general purpose: 100 mm blade, 83 g",
+     "url": "https://www.diy.com/departments/fiskars-1000814-left-handed-general-purpose-scissors-210mm-8in-fsk1000814/6411501985019_BQ.prd"
+    },
+    {
+     "title": "Mahvash et al. 2008, scissors cutting forces (Fig. 5)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2709828/"
+    },
+    {
+     "title": "Fingertip friction on metal and rubber vs. normal force (PMC6756432)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6756432"
+    },
+    {
+     "title": "Fingertip friction on polypropylene (PMC3565724)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3565724"
+    }
+   ]
+  },
+  {
+   "id": "needle_nose_pliers",
+   "name": "Needle-nose pliers, 6 in (Klein D203-6 type)",
+   "blurb": "Long-nose pliers with plastic-dipped handles and no return spring. The riveted joint has enough friction to hold a handle against its own weight.",
+   "xml": "models/needle_nose_pliers.xml",
+   "files": [],
+   "joint": "hinge",
+   "jointLabel": "Hinge angle",
+   "grip": [
+    "grip_a",
+    "grip_b"
+   ],
+   "tips": [
+    "tip_a",
+    "tip_b"
+   ],
+   "tipLabel": "Tip gap",
+   "maxForce": 20.0,
+   "gripLever": 0.075,
+   "initial": 0.25,
+   "volumePerMeter": null,
+   "params": [
+    [
+     "Length",
+     "168 mm (pivot 55 mm from the tip)",
+     "<a href=\"#src-1\">[1]</a><a href=\"#src-2\">[2]</a>; pivot position: estimate"
+    ],
+    [
+     "Jaw",
+     "47.6 mm long, 17.5 mm wide, 9.5 mm thick, 2.4 mm tip",
+     "<a href=\"#src-1\">[1]</a>"
+    ],
+    [
+     "Mass",
+     "122 g (\u2248 61 g per half)",
+     "<a href=\"#src-2\">[2]</a>; split: estimate"
+    ],
+    [
+     "Opening",
+     "0 to 26\u00b0 (0.45 rad): ~25 mm at the tips",
+     "<span class=\"est\">estimate</span>"
+    ],
+    [
+     "Spring",
+     "none",
+     "<a href=\"#src-2\">[2]</a>"
+    ],
+    [
+     "Pivot friction",
+     "0.05 N\u00b7m (Coulomb)",
+     "<span class=\"est\">estimate</span>: holds a handle (~0.035 N\u00b7m gravity torque)"
+    ],
+    [
+     "Friction",
+     "steel jaws 0.5, dipped handles 0.7",
+     "<a href=\"#src-4\">[4]</a> at 10\u201320 N"
+    ]
+   ],
+   "sources": [
+    {
+     "title": "Klein D203-6 jaw dimensions (Lumen)",
+     "url": "https://www.lumen.ca/en/products/25-tools-instruments/08-hand-tools/55-pliers/11-long-nose-pliers/p-S0xFRDIwMzY=-kled2036-klein-tools-d203-6-long-nose-plier-with-side-cutter-straight-1-78-in-l-x-0688-in-w-x-38-in-t-jaw"
+    },
+    {
+     "title": "Klein D203-6: 6-5/8 in, 4.3 oz",
+     "url": "https://altex.com/products/klein-6-standard-long-nose-pliers-side-cutting"
+    },
+    {
+     "title": "Klein D203 materials",
+     "url": "https://www.toolnut.com/klein-d203-6h2-6-standard-long-nose-pliers-side-cutting-switchboard-work.html"
+    },
+    {
+     "title": "Fingertip friction on metal and rubber vs. normal force (PMC6756432)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6756432"
+    }
+   ]
+  },
+  {
+   "id": "tweezers",
+   "name": "Precision tweezers, 120 mm (Knipex 92 01 06 type)",
+   "blurb": "Two stainless leaves joined at the rear. The leaves are a flexure, modelled as a hinge with a torsional spring that rests open; squeezing at the grip brings the tips together.",
+   "xml": "models/tweezers.xml",
+   "files": [],
+   "joint": "hinge",
+   "jointLabel": "Hinge angle",
+   "grip": [
+    "grip_a",
+    "grip_b"
+   ],
+   "tips": [
+    "tip_a",
+    "tip_b"
+   ],
+   "tipLabel": "Tip gap",
+   "maxForce": 4.0,
+   "gripLever": 0.06,
+   "initial": 0.12,
+   "volumePerMeter": null,
+   "params": [
+    [
+     "Length",
+     "120 mm",
+     "<a href=\"#src-1\">[1]</a>"
+    ],
+    [
+     "Mass",
+     "20 g",
+     "<a href=\"#src-1\">[1]</a>"
+    ],
+    [
+     "Leaf section",
+     "8 mm \u2192 3 mm wide, 0.7 mm thick; joined over the rear 20 mm",
+     "<span class=\"est\">estimate</span>"
+    ],
+    [
+     "Rest opening",
+     "7\u00b0 (0.12 rad): ~12 mm at the tips",
+     "<span class=\"est\">estimate</span>"
+    ],
+    [
+     "Force to close",
+     "1.8 N at 60 mm from the joint",
+     "<span class=\"est\">estimate</span>: cantilever bending, 0.7 mm stainless (E = 193 GPa) gives 1.2\u20133.9 N for 0.6\u20130.9 mm"
+    ],
+    [
+     "Spring",
+     "k = 0.90 N\u00b7m/rad, rest 7\u00b0 (0.12 rad), no preload",
+     "derived from the line above"
+    ],
+    [
+     "Damping",
+     "\u03b6 = 0.1",
+     "<span class=\"est\">estimate</span>"
+    ],
+    [
+     "Friction",
+     "stainless 0.5",
+     "<a href=\"#src-2\">[2]</a> at 10\u201320 N"
+    ]
+   ],
+   "sources": [
+    {
+     "title": "Knipex 92 01 06: 120 mm, 20 g",
+     "url": "https://www.ebay.de/p/3054921966"
+    },
+    {
+     "title": "Fingertip friction on metal and rubber vs. normal force (PMC6756432)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6756432"
+    }
+   ]
+  },
+  {
+   "id": "clothespin",
+   "name": "Spring clothespin (wooden)",
+   "blurb": "Two wooden legs on a steel coil spring that clamps the jaws shut with a preload. Squeezing the rear handles opens the jaws.",
+   "xml": "models/clothespin.xml",
+   "files": [],
+   "joint": "hinge",
+   "jointLabel": "Hinge angle",
+   "grip": [
+    "grip_a",
+    "grip_b"
+   ],
+   "tips": [
+    "tip_a",
+    "tip_b"
+   ],
+   "tipLabel": "Jaw gap",
+   "maxForce": 20.0,
+   "gripLever": 0.035,
+   "initial": 0.0,
+   "volumePerMeter": null,
+   "params": [
+    [
+     "Size",
+     "73 \u00d7 15.9 \u00d7 9.5 mm (legs 8 \u00d7 9.5 mm)",
+     "<a href=\"#src-1\">[1]</a>"
+    ],
+    [
+     "Mass",
+     "5.2 g (2 \u00d7 2.2 g wood + 0.8 g spring)",
+     "<a href=\"#src-2\">[2]</a>; split: estimate"
+    ],
+    [
+     "Fulcrum",
+     "32 mm from the jaw tips",
+     "<span class=\"est\">estimate</span>"
+    ],
+    [
+     "Jaw opening",
+     "0 to 17\u00b0 (0.30 rad), until the rear ends touch: ~10 mm",
+     "<span class=\"est\">estimate</span>"
+    ],
+    [
+     "Clamp force",
+     "10 N at 5 mm jaw spread; 7.8 N with jaws shut",
+     "<a href=\"#src-3\">[3]</a> (plastic peg); closed-jaw value derived with the spring rate below"
+    ],
+    [
+     "Spring",
+     "k = 0.46 N\u00b7m/rad, preload 0.25 N\u00b7m (rest angle -31\u00b0 (-0.54 rad))",
+     "<span class=\"est\">estimate</span>: 1.1 mm wire, 5 mm coil, 2 turns; strength varies a lot by brand [4]"
+    ],
+    [
+     "Damping",
+     "\u03b6 = 0.2",
+     "<span class=\"est\">estimate</span>: wood-on-wire rubbing"
+    ],
+    [
+     "Friction",
+     "wood 0.5",
+     "<span class=\"est\">estimate</span>: raw wood on skin is low among woods [5]"
+    ]
+   ],
+   "sources": [
+    {
+     "title": "Wood clothespin 2-7/8 \u00d7 5/8 \u00d7 3/8 in (WebstaurantStore)",
+     "url": "https://www.webstaurantstore.com/wood-clothespins-pack/93304701.html"
+    },
+    {
+     "title": "Wood spring clothespins, 50-pack weight",
+     "url": "https://www.ontimesupplies.com/ckc365801-wood-spring-clothespins-338-length-natural-50-pack.html"
+    },
+    {
+     "title": "Egloff et al. 2011: clothes-peg clamp, 10 N at 5 mm spread",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3158560/"
+    },
+    {
+     "title": "Clothespin spring strength varies by brand",
+     "url": "https://nzeldes.com/?p=4124"
+    },
+    {
+     "title": "Tribology of skin: review of experimental results (TU/e)",
+     "url": "https://research.tue.nl/en/publications/tribology-of-skin-review-and-analysis-of-experimental-results-for/"
+    }
+   ]
+  },
+  {
+   "id": "syringe_10ml",
+   "name": "Syringe, 10 mL (BD Plastipak type)",
+   "blurb": "Polypropylene barrel and plunger with a rubber stopper on a slide joint. Push with the thumb against the finger flange; the stopper's sliding friction resists. Air or liquid pressure is not modelled.",
+   "xml": "models/syringe_10ml.xml",
+   "files": [],
+   "joint": "slide",
+   "jointLabel": "Plunger drawn back",
+   "grip": [
+    "grip_a",
+    "grip_b"
+   ],
+   "tips": [],
+   "tipLabel": "Tip gap",
+   "maxForce": 8.0,
+   "gripLever": null,
+   "initial": 0.061130377574615286,
+   "volumePerMeter": 163.5847903572013,
+   "params": [
+    [
+     "Barrel",
+     "14.43 mm bore, 16.21 mm outside, 85.5 mm long",
+     "<a href=\"#src-1\">[1]</a><a href=\"#src-2\">[2]</a>"
+    ],
+    [
+     "Stroke",
+     "61.1 mm to 10 mL; 67 mm max (110 %)",
+     "derived from the bore; 110 % capacity per <a href=\"#src-4\">[4]</a>"
+    ],
+    [
+     "Mass",
+     "9 g (barrel 5.9 g, plunger 3.1 g)",
+     "<span class=\"est\">estimate</span>: catalogue pack weights"
+    ],
+    [
+     "Plunger friction",
+     "1.88 N while sliding (Coulomb)",
+     "<a href=\"#src-3\">[3]</a>: 1.88 \u00b1 0.48 N gliding, 3.27 N to break loose (21G needle, 100 mm/min); MuJoCo has one friction level, so break-loose is not modelled"
+    ],
+    [
+     "Friction",
+     "polypropylene 0.4",
+     "<a href=\"#src-5\">[5]</a>: 0.37 on a dry fingertip"
+    ]
+   ],
+   "sources": [
+    {
+     "title": "BD syringe inner diameters (NE-1000 pump spec sheet)",
+     "url": "https://www.usplastic.com/catalog/files/specsheets/NE-1000%20Rates%20and%20Specifications.pdf"
+    },
+    {
+     "title": "BD Plastipak 10 mL: 16.21 mm OD, 85.48 mm barrel",
+     "url": "https://www.fishersci.pt/shop/products/plastipak-concentric-luer-lock-three-piece-syringe/10430864"
+    },
+    {
+     "title": "Plunger forces of 10 mL syringes (PMC6687218)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6687218/"
+    },
+    {
+     "title": "ISO 7886-1 (as IS 10258), plunger force limits",
+     "url": "https://law.resource.org/pub/in/bis/S09/is.10258.2002.pdf"
+    },
+    {
+     "title": "Fingertip friction on polypropylene (PMC3565724)",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3565724"
+    }
+   ]
+  },
+  {
    "id": "dexjoco_tongs",
    "name": "DexJoCo \u201ctongs\u201d (benchmark mesh model)",
-   "blurb": "The tongs model from the DexJoCo MuJoCo benchmark (Pinch Tongs task), shown as published. Its mesh is a pair of cutting pliers; each part collides as one convex hull (tick <i>Collision geometry</i>) and the hinge has no damping or friction.",
+   "blurb": "The tongs model from the DexJoCo MuJoCo benchmark (Pinch Tongs task), shown as published. Its mesh is a pair of cutting pliers; each part collides as one convex hull (tick <i>Collision geometry</i>) and the hinge has no damping or friction, so it rings.",
    "xml": "models/dexjoco_tongs.xml",
    "files": [
     "models/dexjoco_tongs/original-10.obj",
@@ -18,6 +489,7 @@
     "models/dexjoco_tongs/original-7.obj"
    ],
    "joint": "joint_0",
+   "jointLabel": "Hinge angle",
    "grip": [
     "grip_a",
     "grip_b"
@@ -29,6 +501,8 @@
    "tipLabel": "Handle-end gap",
    "maxForce": 15.0,
    "gripLever": 0.20461265110489285,
+   "initial": null,
+   "volumePerMeter": null,
    "params": [
     [
      "Joint",

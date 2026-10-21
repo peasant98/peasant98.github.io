@@ -192,6 +192,7 @@ async function loadTool(tool) {
     tips: (tool.tips || []).map((n) => idOf(model, "site", n)),
     t0: performance.now() / 1000,
   };
+  if (tool.initial != null) data.qpos[s.qadr] = tool.initial;
   mujoco.mj_forward(model, data);
   Object.assign(s, buildMeshes(model));
   sim = s;
@@ -228,9 +229,13 @@ function frameCamera() {
   const cam = sun.shadow.camera;
   cam.left = cam.bottom = -span; cam.right = cam.top = span; cam.near = 0.01; cam.far = 4 * span + 1;
   cam.updateProjectionMatrix();
+  // Fit the bounding sphere inside both the vertical and horizontal field of view (phones are portrait).
+  const vfov = THREE.MathUtils.degToRad(camera.fov);
+  const hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
+  const dist = (1.1 * size.length() / 2) / Math.tan(Math.min(vfov, hfov) / 2);
   controls.target.copy(center);
-  camera.position.copy(center).add(new THREE.Vector3(0.15, -0.95, 0.85).multiplyScalar(span * 1.15));
-  camera.near = span / 200; camera.far = span * 50;
+  camera.position.copy(center).add(new THREE.Vector3(0.15, -0.95, 0.85).normalize().multiplyScalar(dist));
+  camera.near = dist / 100; camera.far = dist * 50;
   camera.updateProjectionMatrix();
 }
 
@@ -291,7 +296,8 @@ function setupControls() {
   const t = sim.tool, [lo, hi] = sim.range;
   ui.angle.min = lo; ui.angle.max = hi; ui.angle.step = (hi - lo) / 400;
   ui.angle.value = sim.data.qpos[sim.qadr];
-  $("angle-label").textContent = sim.isSlide ? "Plunger position" : "Hinge angle";
+  $("angle-label").textContent = t.jointLabel;
+  $("force-label").textContent = sim.isSlide ? "Thumb push on the plunger" : "Squeeze force at the grip";
   ui.force.max = t.maxForce ?? 20; ui.force.step = (t.maxForce ?? 20) / 200; ui.force.value = 0;
   $("blurb").innerHTML = t.blurb || "";
   $("download").href = t.xml;
@@ -320,7 +326,8 @@ function updateReadouts() {
   const m = sim.model, q = sim.data.qpos[sim.qadr], j = sim.jid;
   ui.angleOut.textContent = fmtJoint(q);
   ui.forceOut.textContent = `${(+ui.force.value).toFixed(1)} N`;
-  const rows = [["Opening", fmtJoint(q)]];
+  const rows = [[sim.tool.jointLabel, fmtJoint(q)]];
+  if (sim.tool.volumePerMeter) rows.push(["Volume drawn", `${(q * sim.tool.volumePerMeter).toFixed(2)} mL`]);
   if (sim.tips.length === 2) {
     const [a, b] = sim.tips.map(sitePos);
     rows.push([sim.tool.tipLabel || "Tip gap", `${(Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) * 1000).toFixed(1)} mm`]);

@@ -79,7 +79,7 @@
   <section class="view">
     <canvas id="c"></canvas>
     <div id="status">Loading…</div>
-    <div class="hint">Drag a moving part to pull it · drag elsewhere to orbit · scroll to zoom</div>
+    <div class="hint">Drag a moving part to pull it · drag elsewhere to orbit · scroll or pinch to zoom</div>
   </section>
   <aside>
     <select id="tool" aria-label="Tool"></select>
@@ -96,7 +96,7 @@
       <input type="range" id="angle">
     </div>
     <div class="row" id="force-row">
-      <div class="lbl"><span>Squeeze force at the grip</span><output id="force-out"></output></div>
+      <div class="lbl"><span id="force-label">Squeeze force at the grip</span><output id="force-out"></output></div>
       <input type="range" id="force" min="0" value="0">
     </div>
     <div class="checks">
