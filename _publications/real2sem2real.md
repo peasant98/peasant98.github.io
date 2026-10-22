@@ -9,9 +9,12 @@ date: 2026-10-20
 teaser: "/assets/teasers/real2sem2real.mp4"
 teaser_poster: "/assets/teasers/real2sem2real.jpg"
 featured: true
+links:
+  website: "https://real2sem2real.github.io"
+  arxiv: "https://arxiv.org/abs/2610.28880"
 ---
 
-arXiv link coming soon.
+Check out our website: [Real2Sem2Real](https://real2sem2real.github.io)! Arxiv [here](https://arxiv.org/abs/2610.28880)
 
 <b>Abstract:</b>
 
