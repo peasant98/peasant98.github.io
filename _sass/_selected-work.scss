@@ -18,9 +18,9 @@
 .sw-hero {
   display: flex;
   align-items: center;
-  gap: 1.75em;
-  margin: 0 0 2em;
-  padding: 1.75em 1.9em;
+  gap: 1.5em;
+  margin: 0 0 1.4em;
+  padding: 1.3em 1.6em;
   border-radius: 18px;
   background: linear-gradient(135deg, var(--sw-blue-100) 0%, var(--sw-blue-50) 45%, var(--sw-surface) 100%);
   border: 1px solid var(--sw-blue-200);
@@ -28,8 +28,8 @@
   &__text { flex: 1 1 auto; }
 
   &__name {
-    margin: 0 0 .3em;
-    font-size: 2em;
+    margin: 0 0 .25em;
+    font-size: 1.75em;
     line-height: 1.15;
     font-weight: 700;
     color: var(--sw-ink);
@@ -42,8 +42,8 @@
   }
 
   &__photo img {
-    width: 150px;
-    height: 150px;
+    width: 128px;
+    height: 128px;
     object-fit: cover;
     border-radius: 50%;
     border: 3px solid var(--sw-surface);
@@ -56,8 +56,8 @@
 .sw-links {
   display: flex;
   flex-wrap: wrap;
-  gap: .5em;
-  margin: .6em 0 0;
+  gap: .4em;
+  margin: .5em 0 0;
   padding: 0;
   list-style: none;
 
@@ -85,7 +85,7 @@
 /* ---------- publication entries ---------- */
 
 .sw-section-title {
-  margin: 1.6em 0 .2em;
+  margin: 1.3em 0 .2em;
   padding-bottom: .3em;
   font-size: 1.35em;
   font-weight: 700;
@@ -97,9 +97,9 @@
 .sw-pub {
   display: flex;
   align-items: flex-start;
-  gap: 1.3em;
-  padding: 1.1em;
-  margin: .9em 0;
+  gap: 1.2em;
+  padding: .75em .9em;
+  margin: .3em 0;
   border-radius: 14px;
   border: 1px solid transparent;
   transition: background .2s ease, border-color .2s ease, transform .2s ease;
@@ -113,8 +113,8 @@
   /* teaser: same-shape frame for every paper, links to the project site */
   &__media {
     display: block;
-    flex: 0 0 300px;
-    max-width: 300px;
+    flex: 0 0 260px;
+    max-width: 260px;
     aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: 10px;
@@ -144,33 +144,37 @@
   &__body { flex: 1 1 auto; min-width: 0; }
 
   &__title {
-    margin: 0 0 .25em;
-    font-size: 1.05em;
+    margin: 0 0 .2em;
+    font-size: 1em;
     font-weight: 700;
-    line-height: 1.35;
+    line-height: 1.3;
 
     a { color: var(--sw-blue-700); text-decoration: none; }
     a:hover { text-decoration: underline; }
   }
 
-  &__authors {
-    margin: 0 0 .2em;
-    font-size: .88em;
+  /* scoped under .sw-pub: the theme's `.page__content p` (1em, 1.3em bottom margin) outranks a single class */
+  & &__authors {
+    margin: 0 0 .1em;
+    font-size: .86em;
+    line-height: 1.4;
     color: var(--sw-ink);
 
     b, strong { color: var(--sw-blue-700); }
   }
 
-  &__venue {
+  & &__venue {
     margin: 0;
-    font-size: .85em;
+    font-size: .84em;
+    line-height: 1.4;
     font-style: italic;
     color: var(--sw-muted);
   }
 
-  &__blurb {
-    margin: .45em 0 0;
-    font-size: .88em;
+  & &__blurb {
+    margin: .4em 0 0;
+    font-size: .86em;
+    line-height: 1.45;
     color: var(--sw-muted);
   }
 }
@@ -274,6 +278,14 @@
 @media (prefers-reduced-motion: reduce) {
   .archive__item, .sw-gallery img { transition: none; }
   .archive__item:hover, .sw-gallery img:hover { transform: none; }
+}
+
+/* ---------- home page intro: a little denser than the theme's body text ---------- */
+
+.page:has(.sw-hero) .page__content > p {
+  margin-bottom: .8em;
+  font-size: .94em;
+  line-height: 1.55;
 }
 
 /* ---------- home page has no author sidebar, so use the full column ---------- */
