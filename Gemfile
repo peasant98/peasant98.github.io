@@ -9,7 +9,10 @@ source "https://rubygems.org"
 # This will help ensure the proper Jekyll version is running.
 # Happy Jekylling!
 
-gem "github-pages", group: :jekyll_plugins
+# The site deploys through GitHub Actions, so it pins Jekyll and its plugins directly
+# instead of the github-pages meta-gem (which locks old, vulnerable dependencies).
+gem "jekyll", "~> 3.10"
+gem "kramdown-parser-gfm"
 
 # If you want to use Jekyll native, uncomment the line below.
 # To upgrade, run `bundle update`.
@@ -23,7 +26,9 @@ group :jekyll_plugins do
   # gem "jekyll-archives"
   gem "jekyll-feed"
   gem 'jekyll-sitemap'
+  gem "jekyll-paginate"
+  gem "jekyll-redirect-from"
   gem 'hawkins'
 end
 
-gem "webrick", "~> 1.8"
+gem "webrick", "~> 1.8", ">= 1.8.2"
