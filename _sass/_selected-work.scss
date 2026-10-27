@@ -80,6 +80,28 @@
       transform: translateY(-1px);
     }
   }
+
+  /* hero contact row: round icon-only buttons (label lives in aria-label/title) */
+  &--icons {
+    gap: .5em;
+    margin-top: .7em;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.2em;
+      height: 2.2em;
+      padding: 0;
+      font-size: 1em;
+    }
+
+    svg {
+      width: 1em;
+      height: 1em;
+      fill: currentColor;
+    }
+  }
 }
 
 /* ---------- publication entries ---------- */
