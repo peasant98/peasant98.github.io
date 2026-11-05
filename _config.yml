@@ -184,6 +184,11 @@ collections:
   talks:
     output: true
     permalink: /:collection/:path/
+  # Paper Digest: entries, day pages and topics are copied here by the ARMLab digest agent
+  # (armlabstanford.github.io scripts/digest/run_agent.sh); only the layouts are this site's.
+  digest:
+    output: true
+    permalink: /digest/:path/
 
 
 # Defaults
@@ -232,6 +237,17 @@ defaults:
       layout: talk
       author_profile: true
       share: true
+  # _digest
+  - scope:
+      path: ""
+      type: digest
+    values:
+      layout: digest_paper
+      author_profile: true
+
+# Paper Digest media (videos, figures) live in this Hugging Face dataset; entries name files relative to it.
+digest_media: https://huggingface.co/datasets/copeking12/armlab-digest-media/resolve/main
+digest_keep_days: 14
 
 # Sass/SCSS
 sass:

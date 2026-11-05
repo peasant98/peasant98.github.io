@@ -1,0 +1,132 @@
+/* ==========================================================================
+   Paper Digest (/digest/): tabs, day headings, reading-list rows, topic tiles
+   and paper pages. Papers themselves use the .sw-pub rows from _selected-work;
+   colours come from the theme variables, so all five themes apply.
+   ========================================================================== */
+
+.dg {
+  .page__title { margin-bottom: .2em; }
+  & p.dg-lead { margin: 0 0 .9em; font-size: .95em; line-height: 1.5; color: var(--sw-muted); }
+  & p.dg-note { margin: 1.2em 0 0; font-size: .82em; color: var(--sw-muted); }
+  & p.dg-credit { margin: 2.2em 0 0; padding-top: .8em; font-size: .78em; color: var(--sw-muted); border-top: 1px solid var(--sw-blue-200); }
+  & p.dg-kicker { margin: 0 0 .2em; font-size: .8em; font-weight: 700; letter-spacing: .04em;
+    a { color: var(--sw-blue-600); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  }
+}
+
+/* the theme underlines links inside .archive; rows and tiles are whole-block links */
+.dg a.dg-row, .dg a.dg-tile { text-decoration: none; }
+
+/* ---------- tabs ---------- */
+.dg-tabs {
+  display: flex; flex-wrap: wrap; gap: .4em; margin: .2em 0 .6em;
+
+  .dg-tab {
+    padding: .35em .95em; border-radius: 999px; font-size: .85em; font-weight: 700; text-decoration: none;
+    color: var(--sw-blue-700); background: linear-gradient(135deg, var(--sw-blue-100), var(--sw-blue-50));
+    border: 1px solid var(--sw-blue-200);
+    span { margin-left: .25em; font-weight: 400; opacity: .75; }
+    &:hover { text-decoration: none; border-color: var(--sw-blue-400); }
+    &[aria-selected="true"] { color: #fff; background: linear-gradient(135deg, var(--sw-blue-600), var(--sw-blue-400)); border-color: transparent; }
+  }
+}
+
+/* ---------- daily view ---------- */
+.dg-day {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .1em .6em;
+  a { color: inherit; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  span { font-size: .62em; font-weight: 400; color: var(--sw-muted); }
+}
+.sw-links.dg-days { margin-top: .6em; }
+.dg-tags { margin-top: .35em; }
+.dg-tags a { font-size: .72em; padding: .18em .65em; }
+
+/* the badge sits after a title here, not after a venue */
+.sw-pub__title .sw-badge { font-size: .72em; vertical-align: .1em; }
+.sw-badge.dg-must { color: #3d2800; background: linear-gradient(135deg, #f7cd5d, #e9a913); box-shadow: 0 1px 4px rgba(170, 120, 0, .3); }
+.dg-star { color: #d99a00; }
+
+/* ---------- Seminal reading list ---------- */
+.dg-subhead {
+  margin: 1.6em 0 .3em; font-size: 1em; font-weight: 700; letter-spacing: .02em;
+  a { color: var(--sw-blue-700); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  span { font-weight: 400; color: var(--sw-muted); }
+}
+.dg-rows { border-top: 1px solid var(--sw-blue-200); }
+.dg-row {
+  display: flex; gap: .9em; padding: .45em .5em; font-size: .9em; line-height: 1.4;
+  color: var(--sw-ink); text-decoration: none; border-bottom: 1px solid var(--sw-blue-100);
+  transition: background .15s ease;
+  &:hover { text-decoration: none; background: linear-gradient(90deg, var(--sw-blue-50), var(--sw-surface)); }
+  &:hover .dg-row__title { color: var(--sw-blue-700); }
+  &__date { flex: 0 0 3.4em; color: var(--sw-muted); font-variant-numeric: tabular-nums; }
+  &__title { flex: 1 1 auto; min-width: 0; }
+}
+
+/* ---------- topic tiles ---------- */
+.dg-topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(14em, 1fr)); gap: .8em; }
+.dg-tile {
+  display: block; padding: .9em 1em; border-radius: 14px; text-decoration: none; color: var(--sw-ink);
+  background: linear-gradient(135deg, var(--sw-blue-50), var(--sw-surface)); border: 1px solid var(--sw-blue-200);
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  &:hover { text-decoration: none; transform: translateY(-2px); border-color: var(--sw-blue-400); box-shadow: 0 8px 20px rgba(31, 79, 131, .12); }
+  h3 { margin: 0 0 .3em; font-size: 1em; color: var(--sw-blue-700); }
+  & p { margin: 0 0 .5em; font-size: .82em; line-height: 1.45; color: var(--sw-muted); }
+  span { font-size: .78em; font-weight: 700; color: var(--sw-blue-600); }
+}
+
+/* ---------- paper page ---------- */
+.dg {
+  & p.dg-authors { margin: 0 0 .2em; font-size: .95em; color: var(--sw-ink); }
+  & p.dg-meta { margin: 0; font-size: .88em; color: var(--sw-muted);
+    .sw-badge { margin: 0 .45em 0 0; }
+  }
+}
+.dg-paper-links { margin: .6em 0 1.2em; }
+.dg-paper-links .dg-topic-link a { color: var(--sw-muted); background: transparent; }
+.dg-hero {
+  max-width: 720px; margin: 0 0 1.2em;
+  video, img { display: block; width: 100%; height: auto; border-radius: 12px; background: #000; box-shadow: 0 6px 20px rgba(31, 79, 131, .16); }
+  &--still img { background: #fff; }
+}
+.dg figcaption { font-family: inherit; margin-top: .45em; font-size: .82em; line-height: 1.45; color: var(--sw-muted); }
+.dg p.dg-tldr {
+  margin: 0 0 1.2em; padding: .9em 1.1em; border-radius: 12px; font-size: .95em; line-height: 1.55; color: var(--sw-ink);
+  background: linear-gradient(135deg, var(--sw-blue-100), var(--sw-blue-50)); border: 1px solid var(--sw-blue-200);
+  b { margin-right: .35em; color: var(--sw-blue-700); }
+}
+.dg-summary {
+  font-size: .95em; line-height: 1.6; color: var(--sw-ink);
+  h2 { margin: 1.3em 0 .4em; font-size: 1.1em; color: var(--sw-blue-700); }
+  ul { margin: 0 0 1em; padding-left: 1.2em; }
+  li { margin: .25em 0; }
+}
+.dg-video-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(16em, 1fr)); gap: 1em;
+  figure { margin: 0; }
+  video, iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 10px; background: #000; }
+}
+.dg-yt {
+  position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; padding: 0; border: 0; border-radius: 10px;
+  overflow: hidden; cursor: pointer; background: #000;
+  img { width: 100%; height: 100%; object-fit: cover; opacity: .85; }
+  &::after { content: "\25B6"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+             font-size: 2.4em; color: #fff; text-shadow: 0 2px 10px rgba(0, 0, 0, .5); }
+}
+.dg-figure {
+  margin: 0 0 1.4em;
+  img { display: block; width: 100%; height: auto; padding: .5em; border-radius: 10px; background: #fff; border: 1px solid var(--sw-blue-200); }
+}
+.dg-abstract {
+  margin: 1.4em 0 0; padding: .7em 1em; border-radius: 12px; border: 1px solid var(--sw-blue-200);
+  summary { cursor: pointer; font-weight: 700; color: var(--sw-blue-700); }
+  & p { margin: .6em 0 0; font-size: .9em; line-height: 1.55; color: var(--sw-ink); }
+}
+
+@media (max-width: 760px) {
+  .dg-row__date { flex-basis: 2.8em; }
+  .dg-tabs .dg-tab { padding: .32em .75em; }
+}

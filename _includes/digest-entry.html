@@ -1,0 +1,18 @@
+{% comment %}One Paper Digest paper as a publication-style row: looping clip (or figure) left, details right.
+Expects include.paper (a _digest document).{% endcomment %}
+{% assign p = include.paper %}
+{% assign media = site.digest_media | append: "/" %}
+{% assign names = p.authors | split: ", " %}
+<div class="sw-pub dg-entry">
+  <a class="sw-pub__media" href="{{ p.url | relative_url }}" tabindex="-1" aria-hidden="true">
+    {% if p.thumb.video %}<video muted loop playsinline preload="none" data-poster="{{ media }}{{ p.thumb.poster }}" data-src="{{ media }}{{ p.thumb.video }}"></video>
+    {% elsif p.thumb.image %}<img src="{{ media }}{{ p.thumb.image }}" alt="" loading="lazy">{% endif %}
+  </a>
+  <div class="sw-pub__body">
+    <h3 class="sw-pub__title"><a href="{{ p.url | relative_url }}">{{ p.title }}</a>{% if p.must_read %}<span class="sw-badge dg-must">&#9733; Must read</span>{% elsif p.seminal %}<span class="sw-badge">Seminal</span>{% endif %}</h3>
+    <p class="sw-pub__authors">{% if names.size > 4 %}{{ names | slice: 0, 3 | join: ", " }} et al.{% else %}{{ p.authors }}{% endif %}</p>
+    <p class="sw-pub__venue">{% if p.venue and p.venue != "" %}{{ p.venue }}, {% endif %}{{ p.date | date: "%B %Y" }}</p>
+    {% if p.tldr and p.tldr != "" %}<p class="sw-pub__blurb">{{ p.tldr }}</p>{% endif %}
+    <ul class="sw-links dg-tags">{% for slug in p.topics %}{% assign topic = site.data.digest_topics | where: "slug", slug | first %}{% if topic %}<li><a href="{{ '/digest/topics/' | append: topic.slug | append: '/' | relative_url }}">{{ topic.name }}</a></li>{% endif %}{% endfor %}</ul>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<script>
+  /* Paper Digest clips (and their posters) load only near the screen, and unload when they leave,
+     so long lists stay fast and phones keep enough video decoders. A clip that can't autoplay keeps its poster. */
+  (function () {
+    var vids = document.querySelectorAll('video[data-src]');
+    function stop(v) {
+      if (!v.getAttribute('src')) return;
+      v.pause(); v.removeAttribute('src'); v.load();
+    }
+    function start(v) {
+      if (!v.getAttribute('src')) {
+        if (v.dataset.poster) v.poster = v.dataset.poster;
+        v.src = v.dataset.src;
+      }
+      var p = v.play();
+      if (p && p.catch) p.catch(function () { stop(v); });
+    }
+    if (!('IntersectionObserver' in window)) { vids.forEach(start); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { start(e.target); } else { stop(e.target); } });
+    }, { rootMargin: '300px 0px' });
+    vids.forEach(function (v) { io.observe(v); });
+  })();
+</script>

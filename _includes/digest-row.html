@@ -1,0 +1,7 @@
+{% comment %}One compact line per paper, for long lists (the Seminal reading list, older papers on a topic page).
+year=true shows only the year. Must reads get a star.{% endcomment %}
+{% assign p = include.paper %}
+<a class="dg-row" href="{{ p.url | relative_url }}">
+  <span class="dg-row__date">{% if include.year %}{{ p.date | date: "%Y" }}{% else %}{{ p.date | date: "%b %-d, %Y" }}{% endif %}</span>
+  <span class="dg-row__title">{% if p.must_read %}<span class="dg-star" title="Must read">&#9733;</span> {% endif %}{{ p.title }}</span>
+</a>

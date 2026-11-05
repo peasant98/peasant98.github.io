@@ -1,0 +1,87 @@
+---
+layout: digest_base
+title: Paper Digest
+permalink: /digest/
+subtitle: Robotics papers worth reading, each with its videos, key figures and a short summary. New papers every day, plus the seminal ones by topic.
+---
+{% assign seminal = site.digest | where: "seminal", true | sort: "date" %}
+{% assign recent = site.digest | where_exp: "p", "p.seminal != true" %}
+{% assign day_pages = site.pages | where: "layout", "digest_day" | sort: "day" | reverse %}
+{% assign n_recent = 0 %}
+{% for d in day_pages %}{% assign items = recent | where: "added", d.day %}{% assign n_recent = n_recent | plus: items.size %}{% endfor %}
+
+<nav class="dg-tabs" role="tablist" aria-label="Digest views">
+  <a href="#daily" class="dg-tab" data-panel="daily" role="tab">Daily <span>{{ n_recent }}</span></a>
+  <a href="#seminal" class="dg-tab" data-panel="seminal" role="tab">Seminal <span>{{ seminal.size }}</span></a>
+  <a href="#topics" class="dg-tab" data-panel="topics" role="tab">By topic <span>{{ site.data.digest_topics.size }}</span></a>
+</nav>
+
+<div class="dg-panel" id="panel-daily" role="tabpanel">
+  {% comment %}Whole days as rows, newest first, until at least 24 papers; the other days as links.{% endcomment %}
+  {% assign shown = 0 %}{% assign card_days = 0 %}
+  {% for d in day_pages %}
+    {% if shown >= 24 %}{% break %}{% endif %}
+    {% assign items = recent | where: "added", d.day | sort: "date" | reverse %}
+    {% if items.size > 0 %}
+    <h2 class="sw-section-title dg-day"><a href="{{ d.url | relative_url }}" data-day="{{ d.day }}">{{ d.day | date: "%A, %B %-d" }}</a> <span>{{ items.size }} paper{% if items.size != 1 %}s{% endif %}</span></h2>
+    {% for p in items %}{% include digest-entry.html paper=p %}{% endfor %}
+    {% endif %}
+    {% assign shown = shown | plus: items.size %}{% assign card_days = forloop.index %}
+  {% endfor %}
+  {% if day_pages.size > card_days %}
+  <h2 class="sw-section-title">Earlier</h2>
+  <ul class="sw-links dg-days">{% for d in day_pages offset: card_days %}{% assign items = recent | where: "added", d.day %}<li><a href="{{ d.url | relative_url }}" data-day="{{ d.day }}">{{ d.day | date: "%a, %b %-d" }} &middot; {{ items.size }}</a></li>{% endfor %}</ul>
+  {% endif %}
+  {% if n_recent == 0 %}<p>No new papers yet.</p>{% endif %}
+  <p class="dg-note">New papers stay for {{ site.digest_keep_days }} days; seminal ones stay for good.</p>
+</div>
+
+<div class="dg-panel" id="panel-seminal" role="tabpanel" hidden>
+  <p class="dg-lead">A reading list of foundational papers by topic, oldest first. <span class="dg-star">&#9733;</span> marks the must reads, the few to start with.</p>
+  {% for t in site.data.digest_topics %}
+    {% assign ts = seminal | where_exp: "p", "p.topics contains t.slug" %}
+    {% if ts.size > 0 %}
+    <h3 class="dg-subhead"><a href="{{ '/digest/topics/' | append: t.slug | append: '/' | relative_url }}">{{ t.name }}</a> <span>{{ ts.size }}</span></h3>
+    <div class="dg-rows">{% for p in ts %}{% include digest-row.html paper=p year=true %}{% endfor %}</div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<div class="dg-panel" id="panel-topics" role="tabpanel" hidden>
+  <p class="dg-lead">New to a topic? Each page starts with its seminal papers, then the newest work.</p>
+  <div class="dg-topic-grid">
+    {% for t in site.data.digest_topics %}
+      {% assign tp = site.digest | where_exp: "p", "p.topics contains t.slug" %}
+      {% assign ts = tp | where: "seminal", true %}
+      <a class="dg-tile" href="{{ '/digest/topics/' | append: t.slug | append: '/' | relative_url }}">
+        <h3>{{ t.name }}</h3>
+        <p>{{ t.blurb }}</p>
+        <span>{{ tp.size }} paper{% if tp.size != 1 %}s{% endif %} &middot; {{ ts.size }} seminal</span>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  /* Tabs: #daily, #seminal or #topics. */
+  (function () {
+    var tabs = document.querySelectorAll('.dg-tab');
+    function show() {
+      var panel = location.hash.slice(1);
+      if (!document.getElementById('panel-' + panel)) panel = 'daily';
+      document.querySelectorAll('.dg-panel').forEach(function (el) { el.hidden = el.id !== 'panel-' + panel; });
+      tabs.forEach(function (t) { t.setAttribute('aria-selected', t.dataset.panel === panel ? 'true' : 'false'); });
+    }
+    window.addEventListener('hashchange', show);
+    show();
+  })();
+  /* Day links say Today and Yesterday by the reader's clock (the page is built once, not daily). */
+  (function () {
+    function iso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+    var now = new Date(), prev = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1), names = {};
+    names[iso(now)] = 'Today'; names[iso(prev)] = 'Yesterday';
+    document.querySelectorAll('[data-day]').forEach(function (el) {
+      if (names[el.dataset.day]) el.insertAdjacentText('afterbegin', names[el.dataset.day] + ' · ');
+    });
+  })();
+</script>

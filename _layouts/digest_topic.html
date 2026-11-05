@@ -1,0 +1,25 @@
+---
+layout: digest_base
+---
+{% comment %}/digest/topics/<slug>/: seminal papers first, then the newest, then older ones as rows.{% endcomment %}
+{% assign t = site.data.digest_topics | where: "slug", page.topic | first %}
+{% assign tp = site.digest | where_exp: "p", "p.topics contains page.topic" %}
+{% assign sem = tp | where: "seminal", true | sort: "date" %}
+{% assign rec = tp | where_exp: "p", "p.seminal != true" | sort: "date" | reverse %}
+{% assign cards = 24 %}
+
+<p class="dg-lead">{{ t.blurb }}</p>
+
+{% if sem.size > 0 %}
+<h2 class="sw-section-title">Start here: seminal papers</h2>
+{% for p in sem %}{% include digest-entry.html paper=p %}{% endfor %}
+{% endif %}
+
+{% if rec.size > 0 %}
+<h2 class="sw-section-title">Recent</h2>
+{% for p in rec limit: cards %}{% include digest-entry.html paper=p %}{% endfor %}
+{% if rec.size > cards %}<div class="dg-rows">{% for p in rec offset: cards limit: 300 %}{% include digest-row.html paper=p %}{% endfor %}</div>{% endif %}
+<p class="dg-note">New papers stay for {{ site.digest_keep_days }} days.</p>
+{% endif %}
+
+{% if tp.size == 0 %}<p>No papers on this topic yet.</p>{% endif %}

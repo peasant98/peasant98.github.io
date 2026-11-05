@@ -1,0 +1,15 @@
+---
+layout: default
+---
+{% comment %}Frame for every Paper Digest page: the site's sidebar, a back link, the heading.{% endcomment %}
+<div id="main" role="main">
+  {% include sidebar.html %}
+  <div class="archive dg">
+    {% if page.url != "/digest/" %}<p class="dg-kicker"><a href="{{ '/digest/' | relative_url }}">&larr; Paper Digest</a></p>{% endif %}
+    <h1 class="page__title">{{ page.heading | default: page.title }}</h1>
+    {% if page.subtitle %}<p class="dg-lead">{{ page.subtitle }}</p>{% endif %}
+    {{ content }}
+    <p class="dg-credit">Summaries are written automatically from each paper's text. Figures and videos come from the paper and its project page; all credit goes to the authors.</p>
+  </div>
+</div>
+{% include digest-videos.html %}

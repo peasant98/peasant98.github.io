@@ -1,0 +1,79 @@
+---
+layout: digest_base
+---
+{% comment %}/digest/<id>/: one paper with its clips, summary and figures.{% endcomment %}
+{% assign p = page %}
+{% assign hero = p.videos | first %}
+{% assign media = site.digest_media | append: "/" %}
+<p class="dg-authors">{{ p.authors }}</p>
+<p class="dg-meta">{% if p.must_read %}<span class="sw-badge dg-must">&#9733; Must read</span>{% elsif p.seminal %}<span class="sw-badge">Seminal</span>{% endif %}
+  <span>{{ p.date | date: "%B %Y" }}{% if p.venue and p.venue != "" %} &middot; {{ p.venue }}{% endif %}</span></p>
+<ul class="sw-links dg-paper-links">
+  {% if p.arxiv and p.arxiv != "" %}<li><a href="https://arxiv.org/abs/{{ p.arxiv }}">arXiv</a></li><li><a href="https://arxiv.org/pdf/{{ p.arxiv }}">PDF</a></li>
+  {% else %}{% if p.doi and p.doi != "" %}<li><a href="https://doi.org/{{ p.doi }}">Paper</a></li>{% endif %}{% if p.pdf and p.pdf != "" %}<li><a href="{{ p.pdf }}">PDF</a></li>{% endif %}{% endif %}
+  {% if p.website and p.website != "" %}<li><a href="{{ p.website }}">Project page</a></li>{% endif %}
+  {% if p.code and p.code != "" %}<li><a href="{{ p.code }}">Code</a></li>{% endif %}
+  {% for slug in p.topics %}{% assign topic = site.data.digest_topics | where: "slug", slug | first %}{% if topic %}<li class="dg-topic-link"><a href="{{ '/digest/topics/' | append: topic.slug | append: '/' | relative_url }}">{{ topic.name }}</a></li>{% endif %}{% endfor %}
+</ul>
+
+{% if hero %}
+<figure class="dg-hero">
+  <video muted loop playsinline controls preload="none" poster="{{ media }}{{ hero.poster }}" data-src="{{ media }}{{ hero.video }}"></video>
+  {% if hero.caption != "" %}<figcaption>{{ hero.caption }}</figcaption>{% endif %}
+</figure>
+{% elsif p.thumb.image %}
+<figure class="dg-hero dg-hero--still"><img src="{{ media }}{{ p.thumb.image }}" alt="" width="{{ p.thumb.width }}" height="{{ p.thumb.height }}"></figure>
+{% endif %}
+
+{% if p.tldr and p.tldr != "" %}<p class="dg-tldr"><b>TL;DR</b> {{ p.tldr }}</p>{% endif %}
+
+<div class="dg-summary">
+{{ content }}
+</div>
+
+{% assign more = p.videos | slice: 1, 10 %}
+{% if more.size > 0 or p.youtube.size > 0 %}
+<h2 class="sw-section-title">Videos</h2>
+<div class="dg-video-grid">
+  {% for v in more %}
+  <figure>
+    <video muted loop playsinline controls preload="none" poster="{{ media }}{{ v.poster }}" data-src="{{ media }}{{ v.video }}"></video>
+    {% if v.caption != "" %}<figcaption>{{ v.caption }}</figcaption>{% endif %}
+  </figure>
+  {% endfor %}
+  {% for y in p.youtube %}
+  <figure>
+    <button type="button" class="dg-yt" data-id="{{ y }}" aria-label="Play the YouTube video"><img src="https://i.ytimg.com/vi/{{ y }}/hqdefault.jpg" alt="" loading="lazy"></button>
+    <figcaption>Full video (YouTube)</figcaption>
+  </figure>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if p.figures.size > 0 %}
+<h2 class="sw-section-title">Figures</h2>
+{% for f in p.figures %}
+<figure class="dg-figure">
+  <a href="{{ media }}{{ f.image }}"><img src="{{ media }}{{ f.image }}" width="{{ f.width }}" height="{{ f.height }}" alt="{{ f.caption | strip_html | truncate: 120 }}" loading="lazy"></a>
+  <figcaption>{{ f.caption }}</figcaption>
+</figure>
+{% endfor %}
+{% endif %}
+
+<details class="dg-abstract">
+  <summary>Abstract</summary>
+  <p>{{ p.abstract }}</p>
+</details>
+
+<script>
+  /* YouTube embeds load only when clicked. */
+  document.querySelectorAll('.dg-yt').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + b.dataset.id + '?autoplay=1';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true; f.title = 'YouTube video';
+      b.replaceWith(f);
+    });
+  });
+</script>

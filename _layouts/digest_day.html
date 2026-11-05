@@ -1,0 +1,7 @@
+---
+layout: digest_base
+---
+{% comment %}/digest/YYYY-MM-DD/: the papers added that day (seminal papers are on the Seminal tab).{% endcomment %}
+{% assign papers = site.digest | where: "added", page.day | where_exp: "p", "p.seminal != true" | sort: "date" | reverse %}
+<p class="dg-lead">{{ papers.size }} paper{% if papers.size != 1 %}s{% endif %} added this day. New papers stay for {{ site.digest_keep_days }} days.</p>
+{% for p in papers %}{% include digest-entry.html paper=p %}{% endfor %}
