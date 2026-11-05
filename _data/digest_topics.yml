@@ -1,0 +1,47 @@
+# Topics for the Paper Digest (/digest/). Entries in _digest/ list one or more
+# `topics:` by slug. The By-topic view shows them in this order.
+- slug: foundations
+  name: Robotics foundations
+  blurb: The classic papers the field is built on, from kinematics, control and estimation to planning and grasp analysis.
+- slug: tactile-sensing
+  name: Tactile sensing
+  blurb: Sensors that let robots feel contact, and policies that use touch.
+- slug: dexterous-manipulation
+  name: Dexterous manipulation
+  blurb: Multi-fingered hands for grasping, in-hand reorientation and assembly.
+- slug: grasping
+  name: Grasping
+  blurb: Choosing and executing grasps, from analytic grasp quality to grasping learned at scale.
+- slug: imitation-learning
+  name: Imitation learning and data collection
+  blurb: Learning from demonstrations, from teleoperation and handheld rigs to human video.
+- slug: foundation-models
+  name: Robot foundation models
+  blurb: Large pretrained vision-language-action policies and the data behind them.
+- slug: rl-sim2real
+  name: RL and sim-to-real
+  blurb: Reinforcement learning in simulation and transfer to real robots.
+- slug: legged-locomotion
+  name: Legged locomotion
+  blurb: Quadrupeds and bipeds that walk, run and climb, mostly with controllers learned in simulation.
+- slug: humanoids
+  name: Humanoids and mobile manipulation
+  blurb: Humanoid whole-body control and teleoperation, and mobile robots that manipulate.
+- slug: robot-vision
+  name: Computer vision for robots
+  blurb: Features, geometry and calibration, then detection, segmentation, depth and tracking, the vision that robot perception builds on.
+- slug: 3d-perception
+  name: 3D perception and scene representation
+  blurb: Object pose tracking, Gaussian splatting and building simulations from the real world.
+- slug: planning-control
+  name: Planning and control
+  blurb: Motion planning, trajectory optimization, model-predictive control and task-and-motion planning.
+- slug: hri-teleop
+  name: HRI and teleoperation
+  blurb: Human-robot interaction, shared autonomy and the teleoperation systems used to collect data.
+- slug: human-motion
+  name: Human motion prediction
+  blurb: Predicting how and where people will move, from trajectories and gait to intent, for robots that work around people.
+- slug: assistive-haptics
+  name: Assistive robotics and haptics
+  blurb: Assistive arms, prostheses, rehabilitation robots and the haptic feedback that connects them to people.
