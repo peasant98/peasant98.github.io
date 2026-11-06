@@ -17,21 +17,20 @@ subtitle: Robotics papers worth reading, each with its videos, key figures and a
 </nav>
 
 <div class="dg-panel" id="panel-daily" role="tabpanel">
-  {% comment %}Whole days as rows, newest first, until at least 24 papers; the other days as links.{% endcomment %}
-  {% assign shown = 0 %}{% assign card_days = 0 %}
+  {% comment %}Every day in the keep window as a collapsible section, newest first: the newest open (and the
+  next ones too until at least 10 papers show), the rest closed, so closed days load no media.{% endcomment %}
+  {% include digest-filter.html %}
+  {% assign opened = 0 %}
   {% for d in day_pages %}
-    {% if shown >= 24 %}{% break %}{% endif %}
     {% assign items = recent | where: "added", d.day | sort: "date" | reverse %}
     {% if items.size > 0 %}
-    <h2 class="sw-section-title dg-day"><a href="{{ d.url | relative_url }}" data-day="{{ d.day }}">{{ d.day | date: "%A, %B %-d" }}</a> <span>{{ items.size }} paper{% if items.size != 1 %}s{% endif %}</span></h2>
-    {% for p in items %}{% include digest-entry.html paper=p %}{% endfor %}
+    <details class="dg-day" data-day-section{% if opened < 10 %} open{% endif %}>
+      <summary><span data-day="{{ d.day }}">{{ d.day | date: "%A, %B %-d" }}</span> <span class="dg-day__count" data-count data-unit="paper">{{ items.size }} paper{% if items.size != 1 %}s{% endif %}</span></summary>
+      {% include digest-day-list.html papers=items %}
+    </details>
+    {% assign opened = opened | plus: items.size %}
     {% endif %}
-    {% assign shown = shown | plus: items.size %}{% assign card_days = forloop.index %}
   {% endfor %}
-  {% if day_pages.size > card_days %}
-  <h2 class="sw-section-title">Earlier</h2>
-  <ul class="sw-links dg-days">{% for d in day_pages offset: card_days %}{% assign items = recent | where: "added", d.day %}<li><a href="{{ d.url | relative_url }}" data-day="{{ d.day }}">{{ d.day | date: "%a, %b %-d" }} &middot; {{ items.size }}</a></li>{% endfor %}</ul>
-  {% endif %}
   {% if n_recent == 0 %}<p>No new papers yet.</p>{% endif %}
   <p class="dg-note">New papers stay for {{ site.digest_keep_days }} days; seminal ones stay for good.</p>
 </div>

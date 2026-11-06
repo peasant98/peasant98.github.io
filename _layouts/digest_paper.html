@@ -9,7 +9,7 @@ layout: digest_base
 <p class="dg-meta">{% if p.must_read %}<span class="sw-badge dg-must">&#9733; Must read</span>{% elsif p.seminal %}<span class="sw-badge">Seminal</span>{% endif %}
   <span>{{ p.date | date: "%B %Y" }}{% if p.venue and p.venue != "" %} &middot; {{ p.venue }}{% endif %}</span></p>
 <ul class="sw-links dg-paper-links">
-  {% if p.arxiv and p.arxiv != "" %}<li><a href="https://arxiv.org/abs/{{ p.arxiv }}">arXiv</a></li><li><a href="https://arxiv.org/pdf/{{ p.arxiv }}">PDF</a></li>
+  {% if p.arxiv and p.arxiv != "" %}<li><a href="https://arxiv.org/abs/{{ p.arxiv }}">arXiv</a></li><li><a href="https://arxiv.org/pdf/{{ p.arxiv }}">PDF</a></li><li class="dg-ask"><a href="https://www.alphaxiv.org/abs/{{ p.arxiv }}" title="Ask questions about this paper on alphaXiv">Ask alphaXiv</a></li>
   {% else %}{% if p.doi and p.doi != "" %}<li><a href="https://doi.org/{{ p.doi }}">Paper</a></li>{% endif %}{% if p.pdf and p.pdf != "" %}<li><a href="{{ p.pdf }}">PDF</a></li>{% endif %}{% endif %}
   {% if p.website and p.website != "" %}<li><a href="{{ p.website }}">Project page</a></li>{% endif %}
   {% if p.code and p.code != "" %}<li><a href="{{ p.code }}">Code</a></li>{% endif %}

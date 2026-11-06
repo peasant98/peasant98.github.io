@@ -33,13 +33,44 @@
 }
 
 /* ---------- daily view ---------- */
-.dg-day {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: .1em .6em;
-  a { color: inherit; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  span { font-size: .62em; font-weight: 400; color: var(--sw-muted); }
+/* chips and switch; the theme's `display` rules would otherwise beat [hidden] */
+[data-topics][hidden], [data-group-head][hidden], [data-day-section][hidden], .dg-filter [hidden] { display: none !important; }
+.dg-filter {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .35em; margin: .2em 0 .6em;
+  button {
+    padding: .22em .7em; border-radius: 999px; cursor: pointer; font: inherit; font-size: .75em; font-weight: 600;
+    color: var(--sw-blue-700); background: var(--sw-surface); border: 1px solid var(--sw-blue-200);
+    span { margin-left: .2em; font-weight: 400; color: var(--sw-muted); }
+    &:hover { border-color: var(--sw-blue-400); }
+    &[aria-pressed="true"] { color: #fff; border-color: transparent; background: linear-gradient(135deg, var(--sw-blue-600), var(--sw-blue-400));
+      span { color: rgba(255, 255, 255, .8); } }
+  }
 }
-.sw-links.dg-days { margin-top: .6em; }
+.dg-groupby {
+  display: inline-flex; align-items: center; gap: .3em; margin-right: .3em; white-space: nowrap; cursor: pointer;
+  font-size: .78em; font-weight: 600; color: var(--sw-ink);
+  input { margin: 0; accent-color: var(--sw-blue-600); }
+}
+/* each day collapses; "Group by topic" reorders a day's list under topic headings with CSS order */
+.dg-day { border-bottom: 1px solid var(--sw-blue-200); }
+.dg-day > summary {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .1em .6em; padding: .65em 0; cursor: pointer; list-style: none;
+  font-size: 1.2em; font-weight: 700; color: var(--sw-ink);
+  &::-webkit-details-marker { display: none; }
+  &::before { content: "\25B8"; display: inline-block; color: var(--sw-blue-600); transition: transform .15s ease; }
+}
+.dg-day[open] > summary::before { transform: rotate(90deg); }
+.dg-day[open] { padding-bottom: .9em; }
+.dg-day__count { font-size: .62em; font-weight: 400; color: var(--sw-muted); }
+.dg-day-list { display: flex; flex-direction: column; }
+.dg-day-list > .dg-group__head { display: none; }
+.grouped .dg-day-list > .dg-group__head { display: block; }
+.grouped .dg-day-list > * { order: var(--og); }
+.dg .dg-group__head {
+  margin: .7em 0 0; font-size: .78em; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: var(--sw-blue-600);
+  span { font-weight: 400; color: var(--sw-muted); }
+}
+.sw-links .dg-ask a { color: #fff; border-color: transparent; background: linear-gradient(135deg, var(--sw-blue-600), var(--sw-blue-400)); }
 .dg-tags { margin-top: .35em; }
 .dg-tags a { font-size: .72em; padding: .18em .65em; }
 
@@ -127,6 +158,7 @@
 }
 
 @media (max-width: 760px) {
+  .dg-filter { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; button, label { flex: 0 0 auto; } }  /* one swipeable row */
   .dg-row__date { flex-basis: 2.8em; }
   .dg-tabs .dg-tab { padding: .32em .75em; }
 }

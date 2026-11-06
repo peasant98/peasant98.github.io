@@ -1,0 +1,60 @@
+{% comment %}Daily controls: "Group by topic" and topic chips that show only one topic's papers (this page's
+[data-topics] cards). Topics with no papers here hide themselves; both choices are remembered on this device.{% endcomment %}
+<div class="dg-filter" role="group" aria-label="Arrange and filter papers">
+  <label class="dg-groupby"><input type="checkbox" data-groupby checked> Group by topic</label>
+  <button type="button" data-topic="" aria-pressed="true">All <span></span></button>
+  {% for ft in site.data.digest_topics %}<button type="button" data-topic="{{ ft.slug }}" aria-pressed="false">{{ ft.name }} <span></span></button>{% endfor %}
+</div>
+<script>
+  /* Topic chips hide other topics' papers, then any topic heading or day left empty, and recount what is left.
+     "Group by topic" toggles the .grouped class that reorders each day's list under topic headings. */
+  (function (bar) {
+    function init() {
+      var scope = bar.parentNode, toggle = bar.querySelector('[data-groupby]');
+      var cards = scope.querySelectorAll('[data-topics]'), chips = bar.querySelectorAll('[data-topic]');
+      function has(card, t) { return !t || (' ' + card.dataset.topics + ' ').indexOf(' ' + t + ' ') >= 0; }
+      function count(el, n) {
+        var c = el.querySelector('[data-count]');
+        if (c) c.textContent = n + (c.dataset.unit ? ' ' + c.dataset.unit + (n === 1 ? '' : 's') : '');
+      }
+      function apply(t) {
+        cards.forEach(function (card) { card.hidden = !has(card, t); });
+        scope.querySelectorAll('[data-group-head]').forEach(function (head) {
+          var n = 0;
+          head.parentNode.querySelectorAll('[data-topics]:not([hidden])').forEach(function (card) {
+            if (card.dataset.topics.split(' ')[0] === head.dataset.groupHead) n++;
+          });
+          head.hidden = !n; count(head, n);
+        });
+        scope.querySelectorAll('[data-day-section]').forEach(function (day) {
+          var n = day.querySelectorAll('[data-topics]:not([hidden])').length;
+          day.hidden = !n; count(day, n);
+        });
+        chips.forEach(function (c) { c.setAttribute('aria-pressed', c.dataset.topic === t ? 'true' : 'false'); });
+        try { localStorage.setItem('digest-topic', t); } catch (e) {}
+      }
+      function group(on) {
+        scope.classList.toggle('grouped', on); toggle.checked = on;
+        try { localStorage.setItem('digest-group', on ? '1' : '0'); } catch (e) {}
+      }
+      chips.forEach(function (c) {
+        var n = 0;
+        cards.forEach(function (card) { if (has(card, c.dataset.topic)) n++; });
+        c.querySelector('span').textContent = n;
+        if (!n && c.dataset.topic) c.hidden = true;
+      });
+      bar.addEventListener('click', function (e) {
+        var c = e.target.closest('[data-topic]');
+        if (c) apply(c.dataset.topic);
+      });
+      toggle.addEventListener('change', function () { group(toggle.checked); });
+      var saved = '', grouped = '1';
+      try { saved = localStorage.getItem('digest-topic') || ''; grouped = localStorage.getItem('digest-group') || '1'; } catch (e) {}
+      var chip = saved && bar.querySelector('[data-topic="' + saved + '"]');
+      group(grouped !== '0');
+      apply(chip && !chip.hidden ? saved : '');
+    }
+    /* the cards come after this script, so wait until the page is parsed */
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  })(document.currentScript.previousElementSibling);
+</script>

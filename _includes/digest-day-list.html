@@ -1,0 +1,15 @@
+{% comment %}One day's papers, newest first. With "Group by topic" on (the .grouped class that digest-filter.html
+sets), CSS `order` (--og) moves them under their main topic, in the order of _data/digest_topics.yml, and the
+topic headings show. Expects include.papers, newest first.{% endcomment %}
+<div class="dg-day-list" data-day-list>
+  {% for gt in site.data.digest_topics %}
+    {% assign gp = include.papers | where_exp: "p", "p.topics.first == gt.slug" %}
+    {% if gp.size > 0 %}<h3 class="dg-group__head" data-group-head="{{ gt.slug }}" style="--og: {{ forloop.index | times: 1000 }}">{{ gt.name }} <span data-count>{{ gp.size }}</span></h3>{% endif %}
+  {% endfor %}
+  {% for p in include.papers %}
+    {% assign og = 0 %}
+    {% for gt in site.data.digest_topics %}{% if gt.slug == p.topics.first %}{% assign og = forloop.index | times: 1000 %}{% endif %}{% endfor %}
+    {% assign og = og | plus: forloop.index %}
+    {% include digest-entry.html paper=p order=og %}
+  {% endfor %}
+</div>
