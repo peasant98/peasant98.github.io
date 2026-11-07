@@ -4,4 +4,5 @@ year=true shows only the year. Must reads get a star.{% endcomment %}
 <a class="dg-row" href="{{ p.url | relative_url }}">
   <span class="dg-row__date">{% if include.year %}{{ p.date | date: "%Y" }}{% else %}{{ p.date | date: "%b %-d, %Y" }}{% endif %}</span>
   <span class="dg-row__title">{% if p.must_read %}<span class="dg-star" title="Must read">&#9733;</span> {% endif %}{{ p.title }}</span>
+  {% include digest-heart.html paper=p %}
 </a>

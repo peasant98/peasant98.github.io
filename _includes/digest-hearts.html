@@ -1,0 +1,78 @@
+{% comment %}Heart reacts (server: the ARMLab digest repo's scripts/digest/hearts). Fills every [data-heart] button with its count and the
+"Most loved this week" list ([data-loved]) if the page has one. One heart per paper per browser: a random device
+id and the papers you hearted stay in this browser's storage. Once per page; needs _config.yml digest_hearts.{% endcomment %}
+{% if site.digest_hearts %}
+<script>
+  (function (api) {
+    function load(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } }
+    function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+    function device() {
+      var id = load('digest-device', '');
+      if (!id) {
+        id = crypto.randomUUID ? crypto.randomUUID() : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, function (c) {
+          return (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+        });
+        save('digest-device', id);
+      }
+      return id;
+    }
+    var mine = load('digest-hearts', []), counts = {};
+    function buttons(id) {
+      return [].filter.call(document.querySelectorAll('[data-heart]'), function (b) { return !id || b.dataset.heart === id; });
+    }
+    function paint(b) {
+      var on = mine.indexOf(b.dataset.heart) >= 0, n = counts[b.dataset.heart] || 0;
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.querySelector('[data-heart-count]').textContent = n || '';
+      b.title = (on ? 'You hearted this' : 'Heart this paper') + (n ? ' (' + n + ')' : '');
+    }
+    function loved(week) {
+      var box = document.querySelector('[data-loved]');
+      if (!box || !week) return;
+      var list = box.querySelector('ol');
+      list.textContent = '';
+      week.forEach(function (row) {
+        var b = buttons(row[0])[0];
+        if (!b || list.children.length >= 5) return;
+        var li = document.createElement('li'), a = document.createElement('a'), n = document.createElement('span');
+        a.href = b.dataset.url; a.textContent = b.dataset.title;
+        n.className = 'dg-loved__count'; n.textContent = '♥ ' + row[1];
+        li.appendChild(a); li.appendChild(n); list.appendChild(li);
+      });
+      box.hidden = !list.children.length;
+    }
+    function set(id, on, n) {
+      mine = mine.filter(function (x) { return x !== id; });
+      if (on) mine.push(id);
+      save('digest-hearts', mine);
+      counts[id] = n;
+      buttons(id).forEach(paint);
+    }
+    function init() {
+      if (!buttons().length) return;
+      fetch(api + '/hearts' + (document.querySelector('[data-loved]') ? '?week' : ''))
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          counts = d.counts || {};
+          buttons().forEach(function (b) { paint(b); b.hidden = false; });
+          loved(d.week);
+        })
+        .catch(function () {});
+      /* the buttons sit inside the cards' links, so a click must not follow the link */
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-heart]');
+        if (!b) return;
+        e.preventDefault();
+        var id = b.dataset.heart, was = mine.indexOf(id) >= 0, before = counts[id] || 0;
+        set(id, !was, Math.max(0, before + (was ? -1 : 1)));
+        fetch(api + '/hearts', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paper: id, device: device(), on: !was }) })
+          .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw d; return d; }); })
+          .then(function (d) { set(id, d.on, d.count); })
+          .catch(function () { set(id, was, before); });
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  })({{ site.digest_hearts | jsonify }});
+</script>
+{% endif %}

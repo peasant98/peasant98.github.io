@@ -248,6 +248,8 @@ defaults:
 # Paper Digest media (videos, figures) live in this Hugging Face dataset; entries name files relative to it.
 digest_media: https://huggingface.co/datasets/copeking12/armlab-digest-media/resolve/main
 digest_keep_days: 14
+# Heart reacts: the hearts worker (ARMLab digest repo, scripts/digest/hearts). Empty hides the hearts.
+digest_hearts:
 
 # Sass/SCSS
 sass:

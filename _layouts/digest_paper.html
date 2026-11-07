@@ -13,6 +13,7 @@ layout: digest_base
   {% else %}{% if p.doi and p.doi != "" %}<li><a href="https://doi.org/{{ p.doi }}">Paper</a></li>{% endif %}{% if p.pdf and p.pdf != "" %}<li><a href="{{ p.pdf }}">PDF</a></li>{% endif %}{% endif %}
   {% if p.website and p.website != "" %}<li><a href="{{ p.website }}">Project page</a></li>{% endif %}
   {% if p.code and p.code != "" %}<li><a href="{{ p.code }}">Code</a></li>{% endif %}
+  {% if site.digest_hearts %}<li class="dg-heart-li">{% include digest-heart.html paper=p %}</li>{% endif %}
   {% for slug in p.topics %}{% assign topic = site.data.digest_topics | where: "slug", slug | first %}{% if topic %}<li class="dg-topic-link"><a href="{{ '/digest/topics/' | append: topic.slug | append: '/' | relative_url }}">{{ topic.name }}</a></li>{% endif %}{% endfor %}
 </ul>
 

@@ -13,6 +13,6 @@ Expects include.paper (a _digest document).{% endcomment %}
     <p class="sw-pub__authors">{% if names.size > 4 %}{{ names | slice: 0, 3 | join: ", " }} et al.{% else %}{{ p.authors }}{% endif %}</p>
     <p class="sw-pub__venue">{% if p.venue and p.venue != "" %}{{ p.venue }}, {% endif %}{{ p.date | date: "%B %Y" }}</p>
     {% if p.tldr and p.tldr != "" %}<p class="sw-pub__blurb">{{ p.tldr }}</p>{% endif %}
-    <ul class="sw-links dg-tags">{% if p.arxiv and p.arxiv != "" %}<li class="dg-ask"><a href="https://www.alphaxiv.org/abs/{{ p.arxiv }}" title="Ask questions about this paper on alphaXiv">Ask alphaXiv</a></li>{% endif %}{% for slug in p.topics %}{% assign topic = site.data.digest_topics | where: "slug", slug | first %}{% if topic %}<li><a href="{{ '/digest/topics/' | append: topic.slug | append: '/' | relative_url }}">{{ topic.name }}</a></li>{% endif %}{% endfor %}</ul>
+    <ul class="sw-links dg-tags">{% if p.arxiv and p.arxiv != "" %}<li class="dg-ask"><a href="https://www.alphaxiv.org/abs/{{ p.arxiv }}" title="Ask questions about this paper on alphaXiv">Ask alphaXiv</a></li>{% endif %}{% if site.digest_hearts %}<li class="dg-heart-li">{% include digest-heart.html paper=p %}</li>{% endif %}{% for slug in p.topics %}{% assign topic = site.data.digest_topics | where: "slug", slug | first %}{% if topic %}<li><a href="{{ '/digest/topics/' | append: topic.slug | append: '/' | relative_url }}">{{ topic.name }}</a></li>{% endif %}{% endfor %}</ul>
   </div>
 </div>

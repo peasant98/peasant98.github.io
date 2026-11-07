@@ -162,3 +162,27 @@
   .dg-row__date { flex-basis: 2.8em; }
   .dg-tabs .dg-tab { padding: .32em .75em; }
 }
+
+/* ---------- heart reacts (digest-heart.html, digest-hearts.html): hidden until the counts load ---------- */
+.dg-heart {
+  display: inline-flex; align-items: center; gap: .3em; padding: .28em .8em; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: .78em; font-weight: 600; line-height: inherit;
+  color: var(--sw-muted); background: var(--sw-surface); border: 1px solid var(--sw-blue-200);
+  &:hover, &:focus-visible { color: #e0245e; border-color: rgba(224, 36, 94, .45); }
+  &[aria-pressed="true"] { color: #e0245e; border-color: rgba(224, 36, 94, .45); background: rgba(224, 36, 94, .1); }
+  &[hidden] { display: none !important; }
+}
+.dg-heart__icon { line-height: 1; }
+.dg-heart-li:has(> .dg-heart[hidden]) { display: none; }
+.dg-row .dg-heart { flex: 0 0 auto; align-self: center; padding: .1em .6em; }
+.dg-loved {
+  margin: .2em 0 1em; padding: .6em .9em .7em; border-radius: 12px;
+  background: linear-gradient(135deg, var(--sw-blue-50), var(--sw-surface)); border: 1px solid var(--sw-blue-200);
+  &[hidden] { display: none !important; }
+  h2 { margin: 0 0 .35em; font-size: .95em; color: var(--sw-blue-700); }
+  ol { margin: 0; padding-left: 1.4em; }
+  li { margin: .2em 0; font-size: .9em; line-height: 1.4; }
+  a { font-weight: 600; color: var(--sw-ink); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+}
+.dg-loved__count { margin-left: .45em; color: #e0245e; font-size: .85em; white-space: nowrap; }

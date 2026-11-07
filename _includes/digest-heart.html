@@ -1,0 +1,3 @@
+{% comment %}A heart button for include.paper; digest-hearts.html fills in its count and shows it. The paper's id
+is its URL's last part (the _digest file name). Nothing renders unless _config.yml sets digest_hearts.{% endcomment %}
+{% if site.digest_hearts %}{% assign hid = include.paper.url | remove: "/digest/" | remove: "/" %}<button type="button" class="dg-heart" data-heart="{{ hid }}" data-title="{{ include.paper.title | escape }}" data-url="{{ include.paper.url | relative_url }}" aria-pressed="false" aria-label="Heart this paper" hidden><span class="dg-heart__icon" aria-hidden="true">&#9829;</span><span data-heart-count></span></button>{% endif %}
