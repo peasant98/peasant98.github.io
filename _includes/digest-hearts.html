@@ -1,7 +1,7 @@
 {% comment %}Heart reacts (server: the ARMLab digest repo's scripts/digest/hearts). Fills every [data-heart] button with its count and the
 "Most loved this week" list ([data-loved]) if the page has one. One heart per paper per computer: the server keys
 hearts on the public IP plus the fingerprint below (browser family, OS, screen, GPU, cores, memory, time zone,
-languages; no versions, no canvas), so incognito windows count once. Once per page; needs _config.yml digest_hearts.{% endcomment %}
+primary language; no versions, no canvas, nothing incognito changes), so incognito windows count once. Once per page; needs _config.yml digest_hearts.{% endcomment %}
 {% if site.digest_hearts %}
 <script>
   (function (api) {
@@ -19,7 +19,7 @@ languages; no versions, no canvas), so incognito windows count once. Once per pa
       try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
       var facts = [navigator.userAgent.replace(/[0-9._]+/g, ''), screen.width + 'x' + screen.height + 'x' + screen.colorDepth,
         gpu, navigator.hardwareConcurrency || '', navigator.deviceMemory || '', tz,
-        (navigator.languages || [navigator.language]).join(',')].join('|');
+        navigator.language || ''].join('|');
       return crypto.subtle.digest('SHA-256', new TextEncoder().encode(facts)).then(function (h) {
         return [].map.call(new Uint8Array(h), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('').slice(0, 32);
       });
@@ -34,26 +34,40 @@ languages; no versions, no canvas), so incognito windows count once. Once per pa
       b.querySelector('[data-heart-count]').textContent = n || '';
       b.title = (on ? 'You hearted this' : 'Heart this paper') + (n ? ' (' + n + ')' : '');
     }
-    function loved(week) {
-      var box = document.querySelector('[data-loved]');
-      if (!box || !week) return;
+    function fill(box, rows, max) {  /* rows: [[paper, hearts], ...], best first */
       var list = box.querySelector('ol');
       list.textContent = '';
-      week.forEach(function (row) {
+      rows.forEach(function (row) {
         var b = buttons(row[0])[0];
-        if (!b || list.children.length >= 5) return;
+        if (!b || list.children.length >= max) return;
         var li = document.createElement('li'), a = document.createElement('a'), n = document.createElement('span');
         a.href = b.dataset.url; a.textContent = b.dataset.title;
-        n.className = 'dg-loved__count'; n.textContent = '♥ ' + row[1];
+        n.className = 'dg-loved__count'; n.textContent = '\u2665 ' + row[1];
         li.appendChild(a); li.appendChild(n); list.appendChild(li);
       });
       box.hidden = !list.children.length;
+    }
+    function loved(week) {
+      var box = document.querySelector('[data-loved]');
+      if (box && week) fill(box, week, 5);
+    }
+    function favs() {  /* the most hearted papers in the box's own section (the Seminal tab), all time */
+      var box = document.querySelector('[data-favs]');
+      if (!box) return;
+      var seen = {}, rows = [];
+      box.parentNode.querySelectorAll('[data-heart]').forEach(function (b) {
+        var id = b.dataset.heart;
+        if (!seen[id] && counts[id]) { seen[id] = 1; rows.push([id, counts[id]]); }
+      });
+      rows.sort(function (x, y) { return y[1] - x[1]; });
+      fill(box, rows, 10);
     }
     function set(id, on, n) {
       mine = mine.filter(function (x) { return x !== id; });
       if (on) mine.push(id);
       counts[id] = n;
       buttons(id).forEach(paint);
+      favs();
     }
     function init() {
       if (!buttons().length) return;
@@ -67,6 +81,7 @@ languages; no versions, no canvas), so incognito windows count once. Once per pa
           counts = d.counts || {}; mine = d.mine || [];
           buttons().forEach(function (b) { paint(b); b.hidden = false; });
           loved(d.week);
+          favs();
         })
         .catch(function () {});
       /* the buttons sit inside the cards' links, so a click must not follow the link */
