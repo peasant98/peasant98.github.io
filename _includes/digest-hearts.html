@@ -1,22 +1,29 @@
 {% comment %}Heart reacts (server: the ARMLab digest repo's scripts/digest/hearts). Fills every [data-heart] button with its count and the
-"Most loved this week" list ([data-loved]) if the page has one. One heart per paper per browser: a random device
-id and the papers you hearted stay in this browser's storage. Once per page; needs _config.yml digest_hearts.{% endcomment %}
+"Most loved this week" list ([data-loved]) if the page has one. One heart per paper per computer: the server keys
+hearts on the public IP plus the fingerprint below (browser family, OS, screen, GPU, cores, memory, time zone,
+languages; no versions, no canvas), so incognito windows count once. Once per page; needs _config.yml digest_hearts.{% endcomment %}
 {% if site.digest_hearts %}
 <script>
   (function (api) {
-    function load(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } }
-    function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
-    function device() {
-      var id = load('digest-device', '');
-      if (!id) {
-        id = crypto.randomUUID ? crypto.randomUUID() : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, function (c) {
-          return (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
-        });
-        save('digest-device', id);
-      }
-      return id;
+    var mine = [], counts = {}, fp = '';
+    function fingerprint() {
+      var gpu = '', tz = '';
+      try {
+        var gl = document.createElement('canvas').getContext('webgl');
+        if (gl) {
+          var info = gl.getExtension('WEBGL_debug_renderer_info'), lose = gl.getExtension('WEBGL_lose_context');
+          gpu = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+          if (lose) lose.loseContext();
+        }
+      } catch (e) {}
+      try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
+      var facts = [navigator.userAgent.replace(/[0-9._]+/g, ''), screen.width + 'x' + screen.height + 'x' + screen.colorDepth,
+        gpu, navigator.hardwareConcurrency || '', navigator.deviceMemory || '', tz,
+        (navigator.languages || [navigator.language]).join(',')].join('|');
+      return crypto.subtle.digest('SHA-256', new TextEncoder().encode(facts)).then(function (h) {
+        return [].map.call(new Uint8Array(h), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('').slice(0, 32);
+      });
     }
-    var mine = load('digest-hearts', []), counts = {};
     function buttons(id) {
       return [].filter.call(document.querySelectorAll('[data-heart]'), function (b) { return !id || b.dataset.heart === id; });
     }
@@ -44,16 +51,19 @@ id and the papers you hearted stay in this browser's storage. Once per page; nee
     function set(id, on, n) {
       mine = mine.filter(function (x) { return x !== id; });
       if (on) mine.push(id);
-      save('digest-hearts', mine);
       counts[id] = n;
       buttons(id).forEach(paint);
     }
     function init() {
       if (!buttons().length) return;
-      fetch(api + '/hearts' + (document.querySelector('[data-loved]') ? '?week' : ''))
+      fingerprint()
+        .then(function (f) {
+          fp = f;
+          return fetch(api + '/hearts?fp=' + fp + (document.querySelector('[data-loved]') ? '&week' : ''));
+        })
         .then(function (r) { return r.json(); })
         .then(function (d) {
-          counts = d.counts || {};
+          counts = d.counts || {}; mine = d.mine || [];
           buttons().forEach(function (b) { paint(b); b.hidden = false; });
           loved(d.week);
         })
@@ -63,10 +73,11 @@ id and the papers you hearted stay in this browser's storage. Once per page; nee
         var b = e.target.closest('[data-heart]');
         if (!b) return;
         e.preventDefault();
+        if (!fp) return;
         var id = b.dataset.heart, was = mine.indexOf(id) >= 0, before = counts[id] || 0;
         set(id, !was, Math.max(0, before + (was ? -1 : 1)));
         fetch(api + '/hearts', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ paper: id, device: device(), on: !was }) })
+          body: JSON.stringify({ paper: id, fp: fp, on: !was }) })
           .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw d; return d; }); })
           .then(function (d) { set(id, d.on, d.count); })
           .catch(function () { set(id, was, before); });
