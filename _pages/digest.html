@@ -19,7 +19,7 @@ subtitle: Robotics papers worth reading, each with its videos, key figures and a
 <div class="dg-panel" id="panel-daily" role="tabpanel">
   {% comment %}Every day in the keep window as a collapsible section, newest first: the newest open (and the
   next ones too until at least 10 papers show), the rest closed, so closed days load no media.{% endcomment %}
-  {% if site.digest_hearts %}<section class="dg-loved" data-loved hidden><h2>&#9829; Most loved this week</h2><ol></ol></section>{% endif %}
+  {% if site.digest_hearts %}<section class="dg-loved" data-favs="5" hidden><h2>&#9829; Readers' favorites</h2><p class="dg-loved__note">The new papers readers have hearted most.</p><ol></ol></section>{% endif %}
   {% include digest-filter.html %}
   {% assign opened = 0 %}
   {% for d in day_pages %}

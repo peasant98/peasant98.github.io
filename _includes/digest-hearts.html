@@ -1,5 +1,5 @@
-{% comment %}Heart reacts (server: the ARMLab digest repo's scripts/digest/hearts). Fills every [data-heart] button with its count and the
-"Most loved this week" list ([data-loved]) if the page has one. One heart per paper per computer: the server keys
+{% comment %}Heart reacts (server: the ARMLab digest repo's scripts/digest/hearts). Fills every [data-heart] button with its count and each
+favorites list ([data-favs]: the most hearted papers of its tab) the page has. One heart per paper per computer: the server keys
 hearts on the public IP plus the fingerprint below (browser family, OS, screen, GPU, cores, memory, time zone,
 primary language; no versions, no canvas, nothing incognito changes), so incognito windows count once. Once per page; needs _config.yml digest_hearts.{% endcomment %}
 {% if site.digest_hearts %}
@@ -47,20 +47,16 @@ primary language; no versions, no canvas, nothing incognito changes), so incogni
       });
       box.hidden = !list.children.length;
     }
-    function loved(week) {
-      var box = document.querySelector('[data-loved]');
-      if (box && week) fill(box, week, 5);
-    }
-    function favs() {  /* the most hearted papers in the box's own section (the Seminal tab), all time */
-      var box = document.querySelector('[data-favs]');
-      if (!box) return;
-      var seen = {}, rows = [];
-      box.parentNode.querySelectorAll('[data-heart]').forEach(function (b) {
-        var id = b.dataset.heart;
-        if (!seen[id] && counts[id]) { seen[id] = 1; rows.push([id, counts[id]]); }
+    function favs() {  /* each [data-favs] box: the most hearted papers in its own tab, all time; data-favs = how many */
+      document.querySelectorAll('[data-favs]').forEach(function (box) {
+        var seen = {}, rows = [];
+        box.parentNode.querySelectorAll('[data-heart]').forEach(function (b) {
+          var id = b.dataset.heart;
+          if (!seen[id] && counts[id]) { seen[id] = 1; rows.push([id, counts[id]]); }
+        });
+        rows.sort(function (x, y) { return y[1] - x[1]; });
+        fill(box, rows, +box.dataset.favs || 10);
       });
-      rows.sort(function (x, y) { return y[1] - x[1]; });
-      fill(box, rows, 10);
     }
     function set(id, on, n) {
       mine = mine.filter(function (x) { return x !== id; });
@@ -74,13 +70,12 @@ primary language; no versions, no canvas, nothing incognito changes), so incogni
       fingerprint()
         .then(function (f) {
           fp = f;
-          return fetch(api + '/hearts?fp=' + fp + (document.querySelector('[data-loved]') ? '&week' : ''));
+          return fetch(api + '/hearts?fp=' + fp);
         })
         .then(function (r) { return r.json(); })
         .then(function (d) {
           counts = d.counts || {}; mine = d.mine || [];
           buttons().forEach(function (b) { paint(b); b.hidden = false; });
-          loved(d.week);
           favs();
         })
         .catch(function () {});
