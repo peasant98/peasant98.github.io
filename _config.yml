@@ -249,7 +249,7 @@ defaults:
 digest_media: https://huggingface.co/datasets/copeking12/armlab-digest-media/resolve/main
 digest_keep_days: 14
 # Heart reacts: the hearts worker (ARMLab digest repo, scripts/digest/hearts). Empty hides the hearts.
-digest_hearts:
+digest_hearts: https://digest-hearts.digest-hearts.workers.dev
 
 # Sass/SCSS
 sass:
