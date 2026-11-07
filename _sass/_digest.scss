@@ -163,18 +163,30 @@
   .dg-tabs .dg-tab { padding: .32em .75em; }
 }
 
-/* ---------- heart reacts (digest-heart.html, digest-hearts.html): hidden until the counts load ---------- */
+/* ---------- heart reacts (digest-heart.html, digest-hearts.html): hidden until the counts load ----------
+   An outlined heart and "Heart" until you heart it, then a filled pink pill reading "Hearted".
+   Rows (dg-heart--compact) show only the heart and count. */
 .dg-heart {
-  display: inline-flex; align-items: center; gap: .3em; padding: .28em .8em; border-radius: 999px; cursor: pointer;
-  font: inherit; font-size: .78em; font-weight: 600; line-height: inherit;
-  color: var(--sw-muted); background: var(--sw-surface); border: 1px solid var(--sw-blue-200);
-  &:hover, &:focus-visible { color: #e0245e; border-color: rgba(224, 36, 94, .45); }
-  &[aria-pressed="true"] { color: #e0245e; border-color: rgba(224, 36, 94, .45); background: rgba(224, 36, 94, .1); }
+  --dg-heart: #e0245e;
+  display: inline-flex; align-items: center; gap: .3em; padding: .2em .8em .2em .62em; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: .82em; font-weight: 700; line-height: 1.2;
+  color: var(--sw-ink); background: var(--sw-surface); border: 1.5px solid rgba(224, 36, 94, .35);
+  transition: color .15s ease, border-color .15s ease, background .15s ease, transform .1s ease;
+  &:hover, &:focus-visible { color: var(--dg-heart); border-color: var(--dg-heart); }
+  &:active { transform: scale(.94); }
+  &[aria-pressed="true"] { color: #fff; border-color: transparent; background: linear-gradient(135deg, #e0245e, #f0517f); }
   &[hidden] { display: none !important; }
 }
-.dg-heart__icon { line-height: 1; }
+.dg-heart__icon { flex: 0 0 auto; width: 1.15em; height: 1.15em; fill: none; stroke: var(--dg-heart); stroke-width: 2.2; stroke-linejoin: round; }
+.dg-heart[aria-pressed="true"] .dg-heart__icon { fill: currentColor; stroke: currentColor; }
+.dg-heart__count:not(:empty) { padding-left: .4em; border-left: 1px solid currentColor; font-weight: 800; }
+.dg-heart--compact { padding: .2em .6em; font-size: .82em; }
+.dg-heart--compact .dg-heart__label { display: none; }
+.dg-heart--compact .dg-heart__count:not(:empty) { padding-left: 0; border-left: 0; }
 .dg-heart-li:has(> .dg-heart[hidden]) { display: none; }
-.dg-row .dg-heart { flex: 0 0 auto; align-self: center; padding: .1em .6em; }
+.dg-heart-li { align-self: flex-end; }  /* line up with the neighbouring links, which sit on the text baseline */
+.dg-heart-li .dg-heart { display: flex; }
+.dg-row .dg-heart { flex: 0 0 auto; align-self: center; }
 .dg-loved {
   margin: .2em 0 1em; padding: .6em .9em .7em; border-radius: 12px;
   background: linear-gradient(135deg, var(--sw-blue-50), var(--sw-surface)); border: 1px solid var(--sw-blue-200);

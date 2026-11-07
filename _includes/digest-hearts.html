@@ -30,6 +30,7 @@ languages; no versions, no canvas), so incognito windows count once. Once per pa
     function paint(b) {
       var on = mine.indexOf(b.dataset.heart) >= 0, n = counts[b.dataset.heart] || 0;
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.querySelector('[data-heart-label]').textContent = on ? 'Hearted' : 'Heart';
       b.querySelector('[data-heart-count]').textContent = n || '';
       b.title = (on ? 'You hearted this' : 'Heart this paper') + (n ? ' (' + n + ')' : '');
     }
