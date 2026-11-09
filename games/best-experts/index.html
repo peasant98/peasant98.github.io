@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Best Experts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
+<style>
+/* Layout: a TV-studio panel show. The question sits on a bright card (readable from the sofa), four answer tiles below,
+   and the panel of players along the bottom, each wearing an expert badge. Every category has its own colour
+   (tennis-ball yellow, basketball orange, Monica's-door purple, '80s neon pink, trivia teal), applied as --cat.
+   Atkinson Hyperlegible is the body face because parents and grandparents read this across a room.
+   Single dark theme by choice. */
+:root {
+  --studio: #10132a;
+  --panel: #1a1e3c;
+  --line: #2e345c;
+  --text: #f2f3fb;
+  --muted: #a6abca;
+  --card: #f8f6ef;
+  --card-ink: #171a33;
+  --card-muted: #5d6185;
+  --good: #3ad98b;
+  --bad: #ff6262;
+  --c-tennis: #d4ec3a;
+  --c-nba: #f47c2c;
+  --c-friends: #a774e0;
+  --c-80s: #ff4fa8;
+  --c-general: #3cc8c0;
+  --cat: var(--c-general);
+  --cat-ink: #10132a;
+  --p1: #4fd1c5; --p2: #ff8a70; --p3: #c7a6ff; --p4: #f6d55c; --p5: #7cc4ff; --p6: #9be37a; --p7: #ff9fd0; --p8: #ffb35c;
+  --f-display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--studio); color: var(--text); font-family: var(--f-body); font-size: 16px; line-height: 1.5; }
+#app {
+  min-height: 100%; display: flex; flex-direction: column;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: clamp(12px, 2vh, 24px);
+}
+[hidden] { display: none !important; }
+.view { flex: 1; display: flex; flex-direction: column; width: 100%; max-width: 1500px; margin-inline: auto; min-height: 0; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--cat); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.eyebrow { font-weight: 700; text-transform: uppercase; letter-spacing: .14em; font-size: .8rem; color: var(--muted); }
+.btn { font-weight: 700; font-size: 1.05rem; padding: .5em 1.2em; border-radius: 12px; border: 1.5px solid var(--line); background: transparent; }
+.btn:hover:not(:disabled) { border-color: var(--muted); }
+.btn:disabled { opacity: .35; cursor: default; }
+.btn.primary { background: var(--cat); color: var(--cat-ink); border-color: var(--cat); }
+.btn.primary:hover:not(:disabled) { filter: brightness(1.08); }
+.btn.small { font-size: .9rem; padding: .35em .85em; }
+.btn.warn { border-color: var(--bad); color: var(--bad); }
+kbd { font-size: .85em; color: var(--text); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 .4em; font-family: var(--f-body); }
+.sw { width: 14px; height: 14px; border-radius: 50%; background: var(--c); flex: none; display: inline-block; }
+.cat-pill { display: inline-flex; align-items: center; gap: .4em; padding: .15em .75em; border-radius: 999px; background: var(--cat); color: var(--cat-ink); font-weight: 700; }
+
+/* ---------- lobby ---------- */
+.lobby { display: grid; align-content: start; gap: clamp(18px, 3vh, 32px); justify-items: center; text-align: center; padding-block: clamp(8px, 3vh, 36px); }
+.brand { font-family: var(--f-display); font-weight: 800; font-size: clamp(3rem, 10vw, 6.6rem); line-height: .95; margin: 0; letter-spacing: -.02em; }
+.brand span { color: var(--cat); }
+.tagline { font-size: clamp(1.1rem, 2.6vw, 1.45rem); max-width: 40ch; margin: 0; text-wrap: balance; }
+.cats { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.cats .cat-pill { font-size: .95rem; }
+.how { display: grid; gap: clamp(18px, 3vw, 40px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); width: min(100%, 1060px); text-align: left; }
+.how h2 { font-family: var(--f-display); font-weight: 700; font-size: 1.3rem; margin: 0 0 10px; }
+.how ol { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; }
+.keys { margin: 12px 0 0; color: var(--muted); font-size: .92rem; line-height: 2; }
+.roster { display: grid; gap: 8px; }
+.prow { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto auto; gap: 8px 10px; align-items: center; }
+.prow input, .prow select { min-width: 0; background: var(--panel); border: 1.5px solid var(--line); border-radius: 10px; padding: .45em .7em; font-size: 1.02rem; }
+.prow input:focus, .prow select:focus { border-color: var(--c); outline: none; }
+.lobby-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.lobby-actions .btn { font-size: 1.25rem; }
+.note { color: var(--muted); font-size: .9rem; margin: 0; }
+
+.hub-link { justify-self: start; color: var(--muted); font-weight: 600; text-decoration: none; }
+.hub-link:hover { color: var(--text); }
+/* ---------- play ---------- */
+.play { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto auto auto; gap: clamp(10px, 1.6vh, 16px); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 10px 20px; flex-wrap: wrap; }
+.where { display: flex; align-items: center; gap: .8em; flex-wrap: wrap; }
+.where .show { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.4rem, 2.8vw, 2.1rem); color: var(--cat); line-height: 1.1; }
+.progress { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.count { font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+.dots { display: flex; gap: 6px; flex-wrap: wrap; }
+.dot { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--muted); background: transparent; padding: 0; }
+.dot.seen { background: var(--line); border-color: var(--line); }
+.dot.won { background: var(--c); border-color: var(--c); }
+.dot.now { outline: 2px solid var(--cat); outline-offset: 2px; }
+.tools { display: flex; gap: 8px; }
+.seat {
+  display: flex; align-items: center; gap: .7em; flex-wrap: wrap; padding: .55em 1em; border-radius: 14px;
+  border: 1.5px solid var(--cat); background: var(--panel); font-size: clamp(1rem, 2.1vmin, 1.4rem);
+}
+.seat b { font-family: var(--f-display); font-weight: 800; color: var(--c, var(--cat)); }
+.seat .rec { color: var(--muted); margin-left: auto; font-variant-numeric: tabular-nums; }
+.qwrap { display: grid; gap: clamp(10px, 1.8vh, 18px); align-content: center; min-height: 0; }
+.qcard {
+  position: relative; background: var(--card); color: var(--card-ink); border-radius: 22px;
+  padding: clamp(18px, 3.4vh, 40px) clamp(20px, 3vw, 48px); border-top: 10px solid var(--cat);
+}
+.qcard .pts { position: absolute; top: 12px; right: 16px; font-family: var(--f-display); font-weight: 800; font-size: clamp(1rem, 2.2vmin, 1.5rem); color: var(--card-muted); font-variant-numeric: tabular-nums; }
+.qcard h2 { margin: 0; padding-right: 3.5em; font-family: var(--f-display); font-weight: 700; font-size: clamp(1.6rem, 4.6vmin, 3.5rem); line-height: 1.15; text-wrap: balance; }
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(8px, 1.4vh, 14px); }
+.opt {
+  display: flex; align-items: center; gap: .8em; text-align: left; padding: clamp(10px, 1.8vh, 18px) clamp(12px, 1.6vw, 20px);
+  border-radius: 16px; border: 2px solid var(--line); background: var(--panel); font-size: clamp(1.1rem, 2.8vmin, 2rem); font-weight: 700; line-height: 1.2;
+}
+.opt .ltr {
+  flex: none; display: grid; place-items: center; width: 1.8em; height: 1.8em; border-radius: 10px;
+  background: var(--cat); color: var(--cat-ink); font-family: var(--f-display); font-weight: 800; font-size: .85em;
+}
+.opt .txt { min-width: 0; overflow-wrap: anywhere; }
+.opt.pickable:hover { border-color: var(--cat); }
+.opt:not(.pickable) { cursor: default; }
+.opt.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 22%, var(--panel)); }
+.opt.right .ltr { background: var(--good); }
+.opt.wrong { border-color: var(--bad); }
+.opt.wrong .txt { text-decoration: line-through; text-decoration-thickness: 3px; color: var(--muted); }
+.opt.wrong .ltr { background: var(--bad); }
+.opt.dim { opacity: .45; }
+.opt.flash { animation: flash .5s; }
+@keyframes flash { 40% { transform: scale(1.03); } }
+.status { margin: 0; font-size: clamp(1.05rem, 2.4vmin, 1.6rem); font-weight: 700; min-height: 1.5em; text-wrap: balance; }
+.status .good { color: var(--good); }
+.status .bad { color: var(--bad); }
+.fact { margin: 0; color: var(--muted); font-size: clamp(.95rem, 2vmin, 1.3rem); min-height: 1.4em; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.controls .btn { font-size: clamp(1rem, 2vmin, 1.25rem); }
+.panelists { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px; }
+.pl {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; gap: 2px 10px; align-items: center;
+  padding: 10px 12px 10px 14px; background: var(--panel); border: 1.5px solid var(--line); border-radius: 16px;
+}
+.pl.hot { border-color: var(--c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 35%, transparent); }
+.pl .nm { display: flex; align-items: center; gap: .5em; font-weight: 700; font-size: clamp(1rem, 2vmin, 1.25rem); min-width: 0; line-height: 1.2; overflow-wrap: anywhere; }
+.pl .badge { grid-column: 1; font-size: .8rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+.pl .sc { grid-column: 2; grid-row: 1; justify-self: end; font-family: var(--f-display); font-weight: 800; font-size: clamp(1.5rem, 3.4vmin, 2.3rem); font-variant-numeric: tabular-nums; line-height: 1; }
+.give {
+  grid-column: 2; grid-row: 2; justify-self: end; font-weight: 700; font-size: .95rem; padding: .25em .7em; border-radius: 999px;
+  border: 2px solid var(--c); background: transparent; color: var(--c); white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.give[aria-pressed="true"] { background: var(--c); color: var(--studio); }
+.give:disabled { visibility: hidden; }
+.pl.bump .sc { animation: bump .7s; }
+@keyframes bump { 40% { transform: scale(1.35); color: var(--c); } }
+.legend { text-align: center; color: var(--muted); font-size: .88rem; margin: 0; }
+
+/* ---------- round intro ---------- */
+.intro { flex: 1; display: grid; place-content: center; justify-items: center; text-align: center; gap: clamp(14px, 2.6vh, 26px); padding-block: 4vh; }
+.intro h2 { font-family: var(--f-display); font-weight: 800; font-size: clamp(3.2rem, 12vw, 8.5rem); line-height: .95; margin: 0; color: var(--cat); letter-spacing: -.02em; }
+.intro .icon { font-size: clamp(3rem, 9vmin, 6rem); line-height: 1; }
+.intro .blurb { font-size: clamp(1.15rem, 2.6vmin, 1.7rem); max-width: 44ch; margin: 0; text-wrap: balance; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.chip { display: flex; gap: .6em; align-items: center; padding: .4em 1.1em; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); font-weight: 700; }
+.chip b { font-family: var(--f-display); font-size: 1.15em; font-variant-numeric: tabular-nums; }
+.intro .row, .final .row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.intro .row .btn { font-size: 1.25rem; }
+
+/* ---------- final ---------- */
+.final { display: grid; align-content: start; gap: clamp(18px, 3vh, 30px); justify-items: center; text-align: center; padding-block: 3vh; }
+.awards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px; width: min(100%, 980px); }
+.award { background: var(--card); color: var(--card-ink); border-radius: 22px; padding: 22px 26px; border-top: 10px solid var(--c, var(--cat)); display: grid; gap: 4px; }
+.award .eyebrow { color: var(--card-muted); }
+.award h2 { font-family: var(--f-display); font-weight: 800; font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1; margin: 0; text-wrap: balance; overflow-wrap: anywhere; }
+.award p { margin: 0; color: var(--card-muted); font-size: 1.1rem; }
+.board { width: min(100%, 720px); border-collapse: collapse; font-size: 1.1rem; }
+.board-wrap { width: 100%; overflow-x: auto; display: flex; justify-content: center; }
+.board th { text-align: left; font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); padding: 6px 12px; }
+.board td { padding: 8px 12px; border-top: 1px solid var(--line); text-align: left; font-variant-numeric: tabular-nums; }
+.board td.num, .board th.num { text-align: right; }
+.board .who { display: flex; align-items: center; gap: .6em; font-weight: 700; }
+
+@media (max-width: 700px) {
+  .opts { grid-template-columns: 1fr; }
+  .legend { display: none; }
+  .prow { grid-template-columns: 14px minmax(0, 1fr) auto; }
+  .prow select { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <section id="lobby" class="view lobby" hidden>
+    <a class="hub-link" href="../" hidden>← All games</a>
+    <h1 class="brand">Best <span>Experts</span></h1>
+    <p class="tagline">Everyone at the table is an expert at something. Tonight they prove it, and everyone else gets to steal.</p>
+    <div class="cats" id="lobbyCats"></div>
+    <div class="how">
+      <div>
+        <h2>How to play</h2>
+        <ol>
+          <li>In an expert round, only the expert answers. Tap the answer they give and the game checks it.</li>
+          <li>If the expert misses or passes, anyone else can shout the answer and steal it for half the points.</li>
+          <li>Trivia rounds are open to everyone. Reveal the answer, then tap whoever got it first.</li>
+          <li>Questions get harder: 100, 200, then 300 points. The final round counts double.</li>
+          <li>At the end: a Champion for the most points, and a Best Expert for whoever did best in their own category.</li>
+        </ol>
+        <p class="keys"><kbd>A</kbd>–<kbd>D</kbd> the expert's answer · <kbd>P</kbd> expert passes · <kbd>Space</kbd> reveal, then next · <kbd>1</kbd>–<kbd>8</kbd> give points · <kbd>U</kbd> undo · <kbd>F</kbd> full screen</p>
+      </div>
+      <div>
+        <h2>Tonight's panel</h2>
+        <div class="roster" id="roster"></div>
+        <p style="margin:10px 0 0"><button class="btn small" data-act="add" id="addPlayer">Add a player</button></p>
+      </div>
+    </div>
+    <div class="lobby-actions" id="lobbyActions"></div>
+    <p class="note">The score saves in this browser, so a refresh won't lose your place.</p>
+  </section>
+
+  <section id="intro" class="view" hidden>
+    <div class="intro">
+      <p class="eyebrow" id="iNum"></p>
+      <div class="icon" id="iIcon" aria-hidden="true"></div>
+      <h2 id="iName"></h2>
+      <p class="blurb" id="iBlurb"></p>
+      <div class="chips" id="iChips"></div>
+      <div class="row">
+        <button class="btn" data-act="prev" id="iBack">← Back</button>
+        <button class="btn primary" data-act="next" id="iGo">Start the round →</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="play" class="view play" hidden>
+    <header class="bar">
+      <div class="where" id="pWhere"></div>
+      <div class="progress"><div class="dots" id="pDots"></div><span class="count" id="pCount"></span></div>
+      <div class="tools">
+        <button class="btn small" data-act="fs" id="fsBtn">Full screen</button>
+        <button class="btn small" data-act="lobby">Lobby</button>
+      </div>
+    </header>
+    <div class="seat" id="pSeat"></div>
+    <div class="qwrap">
+      <div class="qcard"><span class="pts" id="pPts"></span><h2 id="pQ"></h2></div>
+      <div class="opts" id="pOpts"></div>
+      <p class="status" id="pStatus" aria-live="polite"></p>
+      <p class="fact" id="pFact"></p>
+    </div>
+    <div class="controls">
+      <button class="btn" data-act="prev">← Back</button>
+      <button class="btn" data-act="pass" id="bPass"></button>
+      <button class="btn" data-act="undo" id="bUndo">Undo</button>
+      <button class="btn" data-act="reveal" id="bReveal">Reveal answer</button>
+      <button class="btn" data-act="next" id="bNext"></button>
+    </div>
+    <div class="panelists" id="pPlayers"></div>
+    <p class="legend"><kbd>A</kbd>–<kbd>D</kbd> expert's answer · <kbd>P</kbd> pass · <kbd>Space</kbd> reveal, then next · <kbd>1</kbd>–<kbd>8</kbd> give points (tap again to take back) · <kbd>U</kbd> undo · <kbd>←</kbd> <kbd>→</kbd> move</p>
+  </section>
+
+  <section id="final" class="view final" hidden>
+    <p class="eyebrow">That's the show</p>
+    <div class="awards" id="fAwards"></div>
+    <div class="board-wrap"><table class="board" id="fBoard"></table></div>
+    <div class="row">
+      <button class="btn" data-act="prev">← Last question</button>
+      <button class="btn primary" data-act="again">Play again, same panel</button>
+      <button class="btn" data-act="lobby">Lobby</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const CATS = {
+  general: { name: "General Trivia", icon: "🧠", color: "var(--c-general)" },
+  tennis: { name: "Tennis", icon: "🎾", color: "var(--c-tennis)" },
+  nba: { name: "NBA", icon: "🏀", color: "var(--c-nba)" },
+  friends: { name: "Friends", icon: "☕", color: "var(--c-friends)" },
+  eighties: { name: "The ’80s", icon: "📼", color: "var(--c-80s)" },
+};
+// Each question: [question, [A, B, C, D], index of the right answer, fact shown after the reveal]
+const ROUNDS = [
+  { cat: "general", title: "Warm-up", qs: [
+    ["What is the largest planet in our solar system?", ["Saturn", "Jupiter", "Neptune", "Earth"], 1, "More than 1,300 Earths would fit inside it."],
+    ["Which festival is known as the festival of lights?", ["Holi", "Navratri", "Diwali", "Pongal"], 2, "Holi is the festival of colors."],
+    ["Which country gave the Statue of Liberty to the United States?", ["Spain", "Italy", "England", "France"], 3, "A gift from the people of France, dedicated in 1886."],
+    ["Which chess piece can only move diagonally?", ["Bishop", "Rook", "Knight", "Queen"], 0, "Chess grew out of chaturanga, a game from India."],
+    ["How many bones are in the adult human body?", ["186", "206", "226", "256"], 1, "Babies are born with around 300. Some fuse as they grow."],
+  ]},
+  { cat: "tennis", qs: [
+    ["Who beat Bobby Riggs in the 1973 “Battle of the Sexes” match?", ["Chris Evert", "Margaret Court", "Billie Jean King", "Martina Navratilova"], 2, "Riggs had beaten Margaret Court earlier that year."],
+    ["The US Open's main stadium is named after whom?", ["Arthur Ashe", "Rod Laver", "Pete Sampras", "Jimmy Connors"], 0, "Rod Laver Arena hosts the Australian Open."],
+    ["Who won Wimbledon in 1985 at just 17 years old?", ["Stefan Edberg", "Pat Cash", "Michael Chang", "Boris Becker"], 3, "He was unseeded, too."],
+    ["In 1988, who won all four majors and Olympic gold, the “Golden Slam”?", ["Steffi Graf", "Monica Seles", "Chris Evert", "Gabriela Sabatini"], 0, "Still the only player to do it in one calendar year."],
+    ["How many French Open titles did Rafael Nadal win?", ["11", "12", "13", "14"], 3, "His record at Roland Garros: 112 wins, 4 losses."],
+    ["Which Indian player won a singles bronze medal at the 1996 Atlanta Olympics?", ["Mahesh Bhupathi", "Leander Paes", "Vijay Amritraj", "Ramesh Krishnan"], 1, "India's first individual Olympic medal in 44 years."],
+  ]},
+  { cat: "nba", qs: [
+    ["Michael Jordan won all six of his championships with which team?", ["Chicago Bulls", "Washington Wizards", "Los Angeles Lakers", "Boston Celtics"], 0, "Two three-peats: 1991–93 and 1996–98."],
+    ["Which team plays its home games at Madison Square Garden?", ["Brooklyn Nets", "Boston Celtics", "New York Knicks", "Philadelphia 76ers"], 2, "The Nets play at Barclays Center in Brooklyn."],
+    ["How many points did Wilt Chamberlain score in one game in 1962?", ["81", "92", "73", "100"], 3, "Still the NBA record. Kobe Bryant scored 81 in 2006."],
+    ["Who was the first overall pick in the 2003 NBA Draft?", ["Carmelo Anthony", "LeBron James", "Darko Miličić", "Dwyane Wade"], 1, "Darko Miličić went second, ahead of Carmelo Anthony, Chris Bosh and Dwyane Wade."],
+    ["Before moving to Oklahoma City in 2008, the Thunder were which team?", ["Vancouver Grizzlies", "New Orleans Hornets", "Seattle SuperSonics", "Kansas City Kings"], 2, "The Sonics won the 1979 championship."],
+    ["Who holds the NBA record for career assists?", ["Magic Johnson", "Jason Kidd", "Chris Paul", "John Stockton"], 3, "15,806 assists over 19 seasons, all with the Utah Jazz."],
+  ]},
+  { cat: "general", title: "General Trivia", qs: [
+    ["Who was the first person to walk on the Moon?", ["Buzz Aldrin", "Yuri Gagarin", "Neil Armstrong", "John Glenn"], 2, "July 20, 1969. Buzz Aldrin followed him down the ladder."],
+    ["What is the national fruit of India?", ["Mango", "Banana", "Jackfruit", "Guava"], 0, "India grows more mangoes than any other country."],
+    ["What is the capital of Australia?", ["Sydney", "Melbourne", "Perth", "Canberra"], 3, "It was built as a compromise between Sydney and Melbourne."],
+    ["Which is the largest US state by area?", ["Alaska", "Texas", "California", "Montana"], 0, "More than twice the size of Texas."],
+    ["How many hearts does an octopus have?", ["One", "Two", "Three", "Eight"], 2, "And its blood is blue."],
+  ]},
+  { cat: "friends", qs: [
+    ["What's the name of the coffee shop where the friends hang out?", ["Central Perk", "Monk's Café", "Luke's Diner", "The Max"], 0, "Monk's is Seinfeld's diner. Luke's is from Gilmore Girls."],
+    ["What is Ross's job?", ["Paleontologist", "Archaeologist", "Geologist", "Anthropologist"], 0, "He works at a museum, then teaches at NYU."],
+    ["What is Phoebe's most famous song?", ["Stinky Dog", "Smelly Cat", "Grumpy Cat", "Soggy Socks"], 1, "“Smelly cat, smelly cat, what are they feeding you?”"],
+    ["What's the name of Joey's stuffed penguin?", ["Waddles", "Flippy", "Mr. Penguin", "Hugsy"], 3, ""],
+    ["What is Chandler's middle name?", ["Matthew", "Marion", "Muriel", "Milton"], 2, "Chandler Muriel Bing."],
+    ["What do Monica and Chandler name their twins?", ["Jack and Judy", "Emma and Ben", "Jack and Erica", "Erica and Frank"], 2, "Jack after Monica's dad, Erica after the twins' birth mother."],
+  ]},
+  { cat: "eighties", qs: [
+    ["Which 1982 Michael Jackson album is the best-selling album of all time?", ["Bad", "Off the Wall", "Dangerous", "Thriller"], 3, "Seven of its nine songs were Top 10 hits."],
+    ["Which Hungarian invention became the toy craze of the early ’80s?", ["Rubik's Cube", "Game Boy", "Lego", "Etch A Sketch"], 0, "Ernő Rubik invented it in 1974."],
+    ["Who captained India to its first Cricket World Cup win in 1983?", ["Sunil Gavaskar", "Mohinder Amarnath", "Kapil Dev", "Ravi Shastri"], 2, "India beat the West Indies in the final at Lord's."],
+    ["Which 1984 movie has the line “I'll be back”?", ["RoboCop", "The Terminator", "Predator", "Die Hard"], 1, "Arnold Schwarzenegger plays the Terminator."],
+    ["MTV launched in 1981 by playing which music video first?", ["Thriller", "Take On Me", "Video Killed the Radio Star", "Girls Just Want to Have Fun"], 2, "By the Buggles. Fitting."],
+    ["Who won the Best Actor Oscar for playing Mahatma Gandhi in 1982's Gandhi?", ["Om Puri", "Ben Kingsley", "Roshan Seth", "Naseeruddin Shah"], 1, "Gandhi won eight Oscars, including Best Picture."],
+  ]},
+  { cat: "general", title: "Final Round", mult: 2, qs: [
+    ["Who painted the Mona Lisa?", ["Leonardo da Vinci", "Michelangelo", "Raphael", "Vincent van Gogh"], 0, "It hangs in the Louvre in Paris."],
+    ["What is the tallest mountain above sea level?", ["K2", "Kangchenjunga", "Mount Everest", "Kilimanjaro"], 2, "8,849 m, on the border of Nepal and China."],
+    ["Which element has the chemical symbol Au?", ["Silver", "Aluminum", "Argon", "Gold"], 3, "From aurum, Latin for gold."],
+    ["Which language has the most native speakers?", ["English", "Spanish", "Hindi", "Mandarin Chinese"], 3, "English has the most speakers once second-language speakers count."],
+    ["What is the smallest country in the world?", ["Monaco", "Vatican City", "San Marino", "Maldives"], 1, "It sits entirely inside the city of Rome."],
+  ]},
+].map(R => ({ ...R, title: R.title || CATS[R.cat].name, mult: R.mult || 1,
+  qs: R.qs.map(([q, opts, ans, fact]) => ({ q, opts, ans, fact })) }));
+const LADDER = [100, 100, 200, 200, 300, 300];
+const PCOLORS = ["var(--p1)", "var(--p2)", "var(--p3)", "var(--p4)", "var(--p5)", "var(--p6)", "var(--p7)", "var(--p8)"];
+const LETTERS = "ABCD";
+const KEY = "best-experts-v1";
+const PASS = -1;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let S, lastId = null, bumpK = -1, armedReset = null, flashOpt = -1;
+
+const DEFAULT_PANEL = [
+  { name: "Dad", spec: "tennis" }, { name: "Matt", spec: "nba" }, { name: "Anisha", spec: "friends" },
+  { name: "Anisha's sister", spec: "friends" }, { name: "Mom", spec: "eighties" },
+];
+const fresh = (players = DEFAULT_PANEL.map(p => ({ ...p }))) => ({ lobby: true, started: false, view: "intro", r: 0, i: 0, players, qs: {} });
+const qid = (r, i) => r + "-" + i;
+const Q = (r = S.r, i = S.i) => (S.qs[qid(r, i)] ||= { pick: null, revealed: false, award: null });
+const name = k => (S.players[k]?.name || "").trim() || `Player ${k + 1}`;
+const experts = cat => S.players.map((_, k) => k).filter(k => S.players[k].spec === cat);
+const expertOf = (r, i) => { const R = ROUNDS[r]; if (R.cat === "general") return -1; const ex = experts(R.cat); return ex.length ? ex[i % ex.length] : -1; };
+const points = (r, i) => LADDER[i] * ROUNDS[r].mult;
+const scores = () => {
+  const s = S.players.map(() => 0);
+  for (const q of Object.values(S.qs)) if (q.award && q.award.p < s.length) s[q.award.p] += q.award.pts;
+  return s;
+};
+// Expert record: answers given (or passes) in the player's own category, and how many were right.
+function records() {
+  const rec = S.players.map(() => ({ right: 0, asked: 0 }));
+  ROUNDS.forEach((R, r) => R.qs.forEach((qq, i) => {
+    const k = expertOf(r, i), q = S.qs[qid(r, i)];
+    if (k < 0 || !q || q.pick === null) return;
+    rec[k].asked++; if (q.pick === qq.ans) rec[k].right++;
+  }));
+  return rec;
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function loadSaved() {
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.players) && s.qs) return s; } catch (e) {}
+  return null;
+}
+function commit() { save(); render(); }
+
+/* ---------- actions ---------- */
+function startGame() { S = { ...fresh(S.players), lobby: false, started: true }; keepAwake(); commit(); }
+function next() {
+  if (S.view === "intro") { S.view = "play"; S.i = 0; return commit(); }
+  if (S.view !== "play") return;
+  if (S.i < ROUNDS[S.r].qs.length - 1) S.i++;
+  else if (S.r < ROUNDS.length - 1) { S.r++; S.i = 0; S.view = "intro"; }
+  else S.view = "final";
+  commit();
+}
+function prev() {
+  if (S.view === "play") { if (S.i > 0) S.i--; else S.view = "intro"; }
+  else if (S.view === "intro") { if (S.r === 0) return; S.r--; S.i = ROUNDS[S.r].qs.length - 1; S.view = "play"; }
+  else if (S.view === "final") { S.r = ROUNDS.length - 1; S.i = ROUNDS[S.r].qs.length - 1; S.view = "play"; }
+  commit();
+}
+// The host taps the option the expert said (or P for a pass); the game judges it.
+function pick(opt) {
+  const k = expertOf(S.r, S.i), q = Q(), qq = ROUNDS[S.r].qs[S.i];
+  if (k < 0 || q.pick !== null || q.revealed) return;
+  q.pick = opt; flashOpt = opt;
+  if (opt === qq.ans) { q.revealed = true; q.award = { p: k, pts: points(S.r, S.i), kind: "expert" }; bumpK = k; }
+  commit();
+}
+function undo() { const q = Q(); q.pick = null; q.award = null; q.revealed = false; commit(); }
+function reveal() { const q = Q(); if (!q.revealed) { q.revealed = true; commit(); } }
+function canGive(k) {
+  const ex = expertOf(S.r, S.i), q = Q(), qq = ROUNDS[S.r].qs[S.i];
+  if (k >= S.players.length) return false;
+  if (ex < 0) return true;                                   // open round: anyone
+  if (q.pick === null || q.pick === qq.ans) return false;    // expert hasn't answered, or got it
+  return k !== ex;                                           // steal: anyone but the expert
+}
+function giveValue(k) { return expertOf(S.r, S.i) < 0 ? points(S.r, S.i) : points(S.r, S.i) / 2; }
+function give(k) {
+  if (!canGive(k)) return;
+  const q = Q();
+  if (q.award && q.award.p === k) q.award = null;
+  else { q.award = { p: k, pts: giveValue(k), kind: expertOf(S.r, S.i) < 0 ? "open" : "steal" }; bumpK = k; }
+  commit();
+}
+function spaceKey() { const q = Q(); q.revealed ? next() : reveal(); }
+function removePlayer(k) {
+  S.players.splice(k, 1);
+  for (const q of Object.values(S.qs)) {
+    if (!q.award) continue;
+    if (q.award.p === k) q.award = null; else if (q.award.p > k) q.award.p--;
+  }
+  commit();
+}
+
+/* ---------- views ---------- */
+function setCat(cat) { document.documentElement.style.setProperty("--cat", CATS[cat].color); }
+function render() {
+  const v = S.lobby || !S.started ? "lobby" : S.view;
+  for (const id of ["lobby", "intro", "play", "final"]) $("#" + id).hidden = id !== v;
+  setCat(v === "lobby" || v === "final" ? "general" : ROUNDS[S.r].cat);
+  ({ lobby: renderLobby, intro: renderIntro, play: renderPlay, final: renderFinal })[v]();
+}
+
+function specOptions(sel) {
+  return Object.entries(CATS).map(([key, c]) =>
+    `<option value="${key}"${key === sel ? " selected" : ""}>${key === "general" ? "No specialty" : `${c.icon} ${c.name}`}</option>`).join("");
+}
+function renderLobby() {
+  $("#lobbyCats").innerHTML = ROUNDS.map(R => `<span class="cat-pill" style="--cat:${CATS[R.cat].color}">${CATS[R.cat].icon} ${esc(R.title)}</span>`).join("");
+  $("#roster").innerHTML = S.players.map((p, k) => `
+    <div class="prow" style="--c:${PCOLORS[k]}">
+      <span class="sw"></span>
+      <label class="sr" for="pn-${k}">Player ${k + 1} name</label>
+      <input id="pn-${k}" data-k="${k}" data-f="name" maxlength="22" value="${esc(p.name)}" placeholder="Player ${k + 1}">
+      <label class="sr" for="ps-${k}">${esc(name(k))}'s specialty</label>
+      <select id="ps-${k}" data-k="${k}" data-f="spec">${specOptions(p.spec)}</select>
+      <button class="btn small" data-act="rm" data-k="${k}" ${S.players.length <= 2 ? "disabled" : ""} aria-label="Remove ${esc(name(k))}">Remove</button>
+    </div>`).join("");
+  $("#addPlayer").disabled = S.players.length >= 8;
+  const where = S.view === "final" ? "Back to the results"
+    : S.view === "intro" ? `Resume · ${ROUNDS[S.r].title}` : `Resume · ${ROUNDS[S.r].title}, question ${S.i + 1}`;
+  $("#lobbyActions").innerHTML = S.started
+    ? `<button class="btn primary" data-act="resume">${where}</button><button class="btn" data-act="new">New game</button>`
+    : `<button class="btn primary" data-act="start">Start the show</button>`;
+}
+
+function chipsHTML(withScores) {
+  const sc = scores();
+  return S.players.map((_, k) => `<span class="chip" style="--c:${PCOLORS[k]}"><span class="sw"></span>${esc(name(k))}${withScores ? ` <b>${sc[k]}</b>` : ""}</span>`).join("");
+}
+const joinNames = ks => ks.length <= 1 ? ks.map(name).join("") : ks.slice(0, -1).map(name).join(", ") + " and " + name(ks[ks.length - 1]);
+
+function renderIntro() {
+  const R = ROUNDS[S.r], c = CATS[R.cat], ex = R.cat === "general" ? [] : experts(R.cat);
+  $("#iNum").textContent = `Round ${S.r + 1} of ${ROUNDS.length} · ${R.cat === "general" ? "Everyone plays" : "Expert round"}`;
+  $("#iIcon").textContent = c.icon;
+  $("#iName").textContent = R.title;
+  let blurb;
+  if (R.cat === "general") blurb = `Shout it out: the first right answer scores.${R.mult > 1 ? " Every question is worth double." : ""}`;
+  else if (!ex.length) blurb = "Nobody on the panel picked this specialty, so it's open to everyone.";
+  else if (ex.length === 1) blurb = `${name(ex[0])}'s round. ${name(ex[0])} answers alone. A miss lets anyone else steal for half the points.`;
+  else blurb = `${joinNames(ex)} take turns. Each answers alone, and a miss can be stolen by anyone, including the other expert${ex.length > 2 ? "s" : ""}.`;
+  $("#iBlurb").textContent = `${blurb} ${R.qs.length} questions.`;
+  $("#iChips").innerHTML = chipsHTML(S.r > 0);
+  $("#iBack").hidden = S.r === 0;
+}
+
+function renderPlay() {
+  const R = ROUNDS[S.r], c = CATS[R.cat], qq = R.qs[S.i], q = Q(), id = qid(S.r, S.i), ex = expertOf(S.r, S.i);
+  const pts = points(S.r, S.i), rec = records(), isNew = id !== lastId;
+
+  $("#pWhere").innerHTML = `<span class="eyebrow">Round ${S.r + 1} of ${ROUNDS.length}</span><span class="show">${c.icon} ${esc(R.title)}</span>${R.mult > 1 ? `<span class="cat-pill">Double points</span>` : ""}`;
+  $("#pDots").innerHTML = R.qs.map((_, i) => {
+    const g = S.qs[qid(S.r, i)], cls = ["dot"];
+    let style = "";
+    if (g && g.award) { cls.push("won"); style = ` style="--c:${PCOLORS[g.award.p]}"`; }
+    else if (g && g.revealed) cls.push("seen");
+    if (i === S.i) cls.push("now");
+    return `<button class="${cls.join(" ")}"${style} data-act="jump" data-i="${i}" aria-label="Question ${i + 1}${i === S.i ? ", current" : ""}"></button>`;
+  }).join("");
+  $("#pCount").textContent = `Question ${S.i + 1} of ${R.qs.length}`;
+
+  const seat = $("#pSeat");
+  if (ex >= 0) {
+    seat.style.setProperty("--c", PCOLORS[ex]);
+    seat.innerHTML = `<span>In the hot seat:</span><b>${esc(name(ex))}</b><span class="eyebrow">${c.name} expert</span><span class="rec">${rec[ex].asked ? `${rec[ex].right} of ${rec[ex].asked} so far` : "first question"}</span>`;
+  } else {
+    seat.style.removeProperty("--c");
+    seat.innerHTML = `<span>Everyone plays. Shout it out!</span>${R.mult > 1 ? `<span class="rec">Double points</span>` : ""}`;
+  }
+
+  $("#pPts").textContent = pts;
+  $("#pQ").textContent = qq.q;
+  const pickable = ex >= 0 && q.pick === null && !q.revealed;
+  $("#pOpts").innerHTML = qq.opts.map((o, j) => {
+    const cls = ["opt"];
+    if (pickable) cls.push("pickable");
+    if (q.revealed && j === qq.ans) cls.push("right");
+    else if (q.pick === j) cls.push("wrong");
+    else if (q.revealed) cls.push("dim");
+    if (flashOpt === j) cls.push("flash");
+    return `<button class="${cls.join(" ")}" data-act="pick" data-j="${j}" ${pickable ? "" : 'tabindex="-1"'}
+      aria-label="${LETTERS[j]}: ${esc(o)}${pickable ? `, mark as ${esc(name(ex))}'s answer` : ""}"><span class="ltr">${LETTERS[j]}</span><span class="txt">${esc(o)}</span></button>`;
+  }).join("");
+  flashOpt = -1;
+
+  let status = "";
+  const right = q.pick !== null && q.pick === qq.ans, missed = q.pick !== null && q.pick !== qq.ans;
+  if (q.award && q.award.kind === "expert") status = `<span class="good">${esc(name(ex))} got it! +${q.award.pts}</span>`;
+  else if (q.award) status = `<span class="good">${esc(name(q.award.p))} ${q.award.kind === "steal" ? "stole it" : "got it"}! +${q.award.pts}</span>`;
+  else if (ex >= 0 && q.pick === null) status = `Waiting for ${esc(name(ex))}'s answer. Tap it, or press Pass.`;
+  else if (missed) status = `<span class="bad">${q.pick === PASS ? `${esc(name(ex))} passes.` : "Not quite."}</span> Steal for ${pts / 2}: anyone else? ${q.revealed ? "Tap whoever stole it." : "Reveal when they've shouted."}`;
+  else if (!q.revealed) status = "Reveal the answer, then tap whoever got it first.";
+  else status = `Tap whoever got it first: +${pts}.`;
+  if (right && !q.award) status = `${esc(name(ex))}'s answer was right.`;
+  $("#pStatus").innerHTML = status;
+  $("#pFact").textContent = q.revealed ? qq.fact : "";
+
+  const bPass = $("#bPass");
+  bPass.hidden = ex < 0;
+  bPass.textContent = ex >= 0 ? `${name(ex)} passes` : "";
+  bPass.disabled = !pickable;
+  $("#bUndo").hidden = ex < 0;
+  $("#bUndo").disabled = q.pick === null;
+  $("#bReveal").disabled = q.revealed || pickable;
+  $("#bReveal").classList.toggle("primary", !q.revealed && !pickable);
+  const last = S.i === R.qs.length - 1;
+  $("#bNext").textContent = last ? (S.r === ROUNDS.length - 1 ? "Results →" : "Next round →") : "Next question →";
+  $("#bNext").classList.toggle("primary", q.revealed);
+
+  const sc = scores();
+  $("#pPlayers").innerHTML = S.players.map((p, k) => {
+    const mine = !!(q.award && q.award.p === k), ok = canGive(k), val = mine ? q.award.pts : giveValue(k), nm = esc(name(k));
+    const badge = p.spec === "general" ? "Panelist" : `${CATS[p.spec].icon} ${CATS[p.spec].name} expert${rec[k].asked ? ` · ${rec[k].right}/${rec[k].asked}` : ""}`;
+    const showBtn = ok || (mine && q.award.kind !== "expert");
+    return `<div class="pl${k === ex ? " hot" : ""}${bumpK === k ? " bump" : ""}" style="--c:${PCOLORS[k]}">
+      <span class="nm"><span class="sw"></span>${nm}</span><span class="sc">${sc[k]}</span>
+      <span class="badge">${badge}</span>
+      <button class="give" data-act="give" data-k="${k}" aria-pressed="${mine}" ${showBtn ? "" : "disabled"}
+        aria-label="${mine ? `Take back ${val} points from ${nm}` : `Give ${val} points to ${nm}`}">${mine ? "✓ " : ""}+${val}</button>
+    </div>`;
+  }).join("");
+  bumpK = -1;
+  lastId = id;
+  if (isNew) window.scrollTo({ top: 0 });
+}
+
+function renderFinal() {
+  const sc = scores(), rec = records(), ks = S.players.map((_, k) => k);
+  const top = Math.max(...sc), champs = ks.filter(k => sc[k] === top);
+  const rated = ks.filter(k => S.players[k].spec !== "general" && rec[k].asked > 0);
+  const acc = k => rec[k].right / rec[k].asked;
+  const bestAcc = rated.length ? Math.max(...rated.map(acc)) : 0;
+  let best = rated.filter(k => acc(k) === bestAcc);
+  const bestRight = Math.max(0, ...best.map(k => rec[k].right));
+  best = best.filter(k => rec[k].right === bestRight);
+  const card = (eyebrow, ks2, line, color) => `<div class="award" style="--c:${color}"><p class="eyebrow">${eyebrow}</p>
+    <h2>${ks2.length ? esc(joinNames(ks2)) : "Nobody yet"}</h2><p>${line}</p></div>`;
+  const champLine = top === 0 ? "No points scored." : champs.length > 1 ? `Tied at ${top} points` : `${top} points`;
+  const bestLine = !best.length ? "No expert answers recorded."
+    : best.map(k => `${rec[k].right} of ${rec[k].asked} in ${CATS[S.players[k].spec].name}`).join(" · ");
+  $("#fAwards").innerHTML =
+    card(champs.length > 1 && top > 0 ? "Co-champions" : "Champion", top > 0 ? champs : [], champLine, champs.length === 1 && top > 0 ? PCOLORS[champs[0]] : "var(--c-general)") +
+    card("Best Expert", best, bestLine, best.length === 1 ? CATS[S.players[best[0]].spec].color : "var(--c-general)");
+  $("#fBoard").innerHTML = `<thead><tr><th>Player</th><th>Specialty</th><th class="num">Expert record</th><th class="num">Points</th></tr></thead><tbody>` +
+    ks.sort((a, b) => sc[b] - sc[a]).map(k => {
+      const p = S.players[k];
+      return `<tr><td><span class="who"><span class="sw" style="--c:${PCOLORS[k]}"></span>${esc(name(k))}</span></td>
+        <td>${p.spec === "general" ? "None" : `${CATS[p.spec].icon} ${CATS[p.spec].name}`}</td>
+        <td class="num">${p.spec === "general" ? "" : `${rec[k].right} / ${rec[k].asked}`}</td><td class="num"><b>${sc[k]}</b></td></tr>`;
+    }).join("") + "</tbody>";
+}
+
+/* ---------- screen helpers ---------- */
+let lock = null;
+async function keepAwake() {
+  try { if ("wakeLock" in navigator && !lock) { lock = await navigator.wakeLock.request("screen"); lock.addEventListener("release", () => { lock = null; }); } } catch (e) {}
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S && S.started && !S.lobby) keepAwake(); });
+function toggleFs() {
+  try {
+    const d = document, p = d.fullscreenElement ? d.exitFullscreen() : d.documentElement.requestFullscreen();
+    if (p && p.catch) p.catch(() => {});
+  } catch (e) {}
+}
+
+/* ---------- input ---------- */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]");
+  if (!b || b.disabled) return;
+  if (e.detail > 0) b.blur(); // mouse clicks shouldn't leave focus where Space would re-press the button
+  const k = +b.dataset.k;
+  switch (b.dataset.act) {
+    case "start": return startGame();
+    case "resume": S.lobby = false; keepAwake(); return commit();
+    case "new":
+      if (armedReset) { clearTimeout(armedReset); armedReset = null; return startGame(); }
+      b.textContent = "Tap again to clear the scores"; b.classList.add("warn");
+      armedReset = setTimeout(() => { armedReset = null; if (S.lobby) renderLobby(); }, 3500);
+      return;
+    case "add": if (S.players.length < 8) { S.players.push({ name: `Player ${S.players.length + 1}`, spec: "general" }); commit(); } return;
+    case "rm": if (S.players.length > 2) removePlayer(k); return;
+    case "lobby": S.lobby = true; return commit();
+    case "fs": return toggleFs();
+    case "next": return next();
+    case "prev": return prev();
+    case "pick": return pick(+b.dataset.j);
+    case "pass": return pick(PASS);
+    case "undo": return undo();
+    case "reveal": return reveal();
+    case "give": return give(k);
+    case "jump": S.i = +b.dataset.i; return commit();
+    case "again": S = { ...fresh(S.players), lobby: false, started: true }; return commit();
+  }
+});
+document.addEventListener("input", e => {
+  const el = e.target.closest("#roster [data-f]");
+  if (!el) return;
+  S.players[+el.dataset.k][el.dataset.f] = el.value;
+  save();
+  if (el.dataset.f === "spec") renderLobby();
+});
+document.addEventListener("keydown", e => {
+  if (e.target.closest("input, textarea, select") || e.metaKey || e.ctrlKey || e.altKey) return;
+  const v = S.lobby || !S.started ? "lobby" : S.view, key = e.key, onBtn = !!e.target.closest("button");
+  if (key === "f" || key === "F") return toggleFs();
+  if (v === "play") {
+    const L = LETTERS.indexOf(key.toUpperCase());
+    if (key.length === 1 && L >= 0) return pick(L);
+    if (/^[1-8]$/.test(key)) return give(+key - 1);
+    if (key === "p" || key === "P") return pick(PASS);
+    if (key === "u" || key === "U") return undo();
+    if (key === "r" || key === "R") return reveal();
+    if (key === "ArrowRight" || key === "n" || key === "N") return next();
+    if (key === "ArrowLeft") return prev();
+    if ((key === " " || key === "Enter") && !onBtn) { e.preventDefault(); spaceKey(); }
+  } else if (v === "intro") {
+    if (key === "ArrowRight" || ((key === " " || key === "Enter") && !onBtn)) { e.preventDefault(); next(); }
+    else if (key === "ArrowLeft") prev();
+  } else if (v === "final" && key === "ArrowLeft") prev();
+});
+
+/* ---------- boot ---------- */
+if (/\/games\/[^/]+\/?(index\.html)?$/.test(location.pathname)) document.querySelector(".hub-link").hidden = false;
+if (!document.fullscreenEnabled) $("#fsBtn").hidden = true;
+S = loadSaved() || fresh();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Game Night</title>
+<meta name="description" content="Three party games for the TV: Emoji Box Office, Needle Drop and Best Experts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Limelight&family=Shrikhand&display=swap">
+<style>
+/* Layout: a dark living room with three game boxes on the shelf. Each card wears its own game's identity (velvet cinema,
+   night record deck, studio panel) so the hub previews what you'll get; the hub itself stays neutral. Single dark theme. */
+:root {
+  --room: #121118;
+  --text: #f3f1f6;
+  --muted: #a9a5b6;
+  --line: #2c2a38;
+  /* Emoji Box Office */
+  --ebo-bg: #160c15; --ebo-gold: #ffc960; --ebo-screen: #f7eedc; --ebo-velvet: #7c1d34; --ebo-velvet-dark: #4b0f20;
+  /* Needle Drop */
+  --nd-bg: #0e1316; --nd-pink: #ff5c9d; --nd-vinyl: #09090a; --nd-groove: #1d1d21;
+  /* Best Experts */
+  --be-bg: #10132a; --be-teal: #3cc8c0; --be-tennis: #d4ec3a; --be-nba: #f47c2c; --be-friends: #a774e0; --be-80s: #ff4fa8;
+  --dark-ink: #14121a;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-hub: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --f-emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--room); color: var(--text); font-family: var(--f-body); font-size: 17px; line-height: 1.55; }
+.wrap {
+  max-width: 1240px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: clamp(28px, 6vh, 72px) 40px;
+  display: grid; gap: clamp(28px, 5vh, 48px);
+}
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
+header { display: grid; gap: 12px; max-width: 760px; }
+h1 { font-family: var(--f-hub); font-weight: 800; font-size: clamp(3rem, 9vw, 5.6rem); line-height: .95; letter-spacing: -.02em; margin: 0; }
+.lede { font-size: clamp(1.1rem, 2.4vw, 1.3rem); margin: 0; color: var(--muted); max-width: 52ch; }
+.games { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: clamp(16px, 2.4vw, 24px); }
+.game {
+  display: grid; grid-template-rows: auto 1fr auto; gap: 18px; text-decoration: none; border-radius: 22px; padding: 22px;
+  border: 1.5px solid var(--line); transition: transform .2s ease, border-color .2s ease; min-width: 0;
+}
+.game:hover { transform: translateY(-4px); border-color: var(--accent); }
+.game h2 { margin: 0; font-weight: 400; line-height: 1; color: var(--accent); }
+.game p { margin: 0; }
+.game .what { font-size: 1.08rem; }
+.game .facts { color: var(--muted); font-size: .95rem; margin-top: 6px; }
+.play { justify-self: start; font-weight: 700; padding: .5em 1.2em; border-radius: 999px; background: var(--accent); color: var(--dark-ink); }
+.art { height: 170px; border-radius: 14px; overflow: hidden; position: relative; }
+
+/* Emoji Box Office: a lit screen between drapes */
+.ebo { background: var(--ebo-bg); --accent: var(--ebo-gold); }
+.ebo h2 { font-family: "Limelight", Georgia, serif; font-size: clamp(2rem, 4vw, 2.5rem); }
+.ebo .art { display: grid; grid-template-columns: 22px 1fr 22px; }
+.ebo .drape { background: repeating-linear-gradient(90deg, var(--ebo-velvet-dark) 0 4px, var(--ebo-velvet) 4px 10px); }
+.ebo .screen { background: radial-gradient(ellipse at 50% 45%, var(--ebo-screen) 55%, #e0cfae); display: grid; place-items: center; font-family: var(--f-emoji); font-size: clamp(2rem, 4vw, 2.6rem); letter-spacing: .08em; }
+
+/* Needle Drop: a record with the decade label */
+.nd { background: var(--nd-bg); --accent: var(--nd-pink); }
+.nd h2 { font-family: "Shrikhand", Georgia, serif; font-size: clamp(2.1rem, 4.2vw, 2.6rem); }
+.nd .art { display: grid; place-items: center; }
+.record {
+  width: 160px; aspect-ratio: 1; border-radius: 50%; position: relative;
+  background: repeating-radial-gradient(circle, var(--nd-vinyl) 0 2px, var(--nd-groove) 2px 3px);
+  animation: spin 2.4s linear infinite; animation-play-state: paused;
+}
+.nd:hover .record, .nd:focus-visible .record { animation-play-state: running; }
+.record::after { content: "’80s"; position: absolute; inset: 32%; border-radius: 50%; background: var(--nd-pink); color: var(--dark-ink); display: grid; place-items: center; font-family: "Shrikhand", Georgia, serif; font-size: 1rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Best Experts: the specialty pills */
+.be { background: var(--be-bg); --accent: var(--be-teal); }
+.be h2 { font-family: var(--f-hub); font-weight: 800; font-size: clamp(2.1rem, 4.2vw, 2.6rem); color: var(--text); letter-spacing: -.02em; }
+.be h2 span { color: var(--be-teal); }
+.be .art { display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 8px; padding: 12px; background: #1a1e3c; }
+.pill { padding: .25em .85em; border-radius: 999px; font-weight: 700; color: var(--dark-ink); background: var(--c); }
+
+.tips { display: grid; gap: 10px; max-width: 760px; }
+.tips h2 { font-family: var(--f-hub); font-weight: 800; font-size: 1.5rem; margin: 0; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; color: var(--muted); }
+.tips b { color: var(--text); }
+footer { color: var(--muted); font-size: .92rem; border-top: 1px solid var(--line); padding-top: 18px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <h1>Game Night</h1>
+    <p class="lede">Three party games for the TV. One person hosts from a laptop, and everyone else shouts answers from the couch.</p>
+  </header>
+
+  <section class="games" aria-label="Games">
+    <a class="game ebo" href="emoji-box-office/">
+      <div class="art" aria-hidden="true"><div class="drape"></div><div class="screen">🦁👑🐗🐒</div><div class="drape"></div></div>
+      <div>
+        <h2>Emoji Box Office</h2>
+        <p class="what">Guess the American movie from the emojis. Each hint lowers the prize.</p>
+        <p class="facts">Teams · 40 movies · 3 rounds, easy to hard · about 40 minutes</p>
+      </div>
+      <span class="play">Play →</span>
+    </a>
+    <a class="game nd" href="needle-drop/">
+      <div class="art" aria-hidden="true"><div class="record"></div></div>
+      <div>
+        <h2>Needle Drop</h2>
+        <p class="what">Hear two seconds of a hit, then name the song and the artist.</p>
+        <p class="facts">Teams · 36 songs from the 1970s to now · needs internet for the clips</p>
+      </div>
+      <span class="play">Play →</span>
+    </a>
+    <a class="game be" href="best-experts/">
+      <div class="art" aria-hidden="true">
+        <span class="pill" style="--c:var(--be-tennis)">🎾 Tennis</span><span class="pill" style="--c:var(--be-nba)">🏀 NBA</span>
+        <span class="pill" style="--c:var(--be-friends)">☕ Friends</span><span class="pill" style="--c:var(--be-80s)">📼 The ’80s</span>
+        <span class="pill" style="--c:var(--be-teal)">🧠 Trivia</span>
+      </div>
+      <div>
+        <h2>Best <span>Experts</span></h2>
+        <p class="what">Everyone defends their own specialty. A miss can be stolen by anyone else.</p>
+        <p class="facts">Individual players · 39 questions · Champion and Best Expert awards</p>
+      </div>
+      <span class="play">Play →</span>
+    </a>
+  </section>
+
+  <section class="tips">
+    <h2>Before you start</h2>
+    <ol>
+      <li><b>Connect the laptop to the TV</b> and open a game. Press <b>F</b> for full screen.</li>
+      <li><b>Name the teams or players</b> on the game's first screen.</li>
+      <li><b>For Needle Drop,</b> press "Test the speakers" so the sound comes out of the TV.</li>
+      <li><b>Scores save in the browser,</b> so a refresh or a dinner break won't lose your place.</li>
+    </ol>
+  </section>
+
+  <footer>Made by Matt for family game night · <a href="/">peasant98.github.io</a></footer>
+</main>
+</body>
+</html>

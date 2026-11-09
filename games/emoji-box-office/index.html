@@ -70,7 +70,7 @@ kbd {
 .sw { width: 14px; height: 14px; border-radius: 50%; background: var(--c); flex: none; display: inline-block; }
 
 /* ---------- lobby ---------- */
-.lobby { display: grid; gap: clamp(20px, 3.2vh, 36px); justify-items: center; text-align: center; padding-block: clamp(8px, 3vh, 40px); }
+.lobby { display: grid; align-content: start; gap: clamp(20px, 3.2vh, 36px); justify-items: center; text-align: center; padding-block: clamp(8px, 3vh, 40px); }
 .marquee {
   width: min(100%, 780px); border-radius: 18px; padding: 14px clamp(14px, 3vw, 28px);
   background: linear-gradient(var(--velvet-light), var(--velvet) 45%, var(--velvet-dark));
@@ -102,6 +102,8 @@ kbd {
 .lobby-actions .btn { font-size: 1.3rem; }
 .note { color: var(--muted); font-size: .9rem; margin: 0; }
 
+.hub-link { justify-self: start; color: var(--muted); font-weight: 600; text-decoration: none; }
+.hub-link:hover { color: var(--text); }
 /* ---------- play ---------- */
 .play { display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto auto; gap: clamp(10px, 1.6vh, 18px); }
 .bar { display: flex; align-items: center; justify-content: space-between; gap: 10px 20px; flex-wrap: wrap; }
@@ -190,7 +192,7 @@ kbd {
 .intro .row .btn { font-size: 1.3rem; }
 
 /* ---------- final credits ---------- */
-.final { display: grid; gap: clamp(18px, 3vh, 34px); justify-items: center; text-align: center; padding-block: 3vh; }
+.final { display: grid; align-content: start; gap: clamp(18px, 3vh, 34px); justify-items: center; text-align: center; padding-block: 3vh; }
 .final h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.6rem, 9vw, 6.5rem); line-height: 1.05; margin: 0; color: var(--c, var(--bulb)); text-shadow: 0 0 34px var(--glow); text-wrap: balance; }
 .board { display: grid; gap: 8px; width: min(100%, 560px); }
 .board .chip { justify-content: space-between; font-size: 1.15rem; border-radius: 12px; }
@@ -217,6 +219,7 @@ kbd {
 
 <div id="app">
   <section id="lobby" class="view lobby" hidden>
+    <a class="hub-link" href="../" hidden>← All games</a>
     <div class="marquee">
       <div class="bulbs" aria-hidden="true"></div>
       <h1 class="brand">Emoji Box Office</h1>
@@ -587,6 +590,7 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------- boot ---------- */
+if (/\/games\/[^/]+\/?(index\.html)?$/.test(location.pathname)) document.querySelector(".hub-link").hidden = false;
 document.querySelectorAll(".bulbs").forEach(row => {
   row.innerHTML = Array.from({ length: 22 }, (_, i) => `<i style="animation-delay:${(i % 4) * 0.4}s"></i>`).join("");
 });

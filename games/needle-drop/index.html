@@ -93,7 +93,7 @@ body.playing .arm { transform: rotate(22deg); }
 .arm .head { position: absolute; left: -9px; bottom: -6px; width: 18px; height: 28px; border-radius: 3px; background: var(--metal); }
 
 /* ---------- lobby ---------- */
-.lobby { display: grid; gap: clamp(18px, 3vh, 34px); justify-items: center; text-align: center; padding-block: clamp(8px, 3vh, 40px); }
+.lobby { display: grid; align-content: start; gap: clamp(18px, 3vh, 34px); justify-items: center; text-align: center; padding-block: clamp(8px, 3vh, 40px); }
 .hero { display: flex; align-items: center; gap: clamp(16px, 4vw, 48px); flex-wrap: wrap; justify-content: center; }
 .hero .platter { width: clamp(150px, 26vmin, 240px); }
 .brand { font-family: var(--f-display); font-weight: 400; font-size: clamp(3rem, 9vw, 6.2rem); line-height: 1; margin: 0; color: var(--label); }
@@ -111,6 +111,8 @@ body.playing .arm { transform: rotate(22deg); }
 .lobby-actions .btn:not(.small) { font-size: 1.25rem; }
 .note { color: var(--muted); font-size: .9rem; margin: 0; max-width: 70ch; }
 
+.hub-link { justify-self: start; color: var(--muted); font-weight: 600; text-decoration: none; }
+.hub-link:hover { color: var(--text); }
 /* ---------- play ---------- */
 .play { display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; gap: clamp(10px, 1.8vh, 20px); }
 .bar { display: flex; align-items: center; justify-content: space-between; gap: 10px 20px; flex-wrap: wrap; }
@@ -171,7 +173,7 @@ body.playing .arm { transform: rotate(22deg); }
 .intro .row .btn { font-size: 1.25rem; }
 
 /* ---------- final ---------- */
-.final { display: grid; gap: clamp(18px, 3vh, 34px); justify-items: center; text-align: center; padding-block: 3vh; }
+.final { display: grid; align-content: start; gap: clamp(18px, 3vh, 34px); justify-items: center; text-align: center; padding-block: 3vh; }
 .final h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.6rem, 9vw, 6.5rem); line-height: 1.05; margin: 0; color: var(--c, var(--label)); text-wrap: balance; }
 .board { display: grid; gap: 8px; width: min(100%, 560px); }
 .board .chip { justify-content: space-between; font-size: 1.15rem; border-radius: 12px; }
@@ -202,6 +204,7 @@ body.playing .arm { transform: rotate(22deg); }
 <body>
 <div id="app">
   <section id="lobby" class="view lobby" hidden>
+    <a class="hub-link" href="../" hidden>← All games</a>
     <div class="hero">
       <div class="platter" aria-hidden="true">
         <div class="record"><div class="label"><span class="lbl-dec">♪</span><span class="lbl-sub">Side A</span></div></div>
@@ -663,6 +666,7 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------- boot ---------- */
+if (/\/games\/[^/]+\/?(index\.html)?$/.test(location.pathname)) document.querySelector(".hub-link").hidden = false;
 if (!document.fullscreenEnabled) $("#fsBtn").hidden = true;
 S = loadSaved() || fresh();
 render();
