@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Needle Drop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Shrikhand&display=swap">
+<style>
+/* Layout: a record deck at night. The turntable (left) spins while a clip plays and its label shows the cover once
+   revealed; the clip ladder and answer card sit to its right; teams run along the bottom. Single dark theme by choice.
+   Each decade gets its own record-label colour (--d1..--d6), applied as --label for the round. */
+:root {
+  --deck: #0e1316;
+  --plinth: #172027;
+  --line: #2b3842;
+  --text: #eef1ea;
+  --muted: #98a6ad;
+  --vinyl: #09090a;
+  --groove: #1d1d21;
+  --sheen: rgba(255, 255, 255, .07);
+  --metal: #c9cfd3;
+  --metal-dark: #6f7a80;
+  --label-ink: #17110a;
+  --shadow: rgba(0, 0, 0, .55);
+  --d1: #f28c28; --d2: #ff5c9d; --d3: #2ec4b6; --d4: #8fa6ff; --d5: #ffd23f; --d6: #c38bff;
+  --t1: #4fd1c5; --t2: #ff7f6b; --t3: #c7a6ff; --t4: #f6d55c;
+  --label: var(--d1);
+  --f-display: "Shrikhand", "Cooper Black", Georgia, serif;
+  --f-body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--deck); color: var(--text); font-family: var(--f-body); font-size: 16px; line-height: 1.5; }
+#app {
+  min-height: 100%; display: flex; flex-direction: column;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: clamp(12px, 2vh, 24px);
+}
+[hidden] { display: none !important; }
+.view { flex: 1; display: flex; flex-direction: column; width: 100%; max-width: 1500px; margin-inline: auto; min-height: 0; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--label); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.eyebrow { font-weight: 700; text-transform: uppercase; letter-spacing: .14em; font-size: .8rem; color: var(--muted); }
+.btn { font-weight: 600; font-size: 1.05rem; padding: .55em 1.25em; border-radius: 999px; border: 1.5px solid var(--line); background: transparent; }
+.btn:hover:not(:disabled) { border-color: var(--muted); }
+.btn:disabled { opacity: .35; cursor: default; }
+.btn.primary { background: var(--label); color: var(--label-ink); border-color: var(--label); }
+.btn.primary:hover:not(:disabled) { filter: brightness(1.08); }
+.btn.small { font-size: .92rem; padding: .35em .9em; }
+.btn.warn { border-color: var(--t2); color: var(--t2); }
+kbd { font-family: var(--f-mono); font-size: .8em; color: var(--text); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 .4em; }
+.sw { width: 14px; height: 14px; border-radius: 50%; background: var(--c); flex: none; display: inline-block; }
+.status { font-size: .95rem; color: var(--muted); min-height: 1.5em; margin: 0; }
+.status.bad { color: var(--t2); }
+
+/* ---------- turntable ---------- */
+.platter { position: relative; aspect-ratio: 1; width: 100%; max-width: 100%; }
+.platter::after { /* static light sheen over the spinning record */
+  content: ""; position: absolute; inset: 6%; border-radius: 50%; pointer-events: none;
+  background: conic-gradient(from 20deg, transparent 0 10%, var(--sheen) 14%, transparent 22% 58%, var(--sheen) 64%, transparent 72%);
+}
+.ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 1.4; }
+.ring .track { stroke: var(--line); }
+.ring .prog { stroke: var(--label); stroke-linecap: round; stroke-dasharray: 0 100; }
+.record {
+  position: absolute; inset: 6%; border-radius: 50%;
+  background: repeating-radial-gradient(circle, var(--vinyl) 0 2px, var(--groove) 2px 3px);
+  box-shadow: 0 18px 50px -12px var(--shadow);
+  animation: spin 1.8s linear infinite; animation-play-state: paused;
+}
+body.playing .record { animation-play-state: running; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.label {
+  position: absolute; inset: 31%; border-radius: 50%; overflow: hidden; background: var(--label); color: var(--label-ink);
+  display: grid; place-content: center; text-align: center; gap: 2px;
+}
+.label::after { content: ""; position: absolute; left: 50%; top: 50%; width: 5%; height: 5%; translate: -50% -50%; border-radius: 50%; background: var(--deck); }
+.label img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.lbl-dec { font-family: var(--f-display); font-size: clamp(1.1rem, 4.4vmin, 2.6rem); line-height: 1; padding-top: .5em; }
+.lbl-sub { font-weight: 700; text-transform: uppercase; letter-spacing: .14em; font-size: clamp(.55rem, 1.2vmin, .8rem); }
+.arm { position: absolute; left: 96%; top: 3%; width: 0; height: 68%; transform-origin: 0 0; transform: rotate(2deg); transition: transform .7s cubic-bezier(.3, .7, .2, 1); }
+body.playing .arm { transform: rotate(22deg); }
+.arm .rod { position: absolute; left: -3px; top: 0; width: 6px; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--metal-dark), var(--metal), var(--metal-dark)); }
+.arm .pivot { position: absolute; left: -16px; top: -16px; width: 32px; height: 32px; border-radius: 50%; background: radial-gradient(circle, var(--metal) 30%, var(--metal-dark) 32% 60%, var(--plinth) 62%); }
+.arm .head { position: absolute; left: -9px; bottom: -6px; width: 18px; height: 28px; border-radius: 3px; background: var(--metal); }
+
+/* ---------- lobby ---------- */
+.lobby { display: grid; gap: clamp(18px, 3vh, 34px); justify-items: center; text-align: center; padding-block: clamp(8px, 3vh, 40px); }
+.hero { display: flex; align-items: center; gap: clamp(16px, 4vw, 48px); flex-wrap: wrap; justify-content: center; }
+.hero .platter { width: clamp(150px, 26vmin, 240px); }
+.brand { font-family: var(--f-display); font-weight: 400; font-size: clamp(3rem, 9vw, 6.2rem); line-height: 1; margin: 0; color: var(--label); }
+.tagline { font-size: clamp(1.05rem, 2.4vw, 1.35rem); max-width: 44ch; margin: .4em 0 0; text-wrap: balance; }
+.hero-text { text-align: left; }
+.how { display: grid; gap: clamp(18px, 3vw, 40px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); width: min(100%, 1000px); text-align: left; }
+.how h2 { font-weight: 700; text-transform: uppercase; letter-spacing: .14em; font-size: .95rem; color: var(--label); margin: 0 0 10px; }
+.how ol { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; }
+.keys { margin: 12px 0 0; color: var(--muted); font-size: .92rem; line-height: 2; }
+.team-setup { display: grid; gap: 8px; }
+.trow { display: flex; align-items: center; gap: 10px; }
+.trow input { flex: 1; min-width: 0; background: var(--plinth); border: 1.5px solid var(--line); border-radius: 10px; padding: .45em .8em; font-size: 1.05rem; }
+.trow input:focus { border-color: var(--c); outline: none; }
+.lobby-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; }
+.lobby-actions .btn:not(.small) { font-size: 1.25rem; }
+.note { color: var(--muted); font-size: .9rem; margin: 0; max-width: 70ch; }
+
+/* ---------- play ---------- */
+.play { display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; gap: clamp(10px, 1.8vh, 20px); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 10px 20px; flex-wrap: wrap; }
+.where { display: flex; align-items: baseline; gap: .7em; flex-wrap: wrap; }
+.where .show { font-family: var(--f-display); font-size: clamp(1.4rem, 2.8vw, 2.1rem); color: var(--label); line-height: 1.1; }
+.progress { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.count { font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+.dots { display: flex; gap: 6px; flex-wrap: wrap; }
+.dot { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--muted); background: transparent; padding: 0; }
+.dot.seen { background: var(--line); border-color: var(--line); }
+.dot.won { background: var(--c); border-color: var(--c); }
+.dot.now { outline: 2px solid var(--label); outline-offset: 2px; }
+.tools { display: flex; gap: 8px; }
+.stage { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(20px, 4vw, 64px); align-items: center; min-height: 0; }
+.stage .platter { width: min(100%, 62vh, 560px); justify-self: center; }
+.panel { display: grid; gap: clamp(14px, 2.4vh, 24px); min-width: 0; }
+.prize { font-weight: 700; text-transform: uppercase; letter-spacing: .12em; font-size: clamp(.85rem, 1.6vmin, 1.05rem); color: var(--muted); margin: 0; }
+.clips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.clip {
+  display: grid; gap: 2px; justify-items: center; padding: .7em .5em; border-radius: 16px;
+  border: 2px solid var(--line); background: var(--plinth); text-align: center;
+}
+.clip b { font-size: clamp(1.15rem, 2.6vmin, 1.7rem); font-variant-numeric: tabular-nums; }
+.clip span { font-size: .85rem; color: var(--muted); }
+.clip.unlocked { border-color: var(--label); }
+.clip.on { background: var(--label); color: var(--label-ink); border-color: var(--label); }
+.clip.on span { color: var(--label-ink); }
+.clip:disabled { opacity: .35; cursor: default; }
+.timer { font-family: var(--f-mono); color: var(--muted); font-size: 1rem; font-variant-numeric: tabular-nums; margin: 0; min-height: 1.5em; }
+.card { border: 1.5px solid var(--line); border-radius: 20px; padding: clamp(16px, 2.6vh, 28px) clamp(18px, 2.4vw, 32px); background: var(--plinth); display: grid; gap: .4em; }
+.card dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .3em 1em; align-items: baseline; }
+.card dt { font-weight: 700; text-transform: uppercase; letter-spacing: .12em; font-size: .8rem; color: var(--muted); }
+.card dd { margin: 0; font-size: clamp(1.1rem, 2.4vmin, 1.5rem); color: var(--muted); }
+.card h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.9rem, 5.2vmin, 4rem); line-height: 1.08; margin: 0; color: var(--label); text-wrap: balance; overflow-wrap: anywhere; }
+.card .artist { font-size: clamp(1.2rem, 3vmin, 2rem); font-weight: 700; margin: 0; }
+.card .meta { color: var(--muted); margin: 0; font-variant-numeric: tabular-nums; }
+.card.flip h2 { animation: drop .6s cubic-bezier(.2, .8, .2, 1); }
+@keyframes drop { from { transform: translateY(-14px); opacity: 0; } }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 10px; }
+.team { display: flex; align-items: center; gap: 10px; padding: 10px 12px 10px 16px; background: var(--plinth); border: 1px solid var(--line); border-radius: 16px; flex-wrap: wrap; }
+.team .nm { flex: 1; min-width: 6em; font-weight: 700; font-size: clamp(1rem, 2vmin, 1.3rem); overflow-wrap: anywhere; line-height: 1.2; }
+.team .sc { font-family: var(--f-mono); font-size: clamp(1.6rem, 3.6vmin, 2.4rem); font-variant-numeric: tabular-nums; line-height: 1; min-width: 1.6em; text-align: right; }
+.give { font-weight: 700; font-size: 1rem; padding: .4em .8em; border-radius: 999px; border: 2px solid var(--c); background: transparent; color: var(--c); white-space: nowrap; }
+.give[aria-pressed="true"] { background: var(--c); color: var(--deck); }
+.team.bump .sc { animation: bump .7s; }
+@keyframes bump { 40% { transform: scale(1.4); color: var(--c); } }
+.legend { text-align: center; color: var(--muted); font-size: .88rem; margin: 0; }
+
+/* ---------- round intro ---------- */
+.intro { flex: 1; display: grid; place-content: center; justify-items: center; text-align: center; gap: clamp(14px, 2.6vh, 28px); padding-block: 4vh; }
+.intro h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(3.2rem, 12vw, 8.5rem); line-height: 1; margin: 0; color: var(--label); }
+.intro .blurb { font-size: clamp(1.1rem, 2.5vmin, 1.6rem); max-width: 40ch; margin: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.chip { display: flex; gap: .6em; align-items: center; padding: .4em 1.1em; border: 1px solid var(--line); border-radius: 999px; background: var(--plinth); font-weight: 600; }
+.chip b { font-family: var(--f-mono); font-size: 1.15em; font-variant-numeric: tabular-nums; }
+.intro .row, .final .row { justify-content: center; }
+.intro .row .btn { font-size: 1.25rem; }
+
+/* ---------- final ---------- */
+.final { display: grid; gap: clamp(18px, 3vh, 34px); justify-items: center; text-align: center; padding-block: 3vh; }
+.final h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.6rem, 9vw, 6.5rem); line-height: 1.05; margin: 0; color: var(--c, var(--label)); text-wrap: balance; }
+.board { display: grid; gap: 8px; width: min(100%, 560px); }
+.board .chip { justify-content: space-between; font-size: 1.15rem; border-radius: 12px; }
+.board .chip span { display: flex; align-items: center; gap: .6em; min-width: 0; overflow-wrap: anywhere; }
+.credits { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; width: 100%; text-align: left; }
+.credits h3 { font-family: var(--f-display); font-weight: 400; font-size: 1.4rem; color: var(--c); margin: 0 0 6px; }
+.credits ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.credits li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.credits li .pair { display: flex; gap: 3px; }
+.credits li .sw { width: 10px; height: 10px; }
+.credits li small { color: var(--muted); display: block; }
+
+@media (max-width: 860px) {
+  .stage { grid-template-columns: 1fr; }
+  .stage .platter { width: min(78vw, 360px); }
+  .legend { display: none; }
+  .hero-text { text-align: center; }
+}
+@media (max-width: 480px) {
+  .clips { gap: 6px; }
+  .clip span { font-size: .75rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <section id="lobby" class="view lobby" hidden>
+    <div class="hero">
+      <div class="platter" aria-hidden="true">
+        <div class="record"><div class="label"><span class="lbl-dec">♪</span><span class="lbl-sub">Side A</span></div></div>
+        <div class="arm"><span class="rod"></span><span class="pivot"></span><span class="head"></span></div>
+      </div>
+      <div class="hero-text">
+        <h1 class="brand">Needle Drop</h1>
+        <p class="tagline" id="tagline"></p>
+      </div>
+    </div>
+    <div class="how">
+      <div>
+        <h2>How to play</h2>
+        <ol>
+          <li>Press play for a 2-second clip. Teams shout out the song.</li>
+          <li>Nobody? Play a longer clip: 5 seconds drops the prize to 2 points, 10 seconds drops it to 1.</li>
+          <li>The song title wins those points, and naming the artist is worth 1 more. Tap the buttons for whichever team got each.</li>
+          <li>Reveal to show the cover and play the full 30-second preview. Sing along.</li>
+        </ol>
+        <p class="keys"><kbd>Space</kbd> play or stop · <kbd>L</kbd> longer clip · <kbd>R</kbd> reveal · <kbd>1</kbd>–<kbd>4</kbd> song points · <kbd>Shift</kbd>+<kbd>1</kbd>–<kbd>4</kbd> artist point · <kbd>←</kbd> <kbd>→</kbd> move · <kbd>F</kbd> full screen</p>
+      </div>
+      <div>
+        <h2>Teams tonight</h2>
+        <div class="team-setup" id="teamList"></div>
+        <p style="margin:10px 0 0"><button class="btn small" data-act="add" id="addTeam">Add a team</button></p>
+      </div>
+    </div>
+    <div class="lobby-actions" id="lobbyActions"></div>
+    <div class="lobby-actions">
+      <button class="btn small" data-act="chime">Test the speakers</button>
+      <p class="status" id="netStatus">Checking that the song previews can load…</p>
+    </div>
+    <p class="note">Needs an internet connection: the clips are Apple's official 30-second iTunes previews, streamed when you press play. The score saves in this browser, so a refresh won't lose your place.</p>
+  </section>
+
+  <section id="intro" class="view" hidden>
+    <div class="intro">
+      <p class="eyebrow" id="iNum"></p>
+      <h2 id="iName"></h2>
+      <p class="blurb" id="iBlurb"></p>
+      <div class="chips" id="iChips"></div>
+      <div class="row">
+        <button class="btn" data-act="prev" id="iBack">← Back</button>
+        <button class="btn primary" data-act="next" id="iGo"></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="play" class="view play" hidden>
+    <header class="bar">
+      <div class="where" id="pWhere"></div>
+      <div class="progress"><div class="dots" id="pDots"></div><span class="count" id="pCount"></span></div>
+      <div class="tools">
+        <button class="btn small" data-act="fs" id="fsBtn">Full screen</button>
+        <button class="btn small" data-act="lobby">Lobby</button>
+      </div>
+    </header>
+    <div class="stage">
+      <div class="platter">
+        <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="track" cx="50" cy="50" r="48.5"></circle>
+          <circle class="prog" id="ring" cx="50" cy="50" r="48.5" pathLength="100"></circle>
+        </svg>
+        <div class="record"><div class="label" id="pLabel"></div></div>
+        <div class="arm" aria-hidden="true"><span class="rod"></span><span class="pivot"></span><span class="head"></span></div>
+      </div>
+      <div class="panel">
+        <p class="prize" id="pPrize"></p>
+        <div class="clips" id="pClips"></div>
+        <p class="timer" id="pTimer" aria-live="off"></p>
+        <p class="status" id="pStatus" role="status"></p>
+        <div class="card" id="pCard" aria-live="polite"></div>
+        <div class="row">
+          <button class="btn" data-act="prev">← Back</button>
+          <button class="btn" data-act="reveal" id="bReveal">Reveal</button>
+          <button class="btn" data-act="full" id="bFull" hidden></button>
+          <button class="btn" data-act="next" id="bNext"></button>
+        </div>
+      </div>
+    </div>
+    <div class="teams" id="pTeams"></div>
+    <p class="legend"><kbd>Space</kbd> play or stop · <kbd>L</kbd> longer clip · <kbd>R</kbd> reveal · <kbd>1</kbd>–<kbd>4</kbd> song points · <kbd>Shift</kbd>+<kbd>1</kbd>–<kbd>4</kbd> artist point · tap again to take points back</p>
+  </section>
+
+  <section id="final" class="view final" hidden>
+    <p class="eyebrow" id="fEyebrow"></p>
+    <h2 id="fWinner"></h2>
+    <div class="board" id="fBoard"></div>
+    <div class="credits" id="fCredits"></div>
+    <div class="row">
+      <button class="btn" data-act="prev">← Last song</button>
+      <button class="btn primary" data-act="again">Play again, same teams</button>
+      <button class="btn" data-act="lobby">Lobby</button>
+    </div>
+  </section>
+</div>
+
+<script>
+// Filled in by build_game.py from songs_resolved.json: decade, title, artist, year, iTunes track id, preview URL, cover URL
+const SONGS = /*SONGS*/[{"decade": "1970s", "t": "Dancing Queen", "a": "ABBA", "y": 1976, "id": 1422648513, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/ec/b1/63/ecb163bc-aff2-4dd2-d40b-c044f0b9fa4d/mzaf_4358783485405794088.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/60/f8/a6/60f8a6bc-e875-238d-f2f8-f34a6034e6d2/14UMGIM07615.rgb.jpg/600x600bb.jpg"}, {"decade": "1970s", "t": "Stayin' Alive", "a": "Bee Gees", "y": 1977, "id": 1422968382, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/ec/ba/3a/ecba3a83-3fc2-ce65-8b3b-7d93e67c011e/mzaf_11058124250999687618.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/05/16/98/0516987b-e7cf-4c53-67c3-bbfed5e6e9c4/06UMGIM12368.rgb.jpg/600x600bb.jpg"}, {"decade": "1970s", "t": "Bohemian Rhapsody", "a": "Queen", "y": 1975, "id": 6781024437, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/4b/83/09/4b8309c3-e3b2-10bd-ea80-ec017d832503/mzaf_9752264660400108875.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/8b/0a/ea/8b0aea60-6f4a-195b-5958-cdf459c2333b/602527644271.jpg/600x600bb.jpg"}, {"decade": "1970s", "t": "I Will Survive", "a": "Gloria Gaynor", "y": 1978, "id": 1443818368, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/e7/40/66/e74066a0-d000-1896-cd2e-7b2bc97393ad/mzaf_6935563640938257821.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/33/12/df/3312dfbf-2cd2-e149-1ccb-9688e2a60980/00731454913720.rgb.jpg/600x600bb.jpg"}, {"decade": "1970s", "t": "September", "a": "Earth, Wind & Fire", "y": 1978, "id": 830431255, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/3d/87/3a/3d873a69-725f-8560-00b3-ffa38df4d526/mzaf_3488042292485014542.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e3/43/90/e34390e9-6063-acf9-2f07-7bbeefaef9f2/886444485722.jpg/600x600bb.jpg"}, {"decade": "1970s", "t": "Y.M.C.A.", "a": "Village People", "y": 1978, "id": 1443926626, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/ba/d4/f8/bad4f867-7741-8f3f-720a-a41835e0bf72/mzaf_7671034670120278334.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/a7/70/df/a770dff5-0b2c-b260-0c10-eea7997d36eb/00731453217126.rgb.jpg/600x600bb.jpg"}, {"decade": "1980s", "t": "Billie Jean", "a": "Michael Jackson", "y": 1982, "id": 269573364, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/dc/bc/8a/dcbc8a3e-4ce1-c00d-cc02-eda2212053c7/mzaf_8347559338388601510.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/32/4f/fd/324ffda2-9e51-8f6a-0c2d-c6fd2b41ac55/074643811224.jpg/600x600bb.jpg"}, {"decade": "1980s", "t": "Don't Stop Believin'", "a": "Journey", "y": 1981, "id": 169003415, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/0f/e9/54/0fe95410-dc38-8696-0259-f61d869e9fca/mzaf_13616088119456591905.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/71/2d/61/712d617d-f4a4-5904-1b11-d4b4b45c47c5/828768588925.jpg/600x600bb.jpg"}, {"decade": "1980s", "t": "I Wanna Dance with Somebody (Who Loves Me)", "a": "Whitney Houston", "y": 1987, "id": 840431935, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/7b/67/fd/7b67fd07-6a7a-0362-135c-878ac5799f2c/mzaf_11309521725869189721.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/86/b5/25/86b525b1-bff1-4bf6-6112-531251b3d672/dj.hthdmusj.jpg/600x600bb.jpg"}, {"decade": "1980s", "t": "Livin' on a Prayer", "a": "Bon Jovi", "y": 1986, "id": 1422955211, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/75/15/30/75153020-b7c4-7958-8907-4aa1b965dc24/mzaf_2377504467597068152.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/40/16/3e/40163e24-6985-b785-d4ea-cbae07d74812/06UMGIM05422.rgb.jpg/600x600bb.jpg"}, {"decade": "1980s", "t": "Take On Me", "a": "a-ha", "y": 1985, "id": 368555810, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/2b/38/02/2b3802d7-c646-e2ba-d85d-e968c4149bb2/mzaf_1456367453160287920.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/86/98/7d/86987d9d-320b-0246-4f4e-343b32056b8d/mzi.qmnpjmnr.jpg/600x600bb.jpg"}, {"decade": "1980s", "t": "Girls Just Want to Have Fun", "a": "Cyndi Lauper", "y": 1983, "id": 400603693, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/95/1d/ed/951ded3d-4e31-1452-42b6-cc36070a2204/mzaf_10794841548233618528.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/8a/8c/13/8a8c13e0-06af-1710-7b7d-ebec65fb8361/074643893022.jpg/600x600bb.jpg"}, {"decade": "1990s", "t": "I Want It That Way", "a": "Backstreet Boys", "y": 1999, "id": 283567164, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/12/cd/f8/12cdf81c-f174-cd45-9a56-9b2388df9e63/mzaf_2642298639219088626.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/5f/6b/e9/5f6be919-1b9e-30ef-45b7-cc27fc428fd5/012414167224.jpg/600x600bb.jpg"}, {"decade": "1990s", "t": "Wannabe", "a": "Spice Girls", "y": 1996, "id": 1573849255, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/db/cb/c6/dbcbc688-8277-b365-8deb-1da3c30da079/mzaf_7842872759474974048.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e1/92/8f/e1928fcb-0204-ca19-597a-6edaf8e6ebc8/21UMGIM16233.rgb.jpg/600x600bb.jpg"}, {"decade": "1990s", "t": "My Heart Will Go On", "a": "Céline Dion", "y": 1997, "id": 1481507900, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/f4/e9/69/f4e9695a-ab90-1946-abe0-77e8fa96ccfc/mzaf_10170763914731960323.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e3/35/d0/e335d074-3d62-f1ca-0ebd-dbc79f7eb477/886447917251.jpg/600x600bb.jpg"}, {"decade": "1990s", "t": "Macarena", "a": "Los del Río", "y": 1995, "id": 1518348098, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/e3/0b/7b/e30b7b58-69f5-4b3d-11b4-b595db9f7dfc/mzaf_16542795090465388372.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/5e/59/3f/5e593f6a-9049-b5da-487a-d12e1d481355/886448318125.jpg/600x600bb.jpg"}, {"decade": "1990s", "t": "...Baby One More Time", "a": "Britney Spears", "y": 1998, "id": 273143820, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/2a/ef/e5/2aefe5c7-e83b-07b1-227e-117347aa3006/mzaf_11333878250757508664.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/51/73/28/5173280b-9b5e-c5e4-d3f8-a2612d044543/888880423368.jpg/600x600bb.jpg"}, {"decade": "1990s", "t": "Smells Like Teen Spirit", "a": "Nirvana", "y": 1991, "id": 1440783625, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/65/49/4e/65494e02-b6d3-26d8-6b0c-9bd98dcf4d5d/mzaf_7665413316386155700.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/95/fd/b9/95fdb9b2-6d2b-92a6-97f2-51c1a6d77f1a/00602527874609.rgb.jpg/600x600bb.jpg"}, {"decade": "2000s", "t": "Yeah!", "a": "USHER feat. Lil Jon & Ludacris", "y": 2004, "id": 386153478, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/94/52/3c/94523c88-f5f9-16f4-dbd7-f284ca168048/mzaf_7184891920196479048.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/02/c6/e1/02c6e1cd-8d57-97b4-6ef1-77d2be004509/mzi.sjrqsmrq.jpg/600x600bb.jpg"}, {"decade": "2000s", "t": "Hey Ya!", "a": "Outkast", "y": 2003, "id": 1774799818, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/7b/90/59/7b9059ba-a8f2-2540-5bbb-d63a178bd8ce/mzaf_1797078659976130902.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/71/ae/6a/71ae6a46-99a6-e9d8-d7f3-41c0f2df45c4/196872579123.jpg/600x600bb.jpg"}, {"decade": "2000s", "t": "I Gotta Feeling", "a": "Black Eyed Peas", "y": 2009, "id": 1440733919, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/5e/e2/8c/5ee28c7f-4f90-2af6-34aa-f41ae544e872/mzaf_15551749770926195730.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/68/67/2f/68672fbe-381d-a452-cf2a-4bc51a126fbb/10UMGIM29127.rgb.jpg/600x600bb.jpg"}, {"decade": "2000s", "t": "Single Ladies (Put a Ring on It)", "a": "Beyoncé", "y": 2008, "id": 295784137, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/52/45/d4/5245d453-4ccf-5632-05d2-bbb04ff287b4/mzaf_9969296866038379217.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/52/f9/76/52f976b0-016e-a3bf-1897-f69fb5d002d7/mzi.csyboqno.jpg/600x600bb.jpg"}, {"decade": "2000s", "t": "Umbrella", "a": "Rihanna feat. JAY-Z", "y": 2007, "id": 1441154437, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/7b/45/22/7b452241-882c-409b-3a9b-23306b14286a/mzaf_8588243939716013218.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/2b/c0/81/2bc081c8-25f0-ba43-d451-587a54613778/16UMGIM59202.rgb.jpg/600x600bb.jpg"}, {"decade": "2000s", "t": "Hips Don't Lie", "a": "Shakira feat. Wyclef Jean", "y": 2006, "id": 212559797, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/9f/93/47/9f9347cc-38cc-98f7-dabc-e333fa137054/mzaf_14640165511166564300.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/fa/9e/ba/fa9eba71-3a06-4c74-9238-a09f2a1bfd19/mzi.gkxlcxrs.jpg/600x600bb.jpg"}, {"decade": "2010s", "t": "Uptown Funk", "a": "Mark Ronson feat. Bruno Mars", "y": 2014, "id": 943946671, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/91/99/1f/91991fe5-aa77-87e4-edbc-6d68c95e5f18/mzaf_10685317694850942114.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/7e/30/c5/7e30c572-aa47-5f7b-c6fd-42d50cd2c56d/886444959797.jpg/600x600bb.jpg"}, {"decade": "2010s", "t": "Happy", "a": "Pharrell Williams", "y": 2013, "id": 863835363, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/ed/a0/19/eda019cf-2794-66d1-208d-2e2e74c26c3d/mzaf_16469762943852039623.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/76/ff/5e/76ff5ee0-7ab4-2ac2-2598-486a9ccc06e1/886444516877.jpg/600x600bb.jpg"}, {"decade": "2010s", "t": "Rolling in the Deep", "a": "Adele", "y": 2010, "id": 1544491233, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/4c/4f/03/4c4f032a-3d2b-853d-da81-996602355b42/mzaf_11625850023134180491.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/eb/ca/25/ebca2596-cd1e-b295-91a3-771c868d0a79/191404113868.png/600x600bb.jpg"}, {"decade": "2010s", "t": "Shape of You", "a": "Ed Sheeran", "y": 2017, "id": 1193701392, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/44/c7/4f/44c74f0d-72dc-6143-d4d0-ba14d661ca0d/mzaf_9566898362556366703.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/600x600bb.jpg"}, {"decade": "2010s", "t": "Shake It Off", "a": "Taylor Swift", "y": 2014, "id": 1440933651, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/11/d5/6d/11d56d4a-ce23-e793-8681-70dc4d35d931/mzaf_5886436202259848624.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/a7/98/d8/a798d867-344d-2bf2-fbfe-d2d1412dcef8/14UMDIM03793.rgb.jpg/600x600bb.jpg"}, {"decade": "2010s", "t": "Despacito", "a": "Luis Fonsi & Daddy Yankee", "y": 2017, "id": 1447401620, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/0d/cb/ec/0dcbec41-5e9e-bd09-7cdd-fdff44acdf78/mzaf_17345185466754008149.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e2/ef/f0/e2eff0bc-c51d-7de5-9280-6891ddcee71b/18UMGIM85289.rgb.jpg/600x600bb.jpg"}, {"decade": "2020s", "t": "Levitating", "a": "Dua Lipa", "y": 2020, "id": 1551179407, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/0f/94/3d/0f943d20-08b5-cfec-2d5a-6a3cab0e52a4/mzaf_10014388327615840056.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/96/93/54/969354a7-8985-7833-7160-93e38110b745/190295042998.jpg/600x600bb.jpg"}, {"decade": "2020s", "t": "Stay", "a": "The Kid LAROI & Justin Bieber", "y": 2021, "id": 1574968888, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/d7/4a/84/d74a84d5-9afa-761e-b632-baab55c2a23b/mzaf_11865500880477235553.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/600x600bb.jpg"}, {"decade": "2020s", "t": "As It Was", "a": "Harry Styles", "y": 2022, "id": 1615585008, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/67/10/16/67101606-3869-ca44-6c03-e13d6322cb51/mzaf_1135399237022217274.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/2a/19/fb/2a19fb85-2f70-9e44-f2a9-82abe679b88e/886449990061.jpg/600x600bb.jpg"}, {"decade": "2020s", "t": "Flowers", "a": "Miley Cyrus", "y": 2023, "id": 1702906535, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/c5/46/32/c546324e-d129-4630-45cd-78092836ce4f/mzaf_14963616412621662357.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/c4/40/d8/c440d88a-2bcd-5d10-e814-e482271134f4/196871387361.jpg/600x600bb.jpg"}, {"decade": "2020s", "t": "Espresso", "a": "Sabrina Carpenter", "y": 2024, "id": 1752214923, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/99/da/ff/99daffce-cdde-59c6-5ae0-7f922ce411a8/mzaf_5621292401829922816.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/a1/1c/ca/a11ccab6-7d4c-e041-d028-998bcebeb709/24UMGIM61704.rgb.jpg/600x600bb.jpg"}, {"decade": "2020s", "t": "APT.", "a": "ROSÉ & Bruno Mars", "y": 2024, "id": 1771105935, "p": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/70/41/42/70414259-14f5-245e-bd79-93c80401d556/mzaf_8687698460653166345.plus.aac.p.m4a", "art": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/2d/14/66/2d14661b-345b-d0f3-4e86-56ef626e68aa/075679629203.jpg/600x600bb.jpg"}]/*END*/;
+const DECADES = [
+  { key: "1970s", name: "The ’70s", short: "’70s", blurb: "Disco balls and bell-bottoms." },
+  { key: "1980s", name: "The ’80s", short: "’80s", blurb: "Big hair, synths and power ballads." },
+  { key: "1990s", name: "The ’90s", short: "’90s", blurb: "Boy bands, girl power and grunge." },
+  { key: "2000s", name: "The 2000s", short: "2000s", blurb: "Flip phones and packed dance floors." },
+  { key: "2010s", name: "The 2010s", short: "2010s", blurb: "The biggest hits of the streaming era." },
+  { key: "2020s", name: "The 2020s", short: "2020s", blurb: "The songs of right now." },
+];
+const ROUNDS = DECADES.map((d, k) => ({ ...d, color: `var(--d${k + 1})`, songs: SONGS.filter(s => s.decade === d.key) }))
+  .filter(R => R.songs.length);
+const TOTAL = ROUNDS.reduce((n, R) => n + R.songs.length, 0);
+const CLIPS = [2, 5, 10];               // seconds; clip n (1-based) is worth 4 - n points for the song title
+const COLORS = ["var(--t1)", "var(--t2)", "var(--t3)", "var(--t4)"];
+const KEY = "needle-drop-v1";
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let S, lastId = null, lastRevealed = false, bumpK = -1, armedReset = null;
+
+const fresh = (teams = ["Team Anisha", "Team Matt"]) => ({ lobby: true, started: false, view: "intro", r: 0, i: 0, teams, songs: {} });
+const fid = (r, i) => r + "-" + i;
+const F = (r = S.r, i = S.i) => (S.songs[fid(r, i)] ||= { level: 0, revealed: false, song: null, artist: null });
+const cur = () => ROUNDS[S.r].songs[S.i];
+const worth = f => 4 - Math.max(1, f.level);
+const teamName = k => (S.teams[k] || "").trim() || `Team ${k + 1}`;
+const scores = () => {
+  const s = S.teams.map(() => 0);
+  for (const f of Object.values(S.songs)) {
+    if (f.song && f.song.team < s.length) s[f.song.team] += f.song.pts;
+    if (f.artist != null && f.artist < s.length) s[f.artist] += 1;
+  }
+  return s;
+};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function loadSaved() {
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.teams) && s.songs) return s; } catch (e) {}
+  return null;
+}
+function commit() { save(); render(); }
+
+/* ---------- audio: one player; a clip stops itself once the preview's own clock passes the clip length ---------- */
+const audio = new Audio();
+audio.preload = "auto";
+const pre = new Audio();               // warms the cache with the next song's preview
+pre.preload = "auto";
+let clipEnd = null, playingLevel = 0;
+const retried = new Set();
+
+function setStatus(msg, bad = true) { const el = $("#pStatus"); el.textContent = msg; el.classList.toggle("bad", bad && !!msg); }
+function loadSong(s) { if (audio.dataset.id !== String(s.id)) { audio.src = s.p; audio.dataset.id = String(s.id); } }
+function play(sec, level) {
+  const s = cur();
+  loadSong(s);
+  clipEnd = sec; playingLevel = level;
+  setStatus("");
+  try { audio.currentTime = 0; } catch (e) {}
+  const p = audio.play();
+  document.body.classList.add("playing");
+  renderClips();
+  if (p && p.then) p.then(tick).catch(err => {
+    if (err.name === "NotAllowedError") setStatus("The browser blocked the sound. Press play again.");
+    if (err.name !== "AbortError") stop();
+  }); else tick();
+}
+function stop() { audio.pause(); }
+function tick() {
+  if (clipEnd != null && audio.currentTime >= clipEnd) audio.pause();
+  paintProgress();
+  if (!audio.paused) requestAnimationFrame(tick);
+}
+function paintProgress() {
+  const len = clipEnd ?? (isFinite(audio.duration) ? audio.duration : 30);
+  const t = Math.min(audio.currentTime || 0, len);
+  $("#ring").style.strokeDasharray = `${(t / len) * 100} 100`;
+  $("#pTimer").textContent = playingLevel || !audio.paused ? `${t.toFixed(1)} s of ${Math.round(len)} s` : "";
+}
+audio.addEventListener("pause", () => { document.body.classList.remove("playing"); playingLevel = 0; if (!S.lobby && S.view === "play") renderClips(); });
+audio.addEventListener("error", () => {
+  if (!audio.dataset.id) return;
+  const s = cur();
+  if (!s || audio.dataset.id !== String(s.id)) return;
+  if (!retried.has(s.id)) { retried.add(s.id); return refreshPreview(s, () => play(clipEnd, playingLevel)); }
+  setStatus("This clip didn't load. Check the internet connection, or skip to the next song.");
+});
+// Apple occasionally moves preview files; look the track up again by its id (JSONP works from a local file).
+function refreshPreview(s, then) {
+  const cb = "ndLookup" + s.id, el = document.createElement("script");
+  window[cb] = d => {
+    delete window[cb]; el.remove();
+    const r = d && d.results && d.results[0];
+    if (r && r.previewUrl) { s.p = r.previewUrl; audio.dataset.id = ""; then(); }
+    else setStatus("Apple no longer has a preview for this song. Skip to the next one.");
+  };
+  el.onerror = () => { delete window[cb]; setStatus("Can't reach Apple's preview server. Check the internet connection."); };
+  el.src = `https://itunes.apple.com/lookup?id=${s.id}&country=US&callback=${cb}`;
+  document.head.appendChild(el);
+}
+function chime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)(), now = ctx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5].forEach((hz, k) => {
+      const o = ctx.createOscillator(), g = ctx.createGain(), t0 = now + k * 0.13;
+      o.frequency.value = hz;
+      g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.25, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.7);
+      o.connect(g).connect(ctx.destination); o.start(t0); o.stop(t0 + 0.75);
+    });
+    setTimeout(() => ctx.close(), 1800);
+  } catch (e) {}
+}
+function checkPreviews() {
+  const el = $("#netStatus"), probe = new Audio();
+  if (!SONGS.length) { el.textContent = "No songs loaded. Run build_game.py."; el.classList.add("bad"); return; }
+  probe.preload = "metadata";
+  probe.onloadedmetadata = () => { el.textContent = `Song previews are loading fine. ${TOTAL} songs ready.`; el.classList.remove("bad"); };
+  probe.onerror = () => { el.textContent = "Can't reach Apple's song previews. Check the internet connection, then reload."; el.classList.add("bad"); };
+  probe.src = SONGS[0].p;
+}
+
+/* ---------- actions ---------- */
+function goto(fn) { stop(); fn(); commit(); }
+function startGame() { stop(); S = { ...fresh(S.teams), lobby: false, started: true }; keepAwake(); commit(); }
+function next() {
+  goto(() => {
+    if (S.view === "intro") { S.view = "play"; S.i = 0; return; }
+    if (S.view !== "play") return;
+    if (S.i < ROUNDS[S.r].songs.length - 1) S.i++;
+    else if (S.r < ROUNDS.length - 1) { S.r++; S.i = 0; S.view = "intro"; }
+    else S.view = "final";
+  });
+}
+function prev() {
+  goto(() => {
+    if (S.view === "play") { if (S.i > 0) S.i--; else S.view = "intro"; }
+    else if (S.view === "intro") { if (S.r === 0) return; S.r--; S.i = ROUNDS[S.r].songs.length - 1; S.view = "play"; }
+    else if (S.view === "final") { S.r = ROUNDS.length - 1; S.i = ROUNDS[S.r].songs.length - 1; S.view = "play"; }
+  });
+}
+function clip(n) {
+  const f = F();
+  if (!f.revealed && n > f.level) { f.level = n; save(); render(); }
+  play(CLIPS[n - 1], n);
+}
+function toggleSpace() {
+  const f = F();
+  if (!audio.paused) return stop();
+  if (f.revealed) return next();
+  clip(Math.max(1, f.level));
+}
+function reveal() { const f = F(); if (f.revealed) return; f.revealed = true; commit(); play(null, 0); }
+function giveSong(k) {
+  if (k >= S.teams.length) return;
+  const f = F();
+  if (f.song && f.song.team === k) f.song = null; else { f.song = { team: k, pts: worth(f) }; bumpK = k; }
+  commit();
+}
+function giveArtist(k) {
+  if (k >= S.teams.length) return;
+  const f = F();
+  if (f.artist === k) f.artist = null; else { f.artist = k; bumpK = k; }
+  commit();
+}
+function removeTeam(k) {
+  S.teams.splice(k, 1);
+  for (const f of Object.values(S.songs)) {
+    if (f.song) { if (f.song.team === k) f.song = null; else if (f.song.team > k) f.song.team--; }
+    if (f.artist != null) { if (f.artist === k) f.artist = null; else if (f.artist > k) f.artist--; }
+  }
+  commit();
+}
+
+/* ---------- views ---------- */
+function render() {
+  const v = S.lobby || !S.started ? "lobby" : S.view;
+  for (const id of ["lobby", "intro", "play", "final"]) $("#" + id).hidden = id !== v;
+  const R = ROUNDS[S.r] || ROUNDS[0];
+  document.documentElement.style.setProperty("--label", v === "lobby" ? "var(--d2)" : R.color);
+  ({ lobby: renderLobby, intro: renderIntro, play: renderPlay, final: renderFinal })[v]();
+}
+
+function renderLobby() {
+  $("#tagline").textContent = `Hear a few seconds of a hit, then name the song and the artist. ${TOTAL} songs from the 1970s to now, one decade per round.`;
+  $("#teamList").innerHTML = S.teams.map((n, k) => `
+    <div class="trow" style="--c:${COLORS[k]}">
+      <span class="sw"></span>
+      <label class="sr" for="team-${k}">Team ${k + 1} name</label>
+      <input id="team-${k}" data-k="${k}" maxlength="24" value="${esc(n)}" placeholder="Team ${k + 1}">
+      <button class="btn small" data-act="rm" data-k="${k}" ${S.teams.length <= 2 ? "disabled" : ""} aria-label="Remove ${esc(teamName(k))}">Remove</button>
+    </div>`).join("");
+  $("#addTeam").disabled = S.teams.length >= 4;
+  const where = S.view === "final" ? "Back to the final scores"
+    : S.view === "intro" ? `Resume · ${ROUNDS[S.r].name}` : `Resume · ${ROUNDS[S.r].name}, song ${S.i + 1}`;
+  $("#lobbyActions").innerHTML = S.started
+    ? `<button class="btn primary" data-act="resume">${where}</button><button class="btn" data-act="new">New game</button>`
+    : `<button class="btn primary" data-act="start">Start the music</button>`;
+}
+
+function chipsHTML(withScores) {
+  const sc = scores();
+  return S.teams.map((_, k) => `<span class="chip" style="--c:${COLORS[k]}"><span class="sw"></span>${esc(teamName(k))}${withScores ? ` <b>${sc[k]}</b>` : ""}</span>`).join("");
+}
+
+function renderIntro() {
+  const R = ROUNDS[S.r];
+  $("#iNum").textContent = `Round ${S.r + 1} of ${ROUNDS.length}`;
+  $("#iName").textContent = R.name;
+  $("#iBlurb").textContent = `${R.blurb} ${R.songs.length} songs.`;
+  $("#iChips").innerHTML = chipsHTML(S.r > 0);
+  $("#iBack").hidden = S.r === 0;
+  $("#iGo").textContent = `Drop the needle on ${R.name} →`;
+  const nx = R.songs[0]; if (nx && pre.src !== nx.p) pre.src = nx.p;
+}
+
+function renderClips() {
+  const f = F(), w = worth(f);
+  $("#pPrize").textContent = f.revealed ? "Answer revealed" : `Song: ${w} point${w > 1 ? "s" : ""} · Artist: +1`;
+  $("#pClips").innerHTML = CLIPS.map((sec, n) => {
+    const lvl = n + 1, unlocked = f.level >= lvl, on = playingLevel === lvl && !audio.paused;
+    const sub = on ? "playing…" : unlocked ? "play again" : lvl === 1 ? "worth 3" : f.revealed ? "" : `drops to ${4 - lvl}`;
+    return `<button class="clip${unlocked ? " unlocked" : ""}${on ? " on" : ""}" data-act="clip" data-n="${lvl}"
+      aria-label="Play ${sec} seconds${unlocked || lvl === 1 ? "" : `, lowers the prize to ${4 - lvl}`}"><b>▶ ${sec} sec</b><span>${sub}</span></button>`;
+  }).join("");
+  const full = $("#bFull");
+  full.hidden = !f.revealed;
+  full.textContent = !audio.paused && playingLevel === 0 ? "■ Stop" : "▶ Play the 30-second preview";
+  paintProgress();
+}
+
+function renderPlay() {
+  const R = ROUNDS[S.r], s = cur(), f = F(), id = fid(S.r, S.i);
+  const isNew = id !== lastId, justRevealed = f.revealed && (isNew || !lastRevealed);
+  if (isNew) { setStatus(""); $("#ring").style.strokeDasharray = "0 100"; }
+
+  $("#pWhere").innerHTML = `<span class="eyebrow">Round ${S.r + 1} of ${ROUNDS.length}</span><span class="show">${R.name}</span>`;
+  $("#pDots").innerHTML = R.songs.map((_, i) => {
+    const g = S.songs[fid(S.r, i)], cls = ["dot"];
+    let style = "";
+    if (g && g.song) { cls.push("won"); style = ` style="--c:${COLORS[g.song.team]}"`; }
+    else if (g && g.revealed) cls.push("seen");
+    if (i === S.i) cls.push("now");
+    return `<button class="${cls.join(" ")}"${style} data-act="jump" data-i="${i}" aria-label="Song ${i + 1}${i === S.i ? ", playing now" : ""}"></button>`;
+  }).join("");
+  $("#pCount").textContent = `Song ${S.i + 1} of ${R.songs.length}`;
+
+  $("#pLabel").innerHTML = f.revealed
+    ? `<img src="${esc(s.art)}" alt="Cover art">`
+    : `<span class="lbl-dec">${R.short}</span><span class="lbl-sub">Track ${S.i + 1}</span>`;
+
+  const card = $("#pCard");
+  card.classList.toggle("flip", justRevealed);
+  card.innerHTML = f.revealed
+    ? `<h2>${esc(s.t)}</h2><p class="artist">${esc(s.a)}</p><p class="meta">${s.y}</p>`
+    : `<dl><dt>Song</dt><dd>? ? ?</dd><dt>Artist</dt><dd>? ? ?</dd></dl>`;
+
+  $("#bReveal").disabled = f.revealed;
+  $("#bReveal").classList.toggle("primary", !f.revealed && f.level > 0);
+  const last = S.i === R.songs.length - 1;
+  $("#bNext").textContent = last ? (S.r === ROUNDS.length - 1 ? "Final scores →" : "Next decade →") : "Next song →";
+  $("#bNext").classList.toggle("primary", f.revealed);
+  renderClips();
+
+  const sc = scores(), w = worth(f);
+  $("#pTeams").innerHTML = S.teams.map((_, k) => {
+    const nm = esc(teamName(k)), gotSong = !!(f.song && f.song.team === k), gotArtist = f.artist === k;
+    const pts = gotSong ? f.song.pts : w;
+    return `<div class="team${bumpK === k ? " bump" : ""}" style="--c:${COLORS[k]}">
+      <span class="sw"></span><span class="nm">${nm}</span><span class="sc">${sc[k]}</span>
+      <button class="give" data-act="song" data-k="${k}" aria-pressed="${gotSong}"
+        aria-label="${gotSong ? `Take back the song points from ${nm}` : `Give ${pts} song points to ${nm}`}">${gotSong ? "✓ " : ""}+${pts} song</button>
+      <button class="give" data-act="artist" data-k="${k}" aria-pressed="${gotArtist}"
+        aria-label="${gotArtist ? `Take back the artist point from ${nm}` : `Give the artist point to ${nm}`}">${gotArtist ? "✓ " : ""}+1 artist</button>
+    </div>`;
+  }).join("");
+  bumpK = -1;
+  lastId = id; lastRevealed = f.revealed;
+
+  const nx = R.songs[S.i + 1] || (ROUNDS[S.r + 1] && ROUNDS[S.r + 1].songs[0]);
+  if (nx && pre.src !== nx.p) pre.src = nx.p;
+}
+
+function renderFinal() {
+  const sc = scores(), top = Math.max(...sc), winners = S.teams.map((_, k) => k).filter(k => sc[k] === top);
+  const h = $("#fWinner");
+  if (top === 0) { $("#fEyebrow").textContent = "That's the last song"; h.textContent = "Nobody scored!"; h.style.removeProperty("--c"); }
+  else if (winners.length > 1) { $("#fEyebrow").textContent = `Tied at ${top} points`; h.textContent = "It's a tie!"; h.style.removeProperty("--c"); }
+  else { $("#fEyebrow").textContent = "Top of the charts"; h.textContent = teamName(winners[0]); h.style.setProperty("--c", COLORS[winners[0]]); }
+  $("#fBoard").innerHTML = S.teams.map((_, k) => k).sort((a, b) => sc[b] - sc[a]).map(k =>
+    `<div class="chip" style="--c:${COLORS[k]}"><span><span class="sw"></span>${esc(teamName(k))}</span><b>${sc[k]}</b></div>`).join("");
+  const dot = (k, what) => `<span class="sw" style="--c:${k != null && k >= 0 ? COLORS[k] : "var(--line)"}" title="${what}: ${k != null && k >= 0 ? esc(teamName(k)) : "nobody"}"></span>`;
+  $("#fCredits").innerHTML = ROUNDS.map((R, r) => `<div style="--c:${R.color}"><h3>${R.name}</h3><ol>${R.songs.map((s, i) => {
+    const g = S.songs[fid(r, i)] || {};
+    return `<li><span class="pair">${dot(g.song ? g.song.team : -1, "Song")}${dot(g.artist, "Artist")}</span><span>${esc(s.t)}<small>${esc(s.a)} · ${s.y}</small></span></li>`;
+  }).join("")}</ol></div>`).join("");
+}
+
+/* ---------- screen helpers ---------- */
+let lock = null;
+async function keepAwake() {
+  try { if ("wakeLock" in navigator && !lock) { lock = await navigator.wakeLock.request("screen"); lock.addEventListener("release", () => { lock = null; }); } } catch (e) {}
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S && S.started && !S.lobby) keepAwake(); });
+function toggleFs() {
+  try {
+    const d = document, p = d.fullscreenElement ? d.exitFullscreen() : d.documentElement.requestFullscreen();
+    if (p && p.catch) p.catch(() => {});
+  } catch (e) {}
+}
+
+/* ---------- input ---------- */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]");
+  if (!b || b.disabled) return;
+  if (e.detail > 0) b.blur(); // mouse clicks shouldn't leave focus where Space would re-press the button
+  const k = +b.dataset.k;
+  switch (b.dataset.act) {
+    case "start": return startGame();
+    case "resume": S.lobby = false; keepAwake(); return commit();
+    case "new":
+      if (armedReset) { clearTimeout(armedReset); armedReset = null; return startGame(); }
+      b.textContent = "Tap again to clear the scores"; b.classList.add("warn");
+      armedReset = setTimeout(() => { armedReset = null; if (S.lobby) renderLobby(); }, 3500);
+      return;
+    case "add": if (S.teams.length < 4) { S.teams.push(`Team ${S.teams.length + 1}`); commit(); } return;
+    case "rm": if (S.teams.length > 2) removeTeam(k); return;
+    case "lobby": stop(); S.lobby = true; return commit();
+    case "fs": return toggleFs();
+    case "chime": return chime();
+    case "next": return next();
+    case "prev": return prev();
+    case "clip": return clip(+b.dataset.n);
+    case "reveal": return reveal();
+    case "full": return !audio.paused && playingLevel === 0 ? stop() : play(null, 0);
+    case "song": return giveSong(k);
+    case "artist": return giveArtist(k);
+    case "jump": return goto(() => { S.i = +b.dataset.i; });
+    case "again": stop(); S = { ...fresh(S.teams), lobby: false, started: true }; return commit();
+  }
+});
+document.addEventListener("input", e => {
+  if (!e.target.matches("#teamList input")) return;
+  S.teams[+e.target.dataset.k] = e.target.value;
+  save();
+});
+document.addEventListener("keydown", e => {
+  if (e.target.closest("input, textarea") || e.metaKey || e.ctrlKey || e.altKey) return;
+  const v = S.lobby || !S.started ? "lobby" : S.view, key = e.key, onBtn = !!e.target.closest("button");
+  if (key === "f" || key === "F") return toggleFs();
+  if (v === "play") {
+    const digit = /^Digit([1-4])$/.exec(e.code);
+    if (digit) return e.shiftKey ? giveArtist(+digit[1] - 1) : giveSong(+digit[1] - 1);
+    if (key === "l" || key === "L") { const f = F(); return clip(Math.min(CLIPS.length, f.level + 1)); }
+    if (key === "r" || key === "R") return reveal();
+    if (key === "ArrowRight" || key === "n" || key === "N") return next();
+    if (key === "ArrowLeft") return prev();
+    if ((key === " " || key === "Enter") && !onBtn) { e.preventDefault(); toggleSpace(); }
+  } else if (v === "intro") {
+    if (key === "ArrowRight" || ((key === " " || key === "Enter") && !onBtn)) { e.preventDefault(); next(); }
+    else if (key === "ArrowLeft") prev();
+  } else if (v === "final" && key === "ArrowLeft") prev();
+});
+
+/* ---------- boot ---------- */
+if (!document.fullscreenEnabled) $("#fsBtn").hidden = true;
+S = loadSaved() || fresh();
+render();
+checkPreviews();
+</script>
+</body>
+</html>
