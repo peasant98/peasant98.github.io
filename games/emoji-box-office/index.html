@@ -364,7 +364,8 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 let S, lastId = null, lastRevealed = false, bumpK = -1, armedReset = null;
 
-const fresh = (teams = ["Team Anisha", "Team Matt"]) => ({ lobby: true, started: false, view: "intro", r: 0, i: 0, teams, films: {} });
+const RENAMED = { "Team Anisha": "Team AY", "Team Matt": "Team Matty Boy" }; // nicknames (11-09); old saved games pick them up too
+const fresh = (teams = ["Team AY", "Team Matty Boy"]) => ({ lobby: true, started: false, view: "intro", r: 0, i: 0, teams, films: {} });
 const fid = (r, i) => r + "-" + i;
 const F = (r = S.r, i = S.i) => (S.films[fid(r, i)] ||= { hints: 0, revealed: false, award: null });
 const worth = f => Math.max(1, 3 - f.hints);
@@ -376,7 +377,7 @@ const scores = () => {
 };
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 function load() {
-  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.teams) && s.films) return s; } catch (e) {}
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.teams) && s.films) { s.teams = s.teams.map(n => RENAMED[n] || n); return s; } } catch (e) {}
   return null;
 }
 function commit() { save(); render(); }

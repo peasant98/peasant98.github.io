@@ -349,9 +349,10 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;"
 let S, lastId = null, bumpK = -1, armedReset = null, flashOpt = -1;
 
 const DEFAULT_PANEL = [
-  { name: "Dad", spec: "tennis" }, { name: "Matt", spec: "nba" }, { name: "Anisha", spec: "friends" },
-  { name: "Anisha's sister", spec: "friends" }, { name: "Mom", spec: "eighties" },
+  { name: "Dad", spec: "tennis" }, { name: "Matty Boy", spec: "nba" }, { name: "AY", spec: "friends" },
+  { name: "Big T", spec: "friends" }, { name: "The General", spec: "eighties" },
 ];
+const RENAMED = { "Matt": "Matty Boy", "Anisha": "AY", "Anisha's sister": "Big T", "Mom": "The General" }; // nicknames (11-09)
 const fresh = (players = DEFAULT_PANEL.map(p => ({ ...p }))) => ({ lobby: true, started: false, view: "intro", r: 0, i: 0, players, qs: {} });
 const qid = (r, i) => r + "-" + i;
 const Q = (r = S.r, i = S.i) => (S.qs[qid(r, i)] ||= { pick: null, revealed: false, award: null });
@@ -376,7 +377,7 @@ function records() {
 }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 function loadSaved() {
-  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.players) && s.qs) return s; } catch (e) {}
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.players) && s.qs) { s.players.forEach(p => { p.name = RENAMED[p.name] || p.name; }); return s; } } catch (e) {}
   return null;
 }
 function commit() { save(); render(); }
