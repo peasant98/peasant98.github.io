@@ -28,7 +28,7 @@
   --c-nba: #f47c2c;
   --c-friends: #a774e0;
   --c-80s: #ff4fa8;
-  --c-avatar: #5ab0ff;
+  --c-modern: #5ab0ff;
   --c-general: #3cc8c0;
   --cat: var(--c-general);
   --cat-ink: #10132a;
@@ -279,7 +279,7 @@ const CATS = {
   general: { name: "General Trivia", icon: "🧠", color: "var(--c-general)" },
   tennis: { name: "Tennis", icon: "🎾", color: "var(--c-tennis)" },
   nba: { name: "NBA", icon: "🏀", color: "var(--c-nba)" },
-  avatar: { name: "Avatar", icon: "🌀", color: "var(--c-avatar)" },
+  modern: { name: "Modern Family", icon: "🏠", color: "var(--c-modern)" },
   friends: { name: "Friends", icon: "☕", color: "var(--c-friends)" },
   eighties: { name: "The ’80s", icon: "📼", color: "var(--c-80s)" },
 };
@@ -294,24 +294,24 @@ const ROUNDS = [
     ["The ancient city of Petra is in which country?", ["Egypt", "Jordan", "Turkey", "Lebanon"], 1, "Carved into rose-red cliffs by the Nabataeans."],
   ]},
   { cat: "tennis", qs: [
-    ["How many Wimbledon singles titles did Martina Navratilova win?", ["7", "8", "9", "10"], 2, "Including six in a row, from 1982 to 1987."],
-    ["Who ended Björn Borg's run of five straight Wimbledon titles in the 1981 final?", ["Jimmy Connors", "John McEnroe", "Ivan Lendl", "Vitas Gerulaitis"], 1, "Borg had won their 1980 final, the one with the 18–16 tiebreak."],
-    ["Which Indian pair reached all four Grand Slam men's doubles finals in 1999?", ["Leander Paes and Mahesh Bhupathi", "Vijay and Anand Amritraj", "Mahesh Bhupathi and Rohan Bopanna", "Leander Paes and Rohan Bopanna"], 0, "They won the French Open and Wimbledon that year."],
-    ["Until 1987, the Australian Open was played on which surface?", ["Clay", "Grass", "Carpet", "Asphalt"], 1, "It moved to hard courts at Melbourne Park in 1988."],
-    ["Who won Wimbledon in 2001 as a wildcard ranked 125th in the world?", ["Pat Rafter", "Tim Henman", "Goran Ivanišević", "Lleyton Hewitt"], 2, "He beat Pat Rafter in a final played on a Monday."],
-    ["Who did Roger Federer beat in the 2009 French Open final to complete his career Grand Slam?", ["Rafael Nadal", "Robin Söderling", "Juan Martín del Potro", "Andy Murray"], 1, "Söderling had knocked out Nadal, who had never lost at Roland Garros before."],
-    ["Who is the only man to win all four majors in one year twice?", ["Don Budge", "Roy Emerson", "Ken Rosewall", "Rod Laver"], 3, "In 1962 and again in 1969."],
-    ["Who beat Serena Williams in the 2015 US Open semifinal, ending her bid for a calendar Grand Slam?", ["Flavia Pennetta", "Roberta Vinci", "Simona Halep", "Angelique Kerber"], 1, "Pennetta then beat Vinci in an all-Italian final."],
+    ["In which year did the Open Era begin, letting professionals play the majors?", ["1960", "1965", "1968", "1972"], 2, "The 1968 French Open was the first open Grand Slam."],
+    ["Who won the 1989 French Open at 17, after an underarm serve against Ivan Lendl?", ["Andre Agassi", "Michael Chang", "Jim Courier", "Pete Sampras"], 1, "He beat Stefan Edberg in the final. Still the youngest man to win a major."],
+    ["What was Pete Sampras's best result at the French Open?", ["Fourth round", "Quarterfinal", "Semifinal", "Final"], 2, "In 1996. It's the only major he never won."],
+    ["Who did Andre Agassi beat in the 1992 Wimbledon final?", ["Boris Becker", "Pete Sampras", "Michael Stich", "Goran Ivanišević"], 3, "Agassi's first major, in five sets."],
+    ["Who did Steffi Graf beat in the 1999 French Open final, her last major title?", ["Monica Seles", "Martina Hingis", "Lindsay Davenport", "Arantxa Sánchez Vicario"], 1, "Graf's 22nd major. The crowd turned on Hingis that day."],
+    ["In which city was Monica Seles stabbed during a match in 1993?", ["Berlin", "Rome", "Hamburg", "Paris"], 2, "She was off the tour for more than two years."],
+    ["In the 1980 Wimbledon final, Borg and McEnroe played a famous fourth-set tiebreak. What was the score?", ["16–14", "18–16", "20–18", "22–20"], 1, "McEnroe won the tiebreak, but Borg won the match in five sets."],
+    ["Who won the first Wimbledon championship, in 1877?", ["William Renshaw", "Frank Hadow", "Spencer Gore", "John Hartley"], 2, "The club was then the All England Croquet and Lawn Tennis Club."],
   ]},
   { cat: "nba", qs: [
-    ["Kareem Abdul-Jabbar's signature shot was called the what?", ["Finger roll", "Skyhook", "Dream Shake", "Fadeaway"], 1, "The Dream Shake was Hakeem Olajuwon's move."],
-    ["Which team was nicknamed the “Bad Boys” in the late 1980s?", ["Boston Celtics", "New York Knicks", "Detroit Pistons", "Chicago Bulls"], 2, "They won back-to-back titles in 1989 and 1990."],
-    ["How many regular-season games did the 2015–16 Warriors win?", ["70", "72", "73", "74"], 2, "Then they lost the Finals to Cleveland after leading 3–1."],
-    ["Who won the most NBA championships as a player?", ["Michael Jordan", "Robert Horry", "Sam Jones", "Bill Russell"], 3, "Eleven in thirteen seasons, the last two as player-coach."],
-    ["Which number did Michael Jordan wear when he came back from baseball in 1995?", ["12", "23", "45", "9"], 2, "He switched back to 23 during that year's playoffs."],
-    ["Who was the first pick of the 1984 draft, two spots ahead of Michael Jordan?", ["Sam Bowie", "Hakeem Olajuwon", "Charles Barkley", "Patrick Ewing"], 1, "Sam Bowie went second."],
-    ["Who was the first player to average a triple-double for a whole season?", ["Magic Johnson", "Wilt Chamberlain", "Oscar Robertson", "Russell Westbrook"], 2, "In 1961–62. Westbrook did it next, 55 years later."],
-    ["Who was the only college player on the 1992 Dream Team?", ["Shaquille O'Neal", "Christian Laettner", "Grant Hill", "Bobby Hurley"], 1, "He played at Duke."],
+    ["Which coach won 11 NBA championships?", ["Red Auerbach", "Phil Jackson", "Gregg Popovich", "Pat Riley"], 1, "Six with the Bulls and five with the Lakers."],
+    ["How many points did Kobe Bryant score in his final NBA game in 2016?", ["50", "55", "60", "81"], 2, "Against the Utah Jazz, on 50 shots."],
+    ["Before Los Angeles, the Lakers played in which city?", ["Milwaukee", "Minneapolis", "Chicago", "St. Louis"], 1, "Hence the name: Minnesota is the land of 10,000 lakes."],
+    ["In which season did the NBA add the three-point line?", ["1967–68", "1976–77", "1979–80", "1985–86"], 2, "The ABA had used it since 1967."],
+    ["Who won the 1993 MVP award?", ["Hakeem Olajuwon", "Karl Malone", "David Robinson", "Charles Barkley"], 3, "He took the Suns to the Finals, where Jordan's Bulls beat them."],
+    ["Who was the first player born outside the US to be picked first overall?", ["Yao Ming", "Hakeem Olajuwon", "Mychal Thompson", "Andrea Bargnani"], 2, "Born in the Bahamas, picked by Portland in 1978. He's Klay Thompson's father."],
+    ["Who scored 61 points in Game 5 of the 1962 Finals?", ["Wilt Chamberlain", "Jerry West", "Bob Pettit", "Elgin Baylor"], 3, "Against the Celtics, with 22 rebounds too."],
+    ["Who had the first quadruple-double that included steals?", ["Alvin Robertson", "Hakeem Olajuwon", "David Robinson", "Nate Thurmond"], 0, "For the Spurs in 1986: 20 points, 11 rebounds, 10 assists and 10 steals."],
   ]},
   { cat: "general", title: "General Trivia", qs: [
     ["Which letter doesn't appear in the name of any US state?", ["J", "Q", "X", "Z"], 1, "J is in New Jersey, X in Texas, Z in Arizona."],
@@ -321,15 +321,15 @@ const ROUNDS = [
     ["Which country has the most time zones, counting overseas territories?", ["Russia", "United States", "China", "France"], 3, "Twelve, thanks to places like French Polynesia and Réunion."],
     ["Ramanujan's famous “taxicab number” is which?", ["1089", "1729", "2025", "4104"], 1, "The smallest number that is a sum of two cubes in two ways: 1³ + 12³ and 9³ + 10³."],
   ]},
-  { cat: "avatar", title: "Avatar: The Last Airbender", qs: [
-    ["What is Toph's nickname for Aang?", ["Twinkle Toes", "Snoozles", "Sugar Queen", "Sparky"], 0, "Sokka is Snoozles and Katara is Sugar Queen."],
-    ["Who taught Katara at the North Pole and later married her grandmother?", ["Master Pakku", "Master Piandao", "Jeong Jeong", "King Bumi"], 0, "He and Gran Gran had once been engaged."],
-    ["Zuko got his scar in what kind of duel with his father?", ["A Pai Sho match", "An Agni Kai", "A Kyoshi duel", "A Sun Warrior trial"], 1, "Zuko refused to fight his own father."],
-    ["What are the names of the two dragons at the Sun Warriors' city?", ["Fang and Druk", "Ran and Shaw", "Sozin and Agni", "Hei and Bai"], 1, "They show Aang and Zuko what firebending really is."],
-    ["Who taught Sokka to use a sword?", ["Jeong Jeong", "Master Piandao", "Iroh", "Kyoshi"], 1, "Sokka then forged his black sword from a meteorite."],
-    ["Where was Appa held captive in Ba Sing Se?", ["The Earth King's palace", "Lake Laogai", "The Serpent's Pass", "The Lower Ring"], 1, "Under the lake was the Dai Li's secret base."],
-    ["What is the name of Zuko's mother?", ["Ursa", "Kya", "Ilah", "Yue"], 0, "Kya is Katara's mother."],
-    ["What was the name of Iroh's son?", ["Lee", "Lu Ten", "Li", "Jee"], 1, "He died at the siege of Ba Sing Se. “Leaves from the vine…”"],
+  { cat: "modern", qs: [
+    ["Which country is Gloria from?", ["Mexico", "Colombia", "Venezuela", "Puerto Rico"], 1, "Sofía Vergara, who plays her, is Colombian too."],
+    ["What is Phil's job?", ["Dentist", "Magician", "Real estate agent", "Car salesman"], 2, "He's an amateur magician on the side."],
+    ["What is the name of Cam's clown alter ego?", ["Fizbo", "Bozo", "Pickles", "Giggles"], 0, "He first shows up at Luke's birthday party."],
+    ["Mitchell and Cam adopt Lily from which country?", ["China", "Korea", "Vietnam", "Cambodia"], 2, "They fly home with her in the very first episode."],
+    ["What does Phil call his book of life lessons?", ["Dunphy Wisdom", "Phil's-osophy", "Phil-anthropy", "The Phil Files"], 1, ""],
+    ["What does Jay's company sell?", ["Pools", "Closets and blinds", "Kitchens", "Plumbing"], 1, "Pritchett's Closets & Blinds. Claire later runs it."],
+    ["What is the name of Jay's first wife, Claire and Mitchell's mother?", ["Diane", "Donna", "DeDe", "Debbie"], 2, "Played by Shelley Long, from Cheers."],
+    ["What are the names of Haley and Dylan's twins?", ["Lily and Joe", "Poppy and George", "Daisy and Max", "Rose and Jack"], 1, ""],
   ]},
   { cat: "friends", qs: [
     ["What is Joey's character called on Days of Our Lives?", ["Dr. Drake Ramoray", "Dr. Blake Ramirez", "Dr. Jake Romero", "Dr. Drew Ramsey"], 0, "Drake is killed off, then comes back with Jessica Lockhart's brain."],
@@ -342,14 +342,14 @@ const ROUNDS = [
     ["What is the name of Chandler's strange roommate when Joey moves out?", ["Eddie", "Gunther", "Paolo", "Mike"], 0, "Played by Adam Goldberg."],
   ]},
   { cat: "eighties", qs: [
-    ["“Mogambo khush hua!” comes from which 1987 film?", ["Sholay", "Mr. India", "Shahenshah", "Tezaab"], 1, "Amrish Puri as Mogambo. Sholay's villain was Gabbar Singh."],
-    ["Who became the first Indian in space, in 1984?", ["Rakesh Sharma", "Ravish Malhotra", "Kalpana Chawla", "Sunita Williams"], 0, "Asked how India looked from space, he said “Saare Jahan Se Achha.”"],
-    ["The 1985 Live Aid concerts were held in London and which American city?", ["New York", "Los Angeles", "Philadelphia", "Chicago"], 2, "At JFK Stadium. Phil Collins flew the Concorde to play both."],
-    ["Which 1989 film made Salman Khan a star?", ["Qayamat Se Qayamat Tak", "Maine Pyar Kiya", "Hum Aapke Hain Koun", "Baazigar"], 1, "Qayamat Se Qayamat Tak (1988) did the same for Aamir Khan."],
-    ["Which team did the US beat in the 1980 “Miracle on Ice”?", ["Canada", "Sweden", "Finland", "Soviet Union"], 3, "Then they beat Finland for the gold medal."],
-    ["Which 1988 film, with the song “Ek Do Teen,” made Madhuri Dixit a star?", ["Tezaab", "Dil", "Beta", "Ram Lakhan"], 0, "Anil Kapoor was her co-star."],
-    ["Who sang “Aap Jaisa Koi” in the 1980 film Qurbani?", ["Asha Bhosle", "Alisha Chinai", "Usha Uthup", "Nazia Hassan"], 3, "She was a teenager from Pakistan. Next came “Disco Deewane.”"],
-    ["On Dallas, who shot J.R.?", ["Sue Ellen", "Kristin Shepard", "Cliff Barnes", "Bobby Ewing"], 1, "His sister-in-law. About 83 million Americans watched the reveal in 1980."],
+    ["Who was the US president for most of the 1980s?", ["Jimmy Carter", "Ronald Reagan", "George H. W. Bush", "Gerald Ford"], 1, "He served from 1981 to 1989."],
+    ["Which singer was called the “Material Girl”?", ["Cyndi Lauper", "Madonna", "Whitney Houston", "Pat Benatar"], 1, "From her 1985 hit “Material Girl.”"],
+    ["Which TV show starred KITT, a talking car?", ["The A-Team", "Airwolf", "Knight Rider", "Magnum, P.I."], 2, "David Hasselhoff played Michael Knight."],
+    ["“Where's the beef?” was a 1984 ad for which burger chain?", ["McDonald's", "Burger King", "Wendy's", "Hardee's"], 2, "Clara Peller said it, and the whole country repeated it."],
+    ["Which sitcom was set in a bar “where everybody knows your name”?", ["Taxi", "Cheers", "Night Court", "Happy Days"], 1, "A Boston bar. It ran from 1982 to 1993."],
+    ["In Back to the Future, how fast does the DeLorean need to go to travel in time?", ["55 mph", "88 mph", "100 mph", "121 mph"], 1, "Plus 1.21 gigawatts of power."],
+    ["Which game console did Nintendo launch in America in 1985?", ["Atari 2600", "NES", "Sega Genesis", "Game Boy"], 1, "Super Mario Bros. came with many of them."],
+    ["Which dolls caused stampedes in toy stores at Christmas 1983?", ["Barbie", "Care Bears", "Cabbage Patch Kids", "Strawberry Shortcake"], 2, "Each one came with adoption papers."],
   ]},
   { cat: "general", title: "Final Round", mult: 2, qs: [
     ["Which gas makes up most of Earth's air?", ["Oxygen", "Nitrogen", "Argon", "Carbon dioxide"], 1, "About 78%. Oxygen is about 21%."],
@@ -371,7 +371,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;"
 let S, lastId = null, bumpK = -1, armedReset = null, flashOpt = -1;
 
 const DEFAULT_PANEL = [
-  { name: "Dad", spec: "tennis" }, { name: "Matty Boy", spec: "nba" }, { name: "AY", spec: "avatar" },
+  { name: "Dad", spec: "tennis" }, { name: "Matty Boy", spec: "nba" }, { name: "AY", spec: "modern" },
   { name: "Big T", spec: "friends" }, { name: "The General", spec: "eighties" },
 ];
 const RENAMED = { "Matt": "Matty Boy", "Anisha": "AY", "Anisha's sister": "Big T", "Mom": "The General" }; // nicknames (11-09)
@@ -402,6 +402,7 @@ function migratePlayers(players) {
   for (const p of players) {
     p.name = RENAMED[p.name] || p.name;
     if (p.name === "AY" && p.spec === "friends") p.spec = "avatar"; // AY switched to Avatar (11-09)
+    if (p.spec === "avatar") p.spec = "modern"; // in the harder game, AY plays Modern Family instead
     if (!CATS[p.spec]) p.spec = "general";
   }
   return players;
