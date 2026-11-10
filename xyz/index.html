@@ -37,6 +37,20 @@ sitemap: false
     <a href="tables/summary_robots.txt">robot pick-and-place</a>, runtime on <a href="tables/runtime_scenediff.txt">SceneDiff</a>,
     <a href="tables/runtime_paslcd.txt">PASLCD</a> and <a href="tables/runtime_3dgscd.txt">3DGS-CD</a>.</p>
 
+  <h2>Headline numbers (Nov 10)</h2>
+  <ul>
+    <li><b>Change detection, F1:</b> PASLCD ours .912 vs O-SCD++ .726 (re-checking on 20) · SceneDiff .746 vs SceneDiff's method .533 ·
+      3DGS-CD all photos .787 vs O-SCD++ .655 · our one loss: 3DGS-CD held-out views .793 vs 3DGS-CD .834.</li>
+    <li><b>Agent vs protocol (5 PASLCD scenes):</b> a bare agent (render + photo only) gets .837, already above O-SCD++ .745; our protocol adds +.064 (.901).
+      Repeat run .892; a 4-minute splat instead of the 75-minute one: .887.</li>
+    <li><b>Can O-SCD be rescued?</b> Five SAM3 / DINO refinements of its masks: none beats raw O-SCD (best .648 vs .702 on 20 scenes; ours .912).</li>
+    <li><b>Object poses</b> (poses from half the photos, scored on the other half): depth error where moved objects and parts stand 10.2 % (24 cm) → 1.8 % (3.0 cm),
+      better in 9/9 scenes; rigid 0.76 %, articulated 3.0 %; 26 of 29 objects better. 3DGS-CD's edit on the same base splat: 12.5 %.
+      O-SCD (after its photo refit) ties our appearance there; same-representation O-SCD run in progress.</li>
+    <li><b>Scene update:</b> O-SCD's updater is better with our masks than its own before its refit (PASLCD +0.5 dB, CL-Splats +2.5 dB).
+      <b>Robot:</b> mobile Panda picks and places 5 of 17 moved objects in sim (Stretch 3: 0).</li>
+  </ul>
+
   <h2>Paper figures: object poses</h2>
   <p>Print size (3.5 in, 7 pt). SVG versions with editable text: <a href="paper/pose_ladder.svg">pose_ladder.svg</a>,
     <a href="paper/pose_ablation.svg">pose_ablation.svg</a>, <a href="paper/pose_per_object.svg">pose_per_object.svg</a>.</p>
