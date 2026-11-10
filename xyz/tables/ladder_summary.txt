@@ -1,6 +1,17 @@
 Edit ladder, 20 scenes: mean over the scenes with the region (n); 'better' = scenes where the stage beats the previous one
 
 
+### movers_at_pose
+
+| stage | n | PSNR | LPIPS | SSIM | better PSNR | better LPIPS |
+|---|---|---|---|---|---|---|
+| PRE | 9 | 11.14 | 0.678 | 0.358 | - | - |
+| - removed | 9 | 11.14 | 0.678 | 0.358 | 0/9 | 1/9 |
+| + rigid | 9 | 13.19 | 0.504 | 0.456 | 9/9 | 9/9 |
+| + articulated | 9 | 16.46 | 0.459 | 0.567 | 5/9 | 5/9 |
+| + fill | 9 | 16.31 | 0.458 | 0.564 | 2/9 | 6/9 |
+| + new things | 9 | 16.48 | 0.455 | 0.563 | 3/9 | 3/9 |
+
 ### rigid_at_pose
 
 | stage | n | PSNR | LPIPS | SSIM | better PSNR | better LPIPS |
