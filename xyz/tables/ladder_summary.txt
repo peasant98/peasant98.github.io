@@ -5,12 +5,12 @@ Edit ladder, 20 scenes: mean over the scenes with the region (n); 'better' = sce
 
 | stage | n | PSNR | LPIPS | SSIM | better PSNR | better LPIPS |
 |---|---|---|---|---|---|---|
-| PRE | 9 | 11.14 | 0.678 | 0.358 | - | - |
-| - removed | 9 | 11.14 | 0.678 | 0.358 | 0/9 | 1/9 |
-| + rigid | 9 | 13.19 | 0.504 | 0.456 | 9/9 | 9/9 |
-| + articulated | 9 | 16.46 | 0.459 | 0.567 | 5/9 | 5/9 |
-| + fill | 9 | 16.31 | 0.458 | 0.564 | 2/9 | 6/9 |
-| + new things | 9 | 16.48 | 0.455 | 0.563 | 3/9 | 3/9 |
+| PRE | 9 | 11.27 | 0.680 | 0.361 | - | - |
+| - removed | 9 | 11.27 | 0.680 | 0.360 | 0/9 | 2/9 |
+| + rigid | 9 | 13.33 | 0.505 | 0.459 | 9/9 | 9/9 |
+| + articulated | 9 | 17.25 | 0.443 | 0.586 | 5/9 | 4/9 |
+| + fill | 9 | 17.07 | 0.443 | 0.583 | 2/9 | 6/9 |
+| + new things | 9 | 17.24 | 0.440 | 0.583 | 3/9 | 4/9 |
 
 ### rigid_at_pose
 
@@ -19,7 +19,7 @@ Edit ladder, 20 scenes: mean over the scenes with the region (n); 'better' = sce
 | PRE | 9 | 12.12 | 0.635 | 0.278 | - | - |
 | - removed | 9 | 12.12 | 0.635 | 0.278 | 1/9 | 2/9 |
 | + rigid | 9 | 14.93 | 0.389 | 0.403 | 9/9 | 9/9 |
-| + articulated | 9 | 14.92 | 0.389 | 0.402 | 0/9 | 2/9 |
+| + articulated | 9 | 14.93 | 0.389 | 0.403 | 1/9 | 2/9 |
 | + fill | 9 | 14.54 | 0.394 | 0.394 | 3/9 | 5/9 |
 | + new things | 9 | 14.74 | 0.389 | 0.392 | 3/9 | 3/9 |
 
@@ -27,12 +27,12 @@ Edit ladder, 20 scenes: mean over the scenes with the region (n); 'better' = sce
 
 | stage | n | PSNR | LPIPS | SSIM | better PSNR | better LPIPS |
 |---|---|---|---|---|---|---|
-| PRE | 5 | 11.46 | 0.661 | 0.407 | - | - |
-| - removed | 5 | 11.46 | 0.662 | 0.406 | 0/5 | 0/5 |
-| + rigid | 5 | 11.46 | 0.662 | 0.407 | 1/5 | 2/5 |
-| + articulated | 5 | 18.04 | 0.570 | 0.629 | 5/5 | 5/5 |
-| + fill | 5 | 18.10 | 0.567 | 0.626 | 3/5 | 4/5 |
-| + new things | 5 | 18.10 | 0.567 | 0.626 | 0/5 | 0/5 |
+| PRE | 5 | 11.74 | 0.665 | 0.413 | - | - |
+| - removed | 5 | 11.74 | 0.666 | 0.413 | 0/5 | 1/5 |
+| + rigid | 5 | 11.74 | 0.666 | 0.413 | 1/5 | 2/5 |
+| + articulated | 5 | 20.01 | 0.538 | 0.670 | 5/5 | 4/5 |
+| + fill | 5 | 20.00 | 0.535 | 0.667 | 3/5 | 5/5 |
+| + new things | 5 | 20.00 | 0.535 | 0.667 | 0/5 | 1/5 |
 
 ### gt_region
 
@@ -41,9 +41,9 @@ Edit ladder, 20 scenes: mean over the scenes with the region (n); 'better' = sce
 | PRE | 20 | 9.41 | 0.719 | 0.254 | - | - |
 | - removed | 20 | 10.20 | 0.668 | 0.298 | 12/20 | 10/20 |
 | + rigid | 20 | 10.83 | 0.625 | 0.320 | 7/20 | 9/20 |
-| + articulated | 20 | 11.66 | 0.604 | 0.358 | 5/20 | 5/20 |
-| + fill | 20 | 12.48 | 0.595 | 0.383 | 17/20 | 15/20 |
-| + new things | 18 | 13.82 | 0.547 | 0.426 | 16/18 | 18/18 |
+| + articulated | 20 | 11.66 | 0.601 | 0.361 | 5/20 | 5/20 |
+| + fill | 20 | 12.54 | 0.590 | 0.387 | 17/20 | 16/20 |
+| + new things | 18 | 13.89 | 0.542 | 0.430 | 16/18 | 18/18 |
 
 ### full_image
 
@@ -52,11 +52,11 @@ Edit ladder, 20 scenes: mean over the scenes with the region (n); 'better' = sce
 | PRE | 20 | 17.77 | 0.306 | 0.669 | - | - |
 | - removed | 20 | 17.81 | 0.304 | 0.670 | 11/20 | 10/20 |
 | + rigid | 20 | 17.88 | 0.302 | 0.671 | 7/20 | 9/20 |
-| + articulated | 20 | 18.10 | 0.301 | 0.673 | 5/20 | 4/20 |
-| + fill | 20 | 18.25 | 0.301 | 0.675 | 17/20 | 13/20 |
-| + new things | 18 | 18.23 | 0.302 | 0.678 | 10/18 | 13/18 |
+| + articulated | 20 | 18.11 | 0.301 | 0.674 | 5/20 | 4/20 |
+| + fill | 20 | 18.26 | 0.301 | 0.675 | 17/20 | 14/20 |
+| + new things | 18 | 18.24 | 0.302 | 0.678 | 10/18 | 13/18 |
 
-objects per scene: cantina2_op {'removed': 3, 'replaced': 5, 'moved': 2, 'opened/closed': 4}, cantinaG_op {'removed': 2, 'replaced': 5, 'moved': 3, 'opened/closed': 3}, garden2_op {'removed': 5, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, garden_op {'removed': 6, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, lounge2_op {'removed': 1, 'replaced': 1, 'moved': 2, 'opened/closed': 0}, lounge_op {'removed': 2, 'replaced': 1, 'moved': 3, 'opened/closed': 0}, lunchroom2_op {'removed': 3, 'replaced': 0, 'moved': 1, 'opened/closed': 1}, lunchroom_op {'removed': 4, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, meetingroom2_op {'removed': 3, 'replaced': 2, 'moved': 0, 'opened/closed': 0}, meetingroom_op {'removed': 3, 'replaced': 3, 'moved': 0, 'opened/closed': 0}, playground2_op {'removed': 5, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, playground_op {'removed': 7, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, porch2_op {'removed': 1, 'replaced': 3, 'moved': 0, 'opened/closed': 0}, porch_op {'removed': 2, 'replaced': 2, 'moved': 0, 'opened/closed': 0}, pots2_op {'removed': 0, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, pots_op {'removed': 0, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, printingarea2_op {'removed': 3, 'replaced': 1, 'moved': 2, 'opened/closed': 3}, printingarea_op {'removed': 5, 'replaced': 1, 'moved': 3, 'opened/closed': 2}, zen2_op {'removed': 0, 'replaced': 0, 'moved': 1, 'opened/closed': 0}, zen_op {'removed': 0, 'replaced': 0, 'moved': 1, 'opened/closed': 0}
+objects per scene: cantina2_op {'removed': 3, 'replaced': 5, 'moved': 2, 'opened/closed': 3}, cantinaG_op {'removed': 2, 'replaced': 5, 'moved': 3, 'opened/closed': 3}, garden2_op {'removed': 5, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, garden_op {'removed': 6, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, lounge2_op {'removed': 1, 'replaced': 1, 'moved': 2, 'opened/closed': 0}, lounge_op {'removed': 2, 'replaced': 1, 'moved': 3, 'opened/closed': 0}, lunchroom2_op {'removed': 3, 'replaced': 0, 'moved': 1, 'opened/closed': 1}, lunchroom_op {'removed': 4, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, meetingroom2_op {'removed': 3, 'replaced': 2, 'moved': 0, 'opened/closed': 0}, meetingroom_op {'removed': 3, 'replaced': 3, 'moved': 0, 'opened/closed': 0}, playground2_op {'removed': 5, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, playground_op {'removed': 7, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, porch2_op {'removed': 1, 'replaced': 3, 'moved': 0, 'opened/closed': 0}, porch_op {'removed': 2, 'replaced': 2, 'moved': 0, 'opened/closed': 0}, pots2_op {'removed': 0, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, pots_op {'removed': 0, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, printingarea2_op {'removed': 3, 'replaced': 1, 'moved': 2, 'opened/closed': 2}, printingarea_op {'removed': 5, 'replaced': 1, 'moved': 3, 'opened/closed': 2}, zen2_op {'removed': 0, 'replaced': 0, 'moved': 1, 'opened/closed': 0}, zen_op {'removed': 0, 'replaced': 0, 'moved': 1, 'opened/closed': 0}
 
 ### the ladder's even-view poses vs the main run's (all views), 18 rigid movers
 
