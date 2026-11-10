@@ -37,6 +37,18 @@ sitemap: false
     <a href="tables/summary_robots.txt">robot pick-and-place</a>, runtime on <a href="tables/runtime_scenediff.txt">SceneDiff</a>,
     <a href="tables/runtime_paslcd.txt">PASLCD</a> and <a href="tables/runtime_3dgscd.txt">3DGS-CD</a>.</p>
 
+  <h2>Paper figures: object poses</h2>
+  <p>Print size (3.5 in, 7 pt). SVG versions with editable text: <a href="paper/pose_ladder.svg">pose_ladder.svg</a>,
+    <a href="paper/pose_ablation.svg">pose_ablation.svg</a>, <a href="paper/pose_per_object.svg">pose_per_object.svg</a>.</p>
+  <div class="grid">
+    <figure><a href="paper/pose_ladder.png"><img src="paper/pose_ladder.png" alt="PSNR and depth error per edit step" loading="lazy"></a>
+      <figcaption>Every scene with moved objects or parts (grey) and their mean (green): appearance against the held-out photo and depth against the after-change scan, per edit step.</figcaption></figure>
+    <figure><a href="paper/pose_per_object.png"><img src="paper/pose_per_object.png" alt="Per-object depth error before vs after posing" loading="lazy"></a>
+      <figcaption>Each moved object and part: depth error left at its old pose vs at our fitted pose. Below the diagonal = posing helped.</figcaption></figure>
+    <figure><a href="paper/pose_ablation.png"><img src="paper/pose_ablation.png" alt="Pose ablations" loading="lazy"></a>
+      <figcaption>Ablations of the pose step, scored where the moved objects and parts stand.</figcaption></figure>
+  </div>
+
   <h2>Change detection</h2>
   <p>Mean F1 of the binary change masks at the evaluation views, each benchmark scored with its own script; IoU printed beside each bar.
     Every baseline is shown at its best labeled variant.</p>
