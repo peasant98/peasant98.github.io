@@ -28,6 +28,7 @@
   --c-nba: #f47c2c;
   --c-friends: #a774e0;
   --c-80s: #ff4fa8;
+  --c-avatar: #5ab0ff;
   --c-general: #3cc8c0;
   --cat: var(--c-general);
   --cat-ink: #10132a;
@@ -278,6 +279,7 @@ const CATS = {
   general: { name: "General Trivia", icon: "🧠", color: "var(--c-general)" },
   tennis: { name: "Tennis", icon: "🎾", color: "var(--c-tennis)" },
   nba: { name: "NBA", icon: "🏀", color: "var(--c-nba)" },
+  avatar: { name: "Avatar", icon: "🌀", color: "var(--c-avatar)" },
   friends: { name: "Friends", icon: "☕", color: "var(--c-friends)" },
   eighties: { name: "The ’80s", icon: "📼", color: "var(--c-80s)" },
 };
@@ -286,62 +288,82 @@ const ROUNDS = [
   { cat: "general", title: "Warm-up", qs: [
     ["What is the largest planet in our solar system?", ["Saturn", "Jupiter", "Neptune", "Earth"], 1, "More than 1,300 Earths would fit inside it."],
     ["Which festival is known as the festival of lights?", ["Holi", "Navratri", "Diwali", "Pongal"], 2, "Holi is the festival of colors."],
+    ["How many continents are there?", ["Five", "Six", "Seven", "Eight"], 2, "Africa, Antarctica, Asia, Australia, Europe, North America and South America."],
     ["Which country gave the Statue of Liberty to the United States?", ["Spain", "Italy", "England", "France"], 3, "A gift from the people of France, dedicated in 1886."],
     ["Which chess piece can only move diagonally?", ["Bishop", "Rook", "Knight", "Queen"], 0, "Chess grew out of chaturanga, a game from India."],
     ["How many bones are in the adult human body?", ["186", "206", "226", "256"], 1, "Babies are born with around 300. Some fuse as they grow."],
   ]},
   { cat: "tennis", qs: [
-    ["Who beat Bobby Riggs in the 1973 “Battle of the Sexes” match?", ["Chris Evert", "Margaret Court", "Billie Jean King", "Martina Navratilova"], 2, "Riggs had beaten Margaret Court earlier that year."],
     ["The US Open's main stadium is named after whom?", ["Arthur Ashe", "Rod Laver", "Pete Sampras", "Jimmy Connors"], 0, "Rod Laver Arena hosts the Australian Open."],
-    ["Who won Wimbledon in 1985 at just 17 years old?", ["Stefan Edberg", "Pat Cash", "Michael Chang", "Boris Becker"], 3, "He was unseeded, too."],
-    ["In 1988, who won all four majors and Olympic gold, the “Golden Slam”?", ["Steffi Graf", "Monica Seles", "Chris Evert", "Gabriela Sabatini"], 0, "Still the only player to do it in one calendar year."],
+    ["Which Grand Slam tournament is played on clay?", ["Wimbledon", "US Open", "French Open", "Australian Open"], 2, "Roland Garros, in Paris."],
+    ["Who beat Bobby Riggs in the 1973 “Battle of the Sexes” match?", ["Chris Evert", "Margaret Court", "Martina Navratilova", "Billie Jean King"], 3, "Riggs had beaten Margaret Court earlier that year."],
+    ["Who won Wimbledon in 1985 at just 17 years old?", ["Stefan Edberg", "Boris Becker", "Pat Cash", "Michael Chang"], 1, "He was unseeded, too."],
+    ["In 1988, who won all four majors and Olympic gold, the “Golden Slam”?", ["Monica Seles", "Chris Evert", "Steffi Graf", "Gabriela Sabatini"], 2, "Still the only player to do it in one calendar year."],
+    ["How many Grand Slam singles titles did Serena Williams win?", ["21", "22", "23", "24"], 2, "One short of Margaret Court's record of 24."],
     ["How many French Open titles did Rafael Nadal win?", ["11", "12", "13", "14"], 3, "His record at Roland Garros: 112 wins, 4 losses."],
     ["Which Indian player won a singles bronze medal at the 1996 Atlanta Olympics?", ["Mahesh Bhupathi", "Leander Paes", "Vijay Amritraj", "Ramesh Krishnan"], 1, "India's first individual Olympic medal in 44 years."],
   ]},
   { cat: "nba", qs: [
     ["Michael Jordan won all six of his championships with which team?", ["Chicago Bulls", "Washington Wizards", "Los Angeles Lakers", "Boston Celtics"], 0, "Two three-peats: 1991–93 and 1996–98."],
     ["Which team plays its home games at Madison Square Garden?", ["Brooklyn Nets", "Boston Celtics", "New York Knicks", "Philadelphia 76ers"], 2, "The Nets play at Barclays Center in Brooklyn."],
-    ["How many points did Wilt Chamberlain score in one game in 1962?", ["81", "92", "73", "100"], 3, "Still the NBA record. Kobe Bryant scored 81 in 2006."],
+    ["Which team drafted Stephen Curry in 2009?", ["Golden State Warriors", "Minnesota Timberwolves", "Sacramento Kings", "Charlotte Bobcats"], 0, "The Timberwolves took two point guards just before him."],
+    ["How many points did Wilt Chamberlain score in one game in 1962?", ["73", "81", "92", "100"], 3, "Still the NBA record. Kobe Bryant scored 81 in 2006."],
     ["Who was the first overall pick in the 2003 NBA Draft?", ["Carmelo Anthony", "LeBron James", "Darko Miličić", "Dwyane Wade"], 1, "Darko Miličić went second, ahead of Carmelo Anthony, Chris Bosh and Dwyane Wade."],
     ["Before moving to Oklahoma City in 2008, the Thunder were which team?", ["Vancouver Grizzlies", "New Orleans Hornets", "Seattle SuperSonics", "Kansas City Kings"], 2, "The Sonics won the 1979 championship."],
+    ["Which team drafted Kobe Bryant in 1996, then traded him to the Lakers?", ["Philadelphia 76ers", "Charlotte Hornets", "New Jersey Nets", "Boston Celtics"], 1, "The Hornets traded him for center Vlade Divac."],
     ["Who holds the NBA record for career assists?", ["Magic Johnson", "Jason Kidd", "Chris Paul", "John Stockton"], 3, "15,806 assists over 19 seasons, all with the Utah Jazz."],
   ]},
   { cat: "general", title: "General Trivia", qs: [
     ["Who was the first person to walk on the Moon?", ["Buzz Aldrin", "Yuri Gagarin", "Neil Armstrong", "John Glenn"], 2, "July 20, 1969. Buzz Aldrin followed him down the ladder."],
     ["What is the national fruit of India?", ["Mango", "Banana", "Jackfruit", "Guava"], 0, "India grows more mangoes than any other country."],
     ["What is the capital of Australia?", ["Sydney", "Melbourne", "Perth", "Canberra"], 3, "It was built as a compromise between Sydney and Melbourne."],
+    ["What is the currency of Japan?", ["Won", "Yen", "Yuan", "Ringgit"], 1, "The won is Korea's, the yuan is China's."],
     ["Which is the largest US state by area?", ["Alaska", "Texas", "California", "Montana"], 0, "More than twice the size of Texas."],
     ["How many hearts does an octopus have?", ["One", "Two", "Three", "Eight"], 2, "And its blood is blue."],
   ]},
+  { cat: "avatar", title: "Avatar: The Last Airbender", qs: [
+    ["What is the name of Aang's flying bison?", ["Appa", "Momo", "Bosco", "Pabu"], 0, "“Yip yip!” is how Aang tells him to fly."],
+    ["Which element does Katara bend?", ["Earth", "Fire", "Air", "Water"], 3, "She and her brother Sokka are from the Southern Water Tribe."],
+    ["How long was Aang frozen in the iceberg?", ["10 years", "50 years", "100 years", "1,000 years"], 2, "He was 12 when he went in, which technically makes him 112."],
+    ["Who was the Avatar right before Aang?", ["Kyoshi", "Kuruk", "Yangchen", "Roku"], 3, "Roku was a firebender. Kyoshi came before him."],
+    ["Who is secretly the Blue Spirit?", ["Zuko", "Jet", "Sokka", "Iroh"], 0, "Zuko wore the mask to break Aang out of a Fire Nation fortress."],
+    ["What does the merchant whose cart keeps getting wrecked sell?", ["Melons", "Cabbages", "Fish", "Tea"], 1, "“My cabbages!”"],
+    ["What is the name of Iroh's tea shop in Ba Sing Se?", ["The Jade Dragon", "The White Lotus", "The Golden Dragon", "The Jasmine Dragon"], 3, "Iroh is also a grand master of the Order of the White Lotus."],
+    ["Which comet gives firebenders their greatest power?", ["Agni's Comet", "Sozin's Comet", "Roku's Comet", "Azulon's Comet"], 1, "Fire Lord Sozin used it to wipe out the Air Nomads."],
+  ]},
   { cat: "friends", qs: [
     ["What's the name of the coffee shop where the friends hang out?", ["Central Perk", "Monk's Café", "Luke's Diner", "The Max"], 0, "Monk's is Seinfeld's diner. Luke's is from Gilmore Girls."],
-    ["What is Ross's job?", ["Paleontologist", "Archaeologist", "Geologist", "Anthropologist"], 0, "He works at a museum, then teaches at NYU."],
+    ["What is Ross's job?", ["Archaeologist", "Geologist", "Anthropologist", "Paleontologist"], 3, "He works at a museum, then teaches at NYU."],
+    ["What is the name of Ross's pet monkey?", ["Marcel", "Bubbles", "Abu", "George"], 0, "Ross finds him again working in a movie, in the Super Bowl episode."],
     ["What is Phoebe's most famous song?", ["Stinky Dog", "Smelly Cat", "Grumpy Cat", "Soggy Socks"], 1, "“Smelly cat, smelly cat, what are they feeding you?”"],
     ["What's the name of Joey's stuffed penguin?", ["Waddles", "Flippy", "Mr. Penguin", "Hugsy"], 3, ""],
     ["What is Chandler's middle name?", ["Matthew", "Marion", "Muriel", "Milton"], 2, "Chandler Muriel Bing."],
+    ["What is the name of Rachel's hairless cat?", ["Mrs. Whiskerson", "Mr. Heckles", "Princess Consuela", "Mr. Pickles"], 0, "Princess Consuela Bananahammock is the name Phoebe briefly changes hers to."],
     ["What do Monica and Chandler name their twins?", ["Jack and Judy", "Emma and Ben", "Jack and Erica", "Erica and Frank"], 2, "Jack after Monica's dad, Erica after the twins' birth mother."],
   ]},
   { cat: "eighties", qs: [
     ["Which 1982 Michael Jackson album is the best-selling album of all time?", ["Bad", "Off the Wall", "Dangerous", "Thriller"], 3, "Seven of its nine songs were Top 10 hits."],
     ["Which Hungarian invention became the toy craze of the early ’80s?", ["Rubik's Cube", "Game Boy", "Lego", "Etch A Sketch"], 0, "Ernő Rubik invented it in 1974."],
+    ["Who married Prince Charles in 1981?", ["Diana Spencer", "Sarah Ferguson", "Camilla Parker Bowles", "Grace Kelly"], 0, "About 750 million people watched on TV."],
     ["Who captained India to its first Cricket World Cup win in 1983?", ["Sunil Gavaskar", "Mohinder Amarnath", "Kapil Dev", "Ravi Shastri"], 2, "India beat the West Indies in the final at Lord's."],
-    ["Which 1984 movie has the line “I'll be back”?", ["RoboCop", "The Terminator", "Predator", "Die Hard"], 1, "Arnold Schwarzenegger plays the Terminator."],
+    ["Which 1985 charity song was recorded by USA for Africa?", ["Do They Know It's Christmas?", "We Are the World", "Heal the World", "Hands Across America"], 1, "Written by Michael Jackson and Lionel Richie."],
     ["MTV launched in 1981 by playing which music video first?", ["Thriller", "Take On Me", "Video Killed the Radio Star", "Girls Just Want to Have Fun"], 2, "By the Buggles. Fitting."],
+    ["Which TV epic, first aired in 1987, emptied India's streets every Sunday morning?", ["Mahabharat", "Hum Log", "Malgudi Days", "Ramayan"], 3, "Ramanand Sagar's Ramayan. B. R. Chopra's Mahabharat followed in 1988."],
     ["Who won the Best Actor Oscar for playing Mahatma Gandhi in 1982's Gandhi?", ["Om Puri", "Ben Kingsley", "Roshan Seth", "Naseeruddin Shah"], 1, "Gandhi won eight Oscars, including Best Picture."],
   ]},
   { cat: "general", title: "Final Round", mult: 2, qs: [
     ["Who painted the Mona Lisa?", ["Leonardo da Vinci", "Michelangelo", "Raphael", "Vincent van Gogh"], 0, "It hangs in the Louvre in Paris."],
     ["What is the tallest mountain above sea level?", ["K2", "Kangchenjunga", "Mount Everest", "Kilimanjaro"], 2, "8,849 m, on the border of Nepal and China."],
     ["Which element has the chemical symbol Au?", ["Silver", "Aluminum", "Argon", "Gold"], 3, "From aurum, Latin for gold."],
+    ["Which planet has the most known moons?", ["Jupiter", "Saturn", "Uranus", "Neptune"], 1, "More than 270, far ahead of Jupiter."],
     ["Which language has the most native speakers?", ["English", "Spanish", "Hindi", "Mandarin Chinese"], 3, "English has the most speakers once second-language speakers count."],
     ["What is the smallest country in the world?", ["Monaco", "Vatican City", "San Marino", "Maldives"], 1, "It sits entirely inside the city of Rome."],
   ]},
 ].map(R => ({ ...R, title: R.title || CATS[R.cat].name, mult: R.mult || 1,
   qs: R.qs.map(([q, opts, ans, fact]) => ({ q, opts, ans, fact })) }));
-const LADDER = [100, 100, 200, 200, 300, 300];
 const PCOLORS = ["var(--p1)", "var(--p2)", "var(--p3)", "var(--p4)", "var(--p5)", "var(--p6)", "var(--p7)", "var(--p8)"];
 const LETTERS = "ABCD";
-const KEY = "best-experts-v1";
+const KEY = "best-experts-v2"; // v2 (11-09): Avatar round and 58 questions; v1 saves keep only their panel
 const PASS = -1;
 
 const $ = s => document.querySelector(s);
@@ -349,7 +371,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;"
 let S, lastId = null, bumpK = -1, armedReset = null, flashOpt = -1;
 
 const DEFAULT_PANEL = [
-  { name: "Dad", spec: "tennis" }, { name: "Matty Boy", spec: "nba" }, { name: "AY", spec: "friends" },
+  { name: "Dad", spec: "tennis" }, { name: "Matty Boy", spec: "nba" }, { name: "AY", spec: "avatar" },
   { name: "Big T", spec: "friends" }, { name: "The General", spec: "eighties" },
 ];
 const RENAMED = { "Matt": "Matty Boy", "Anisha": "AY", "Anisha's sister": "Big T", "Mom": "The General" }; // nicknames (11-09)
@@ -359,7 +381,7 @@ const Q = (r = S.r, i = S.i) => (S.qs[qid(r, i)] ||= { pick: null, revealed: fal
 const name = k => (S.players[k]?.name || "").trim() || `Player ${k + 1}`;
 const experts = cat => S.players.map((_, k) => k).filter(k => S.players[k].spec === cat);
 const expertOf = (r, i) => { const R = ROUNDS[r]; if (R.cat === "general") return -1; const ex = experts(R.cat); return ex.length ? ex[i % ex.length] : -1; };
-const points = (r, i) => LADDER[i] * ROUNDS[r].mult;
+const points = (r, i) => 100 * (1 + Math.floor(3 * i / ROUNDS[r].qs.length)) * ROUNDS[r].mult; // first, middle, last third: 100, 200, 300
 const scores = () => {
   const s = S.players.map(() => 0);
   for (const q of Object.values(S.qs)) if (q.award && q.award.p < s.length) s[q.award.p] += q.award.pts;
@@ -376,8 +398,17 @@ function records() {
   return rec;
 }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function migratePlayers(players) {
+  for (const p of players) {
+    p.name = RENAMED[p.name] || p.name;
+    if (p.name === "AY" && p.spec === "friends") p.spec = "avatar"; // AY switched to Avatar (11-09)
+    if (!CATS[p.spec]) p.spec = "general";
+  }
+  return players;
+}
 function loadSaved() {
-  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.players) && s.qs) { s.players.forEach(p => { p.name = RENAMED[p.name] || p.name; }); return s; } } catch (e) {}
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.players) && s.qs) { migratePlayers(s.players); return s; } } catch (e) {}
+  try { const v1 = JSON.parse(localStorage.getItem("best-experts-v1")); if (v1 && Array.isArray(v1.players)) return fresh(migratePlayers(v1.players)); } catch (e) {}
   return null;
 }
 function commit() { save(); render(); }
