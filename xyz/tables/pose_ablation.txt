@@ -1,0 +1,13 @@
+Object-pose ablations, PASLCD: poses from the even photos, scored at the odd held-out photos after the articulated stage, in the full method's regions. Cells: PSNR / LPIPS (scenes better ↑ / worse ↓ than full, n scenes with the region).
+
+| variant | scenes | all movers' region (rigid + articulated) | rigid movers' region | articulated parts' region | GT change masks | full's movers kept: same place | within 0.25 size + 15° | moved / removed / replaced / hidden / unchanged |
+|---|---|---|---|---|---|---|---|---|
+| full method | 20 | 17.25 / 0.443 (0↑ 0↓, n=9) | 14.93 / 0.389 (0↑ 0↓, n=9) | 20.01 / 0.538 (0↑ 0↓, n=5) | 11.66 / 0.601 (0↑ 0↓, n=20) | 18/18 | 18/18 | 18 / 55 / 24 / 24 / 0 |
+| poses from 1/4 of the photos | 20 (10 same as full) | 16.96 / 0.447 (4↑ 5↓, n=9) | 14.82 / 0.414 (6↑ 3↓, n=9) | 19.37 / 0.541 (1↑ 4↓, n=5) | 11.65 / 0.601 (3↑ 4↓, n=20) | 17/18 | 13/18 | 19 / 56 / 22 / 24 / 0 |
+| poses from 1/8 of the photos | 20 (10 same as full) | 16.15 / 0.457 (3↑ 6↓, n=9) | 14.57 / 0.428 (4↑ 5↓, n=9) | 17.55 / 0.562 (0↑ 5↓, n=5) | 11.52 / 0.605 (3↑ 6↓, n=20) | 15/18 | 11/18 | 17 / 58 / 22 / 24 / 0 |
+| no verify judge | 20 (10 same as full) | 16.32 / 0.451 (2↑ 2↓, n=9) | 13.55 / 0.415 (2↑ 2↓, n=9) | 20.01 / 0.538 (0↑ 0↓, n=5) | 11.61 / 0.602 (0↑ 2↓, n=20) | 14/18 | 14/18 | 14 / 56 / 26 / 24 / 1 |
+| no DINO look in the pose rank | 20 (10 same as full) | 17.25 / 0.443 (0↑ 0↓, n=9) | 14.93 / 0.389 (0↑ 0↓, n=9) | 20.01 / 0.538 (0↑ 0↓, n=5) | 11.66 / 0.601 (0↑ 0↓, n=20) | 18/18 | 18/18 | 18 / 55 / 24 / 24 / 0 |
+| no a*b* colour contest | 20 (10 same as full) | 17.21 / 0.444 (0↑ 1↓, n=9) | 14.81 / 0.397 (0↑ 1↓, n=9) | 20.01 / 0.538 (0↑ 0↓, n=5) | 11.66 / 0.601 (2↑ 0↓, n=20) | 17/18 | 17/18 | 19 / 56 / 22 / 24 / 0 |
+| ICP only (no render refine) | 20 (10 same as full) | 16.33 / 0.473 (1↑ 8↓, n=9) | 13.29 / 0.477 (1↑ 8↓, n=9) | 20.01 / 0.538 (0↑ 0↓, n=5) | 11.63 / 0.604 (0↑ 7↓, n=20) | 16/18 | 7/18 | 16 / 57 / 24 / 24 / 0 |
+| no articulation | 20 | 13.33 / 0.505 (0↑ 5↓, n=9) | 14.93 / 0.389 (0↑ 0↓, n=9) | 11.74 / 0.666 (0↑ 5↓, n=5) | 10.83 / 0.625 (0↑ 5↓, n=20) | - | - | - |
+| no pose edit | 20 | 11.27 / 0.680 (0↑ 9↓, n=9) | 12.12 / 0.635 (0↑ 9↓, n=9) | 11.74 / 0.666 (0↑ 5↓, n=5) | 10.20 / 0.668 (0↑ 9↓, n=20) | - | - | - |

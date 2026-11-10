@@ -51,6 +51,16 @@ sitemap: false
       <figcaption>Ablations of the pose step, scored where the moved objects and parts stand.</figcaption></figure>
   </div>
 
+  <h2>Ablations and baseline checks (tables)</h2>
+  <ul class="muted">
+    <li><a href="tables/detect_ablation.txt">Detection, one part of the protocol at a time</a> (all 20 PASLCD instances)</li>
+    <li><a href="tables/judge_ablation.txt">Judges</a>: repeat run, no hints, agent alone, smaller models, 4-min splat, O-SCD on the same 5 scenes</li>
+    <li><a href="tables/oscd_sam_refine.txt">O-SCD + SAM3 / DINO refinements</a>: none beats raw O-SCD</li>
+    <li><a href="tables/oscd_ourbase.txt">O-SCD and O-SCD++ on our Gaussian splat</a> (same representation; filled in as it runs)</li>
+    <li><a href="tables/pose_ablation.txt">Pose step ablations</a>, <a href="tables/geo_check.txt">geometric check vs after-change scans</a>,
+      <a href="tables/pose_baselines.txt">pose vs O-SCD and 3DGS-CD</a></li>
+  </ul>
+
   <h2>Change detection</h2>
   <p>Mean F1 of the binary change masks at the evaluation views, each benchmark scored with its own script; IoU printed beside each bar.
     Every baseline is shown at its best labeled variant.</p>

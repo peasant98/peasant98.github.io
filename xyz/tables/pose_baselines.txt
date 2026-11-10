@@ -1,0 +1,12 @@
+Our pose edit vs the baselines where the moved objects and parts stand (union of the full method's at-pose regions), PASLCD odd held-out views, same photos for every row. Mean over the scenes where the row exists of the per-scene pooled PSNR / region-mean SSIM / LPIPS; better/worse = scenes vs our row of the same kind (no refit / refit).
+
+| row | scenes | PSNR | SSIM | LPIPS | vs ours (better / worse) | depth err % (movers) | cm | depth err % unchanged px (control) |
+|---|---|---|---|---|---|---|---|---|
+| unedited scene, no refit | 9 | 11.27 | 0.361 | 0.680 | 0 / 9 | - | - | - |
+| ours: + poses (rigid + articulated), no refit | 9 | 17.25 | 0.586 | 0.443 | 2 / 4 | - | - | - |
+| ours: full edit, no refit | 9 | 17.24 | 0.583 | 0.440 | - | 1.86 | 3.1 | 0.75 |
+| unedited scene + refit | 9 | 20.62 | 0.740 | 0.314 | 0 / 9 | - | - | - |
+| ours: edit + refit | 9 | 22.70 | 0.803 | 0.255 | - | - | - | - |
+| O-SCD update (own masks) | 9 | 22.69 | 0.788 | 0.281 | 5 / 4 | 4.41 | 9.2 | 5.08 |
+| O-SCD update (our masks) | 9 | 22.99 | 0.789 | 0.281 | 5 / 4 | 4.71 | 9.4 | 5.48 |
+| 3DGS-CD edit (its own update) | 9 | 11.07 | 0.349 | 0.684 | 0 / 9 | 12.46 | 26.0 | 0.8 |
