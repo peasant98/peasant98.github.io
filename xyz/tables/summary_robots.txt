@@ -1,0 +1,26 @@
+Robot pick-and-place on the PASLCD real2sim scenes: success = held, final ADD-S <= 2.0 cm, robot <= 3.0 mm into furniture / other movers.
+
+| instance | mover | size (m) | stretch3 (11-07 scenes) plan | stretch3 (11-07 scenes) grip final ADD-S (cm) | stretch3 (11-07 scenes) grip touch (frames / max mm) | stretch3 (11-07 scenes) weld final ADD-S | stretch3 plan | stretch3 grip final ADD-S (cm) | stretch3 grip touch (frames / max mm) | stretch3 weld final ADD-S | panda plan | panda grip final ADD-S (cm) | panda grip touch (frames / max mm) | panda weld final ADD-S | panda wide gripper plan | panda wide gripper grip final ADD-S (cm) | panda wide gripper grip touch (frames / max mm) | panda wide gripper weld final ADD-S | goal alone ADD-S |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| cantina2_op | mover1 bowl | 0.18 x 0.17 x 0.06 | no | - | - | - | no | - | - | - | no | - | - | - | no | - | - | - | 0.8 |
+| cantina2_op | mover2 yellow sponge | 0.10 x 0.09 x 0.02 | no | - | - | - | no | - | - | - | no | - | - | - | no | - | - | - | 0.2 |
+| cantinaG_op | mover1 bowl | 0.18 x 0.17 x 0.05 | no | - | - | - | no | - | - | - | no | - | - | - | no | - | - | - | 1.0 |
+| cantinaG_op | mover2 yellow dish sponge | 0.08 x 0.08 x 0.02 | no | - | - | - | no | - | - | - | no | - | - | - | no | - | - | - | 0.3 |
+| lounge2_op | mover0 yellow faceted stool | 0.51 x 0.45 x 0.44 | no | - | - | - | no | - | - | - | no | - | - | - | no | - | - | - | 21.5 |
+| lounge2_op | mover1 white circular disc | 1.07 x 0.59 x 0.58 | no | - | - | - | no | - | - | - | no | - | - | - | no | - | - | - | 2.2 |
+| lounge_op | mover0 yellow faceted stool | 0.52 x 0.48 x 0.45 | no | - | - | - | no | - | - | - | no | - | - | - | no | - | - | - | 6.6 |
+| lounge_op | mover1 stool | 1.07 x 0.60 x 0.59 | no | - | - | - | no | - | - | - | no | - | - | - | no | - | - | - | 2.1 |
+| lounge_op | mover2 socket | 0.22 x 0.07 x 0.05 | no | - | - | - | no | - | - | - | no | - | - | - | no | - | - | - | 0.3 |
+| lunchroom2_op | mover0 lifted_0 | 0.95 x 0.40 x 0.36 | no | - | - | - | no | - | - | - | no | - | - | - | no | - | - | - | 9.2 |
+| lunchroom2_op | mover1 white_cup_on_center_tabl | 0.18 x 0.11 x 0.10 | no | - | - | - | no | - | - | - | yes | 1.7 ✓ | 0 / 0.0 | 1.6 | no | - | - | - | 2.6 |
+| lunchroom_op | mover0 green cylindrical bin | 0.92 x 0.39 x 0.30 | no | - | - | - | no | - | - | - | no | - | - | - | no | - | - | - | 50.1 |
+| lunchroom_op | mover1 white_cup_on_table_a_1 | 0.21 x 0.10 x 0.10 | no | - | - | - | no | - | - | - | yes | 4.2 | 0 / 0.0 | 4.2 | no | - | - | - | 3.7 |
+| printingarea2_op | mover0 hand sanitizer pump bott | 0.19 x 0.07 x 0.06 | no | - | - | - | no | - | - | - | yes | 0.3 ✓ | 0 / 0.0 | 0.3 | yes | 0.3 ✓ | 0 / 0.0 | 0.4 | 0.3 |
+| printingarea2_op | mover1 lifted_4 | 0.14 x 0.02 x 0.02 | no | - | - | - | no | - | - | - | yes | 0.4 ✓ | 0 / 0.0 | 0.4 | yes | 0.4 ✓ | 0 / 0.0 | 0.4 | 0.4 |
+| printingarea_op | mover1 hand sanitizer pump bott | 0.18 x 0.07 x 0.06 | no | - | - | - | no | - | - | - | yes | 0.2 ✓ | 0 / 0.0 | 0.2 | yes | 0.2 ✓ | 0 / 0.0 | 0.2 | 0.2 |
+| printingarea_op | mover2 marker | 0.13 x 0.02 x 0.02 | yes | 186.0 | 0 / 0.0 | 0.5 | yes | 90.8 | 0 / 0.0 | 1.7 | yes | 0.1 ✓ | 80 / 0.1 | 0.1 | yes | 0.1 ✓ | 81 / 0.1 | 0.1 | 0.0 |
+
+- **stretch3 (11-07 scenes)**: 17 of 17 free movers run, planned 1, success grip 0, weld 1
+- **stretch3**: 17 of 17 free movers run, planned 1, success grip 0, weld 1
+- **panda**: 17 of 17 free movers run, planned 6, success grip 5, weld 5
+- **panda wide gripper**: 17 of 17 free movers run, planned 4, success grip 4, weld 4

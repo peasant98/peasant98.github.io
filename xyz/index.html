@@ -1,0 +1,98 @@
+---
+layout: null
+sitemap: false
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Change Detection Results</title>
+<style>
+  :root { --bg: #fbfbfa; --fg: #1d2127; --muted: #5d6570; --line: #e3e5e8; --accent: #0F4D92; color-scheme: light; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #15181c; --fg: #e8eaed; --muted: #a1a8b1; --line: #2c3138; --accent: #7fa8e0; color-scheme: dark; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.55 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 28px max(16px, env(safe-area-inset-left)) 48px max(16px, env(safe-area-inset-right)); }
+  h1 { font-size: 26px; font-weight: 600; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: 600; margin: 36px 0 4px; padding-top: 12px; border-top: 1px solid var(--line); }
+  p { margin: 6px 0; max-width: 75ch; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); margin-top: 12px; }
+  figure { margin: 0; }
+  figure img { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--line); border-radius: 6px; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  a { color: var(--accent); }
+  ul { padding-left: 1.2em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Agentic change detection: results so far</h1>
+  <p>Snapshot of Nov 9, 2026. Blue bars with bold labels are ours, grey bars are baselines, hatched bars are ablations or upper bounds.
+    Tap a chart for the full-size image. Charts marked partial are still running and will be updated.</p>
+  <p class="muted">Files: <a href="results.csv">results.csv</a> (every number in the charts) and the source tables:
+    <a href="tables/table_3dgscd.txt">3DGS-CD per scene</a>, <a href="tables/scenediff_2d_scores_1109_fixpass.txt">SceneDiff per pair</a>,
+    <a href="tables/object_results.txt">object results</a>, <a href="tables/update_tables.txt">scene update</a>, <a href="tables/ladder_summary.txt">edit ladder</a>,
+    <a href="tables/summary_robots.txt">robot pick-and-place</a>, runtime on <a href="tables/runtime_scenediff.txt">SceneDiff</a>,
+    <a href="tables/runtime_paslcd.txt">PASLCD</a> and <a href="tables/runtime_3dgscd.txt">3DGS-CD</a>.</p>
+
+  <h2>Change detection</h2>
+  <p>Mean F1 of the binary change masks at the evaluation views, each benchmark scored with its own script; IoU printed beside each bar.
+    Every baseline is shown at its best labeled variant.</p>
+  <div class="grid">
+    <figure><a href="charts/overview_detection.png"><img src="charts/overview_detection.png" alt="Change detection F1 on PASLCD, SceneDiff and 3DGS-CD" loading="lazy"></a>
+      <figcaption>All four change-detection charts. CL-Splats on PASLCD uses a threshold picked on the test labels (upper bound). On SceneDiff, O-SCD's own pose step
+        fails on 13 of 20 pairs, so it is also shown with our poses. 3DGS-CD's released labels mark only where objects moved to; on its held-out views 3DGS-CD still leads.</figcaption></figure>
+  </div>
+
+  <h2>Object poses</h2>
+  <p>The scene before the change is edited one kind of decision at a time. Poses are fitted on the even photos after the change and scored on the odd ones.</p>
+  <div class="grid">
+    <figure><a href="charts/5_edit_rigid_region.png"><img src="charts/5_edit_rigid_region.png" alt="PSNR where rigid movers stand, per edit step" loading="lazy"></a>
+      <figcaption>Inside each rigid mover's outline at its fitted pose (no labels needed), 9 scenes.</figcaption></figure>
+    <figure><a href="charts/6_edit_articulated_region.png"><img src="charts/6_edit_articulated_region.png" alt="PSNR where articulated parts are, per edit step" loading="lazy"></a>
+      <figcaption>Doors and drawers at their fitted hinge angle or slide, 5 scenes.</figcaption></figure>
+    <figure><a href="charts/7_edit_gt_region.png"><img src="charts/7_edit_gt_region.png" alt="PSNR inside the labeled change masks, per edit step" loading="lazy"></a>
+      <figcaption>Inside the labeled change masks, all 20 instances (labels used only for this score).</figcaption></figure>
+    <figure><a href="charts/8_pose_agreement.png"><img src="charts/8_pose_agreement.png" alt="Pose agreement between even-photo and all-photo fits" loading="lazy"></a>
+      <figcaption>Fits from the even photos against fits from all photos, 22 moved objects. Both wrong ones are the same bowl in Cantina.</figcaption></figure>
+    <figure><a href="charts/9_rigid_fit_iou.png"><img src="charts/9_rigid_fit_iou.png" alt="Median rigid fit IoU by dataset" loading="lazy"></a>
+      <figcaption>Posed object outline against its place in the photos after the change, median per dataset.</figcaption></figure>
+    <figure><a href="charts/10_joint_fit_iou.png"><img src="charts/10_joint_fit_iou.png" alt="Articulated joint fit IoU versus leaving the part in place" loading="lazy"></a>
+      <figcaption>Articulated parts on PASLCD: fitted joint against leaving the part where it was, 15 parts.</figcaption></figure>
+  </div>
+
+  <h2>Scene update</h2>
+  <p>O-SCD's own update pipeline with its change masks and with ours, scored by its own script on held-out photos, full image.</p>
+  <div class="grid">
+    <figure><a href="charts/11_update_paslcd_before_refit.png"><img src="charts/11_update_paslcd_before_refit.png" alt="PASLCD update before refit" loading="lazy"></a>
+      <figcaption>PASLCD, 20 instances, before O-SCD's global refit.</figcaption></figure>
+    <figure><a href="charts/12_update_paslcd_after_refit.png"><img src="charts/12_update_paslcd_after_refit.png" alt="PASLCD update after refit" loading="lazy"></a>
+      <figcaption>PASLCD, after the refit.</figcaption></figure>
+    <figure><a href="charts/13_update_clsplats_before_refit.png"><img src="charts/13_update_clsplats_before_refit.png" alt="CL-Splats update before refit" loading="lazy"></a>
+      <figcaption>CL-Splats before the refit (partial).</figcaption></figure>
+    <figure><a href="charts/14_update_clsplats_after_refit.png"><img src="charts/14_update_clsplats_after_refit.png" alt="CL-Splats update after refit" loading="lazy"></a>
+      <figcaption>CL-Splats after the refit (partial).</figcaption></figure>
+    <figure><a href="charts/15_update_paslcd_odd_split.png"><img src="charts/15_update_paslcd_odd_split.png" alt="Our object edit on the PASLCD odd split" loading="lazy"></a>
+      <figcaption>Our object edit vs the unedited scene and O-SCD, PASLCD odd split (partial). Our refit adds no Gaussians; O-SCD's does and starts from its own 3DGS scene.</figcaption></figure>
+    <figure><a href="charts/16_update_clsplats_object_edit.png"><img src="charts/16_update_clsplats_object_edit.png" alt="Our object edit on CL-Splats" loading="lazy"></a>
+      <figcaption>Our object edit on CL-Splats (partial).</figcaption></figure>
+  </div>
+
+  <h2>Simulated robot</h2>
+  <div class="grid">
+    <figure><a href="charts/17_robot_pick_place.png"><img src="charts/17_robot_pick_place.png" alt="Simulated pick-and-place successes per robot" loading="lazy"></a>
+      <figcaption>The updated scenes as MuJoCo scenes; the robot carries each loose object from its place before the change to the place our method found.
+        Success: held, final pose within 2 cm (ADD-S), robot never more than 3 mm into furniture.</figcaption></figure>
+  </div>
+
+  <h2>Runtime</h2>
+  <div class="grid">
+    <figure><a href="charts/18_runtime_scenediff.png"><img src="charts/18_runtime_scenediff.png" alt="Runtime per SceneDiff pair" loading="lazy"></a>
+      <figcaption>SceneDiff, median minutes per pair on one workstation GPU, queue waits excluded. Our method pays an upfront cost per scene; the case for it is quality.
+        PASLCD and 3DGS-CD runtimes are in the tables above.</figcaption></figure>
+  </div>
+</main>
+</body>
+</html>

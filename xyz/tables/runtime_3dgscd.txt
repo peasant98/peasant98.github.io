@@ -1,0 +1,30 @@
+### held-out (cd_<scene>: eval photos never an input)
+
+| step | scenes | median min | mean min |
+|---|---|---|---|
+| one-time PRE | 5 | 46.9 | 42.2 |
+| detect (GPU) | 5 | 1.5 | 2.3 |
+| objects (GPU) | 5 | 1.0 | 1.1 |
+| detect (judges) | 5 | 2.3 | 2.7 |
+| objects (judges) | 5 | 1.0 | 1.2 |
+| 3DGS-CD detect (edit mode, their protocol) | 5 | 0.6 | 0.8 |
+
+- 3DGS-CD in edit mode = their protocol (even POST frames in, odd held out), run on the cdp_ raw.
+
+### all photos (cdp_<scene>: every POST photo incl. the eval ones is an input)
+
+| step | scenes | median min | mean min |
+|---|---|---|---|
+| one-time PRE | 5 | 46.9 | 42.2 |
+| detect (GPU) | 5 | 2.1 | 3.6 |
+| objects (GPU) | 5 | 1.3 | 1.8 |
+| detect (judges) | 5 | 4.2 | 3.9 |
+| objects (judges) | 5 | 0.8 | 1.2 |
+| MV3DCD detect | 5 | 5.8 | 6.8 |
+| O-SCD one-time (reference 3DGS) | 5 | 8.2 | 11.0 |
+| O-SCD detect | 5 | 0.5 | 0.7 |
+| O-SCD++ detect (our poses) | 5 | 0.2 | 0.2 |
+| 3DGS-CD detect | 5 | 0.8 | 1.1 |
+
+- one-time PRE = the held-out PRE (cdp_ copies cd_'s PRE splat, DINO and objects).
+- O-SCD detect on Sill: its run fails (own PnP, "Too few inliers", rc=1); that failed run's time is in the row.

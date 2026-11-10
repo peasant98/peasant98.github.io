@@ -1,0 +1,74 @@
+Edit ladder, 20 scenes: mean over the scenes with the region (n); 'better' = scenes where the stage beats the previous one
+
+
+### rigid_at_pose
+
+| stage | n | PSNR | LPIPS | SSIM | better PSNR | better LPIPS |
+|---|---|---|---|---|---|---|
+| PRE | 9 | 11.80 | 0.627 | 0.310 | - | - |
+| - removed | 9 | 11.96 | 0.651 | 0.297 | 1/9 | 2/9 |
+| + rigid | 9 | 14.77 | 0.430 | 0.430 | 9/9 | 7/9 |
+| + articulated | 9 | 14.80 | 0.430 | 0.430 | 1/9 | 2/9 |
+| + fill | 9 | 14.41 | 0.435 | 0.422 | 3/9 | 5/9 |
+| + new things | 9 | 14.70 | 0.426 | 0.420 | 4/9 | 4/9 |
+
+### articulated_at_pose
+
+| stage | n | PSNR | LPIPS | SSIM | better PSNR | better LPIPS |
+|---|---|---|---|---|---|---|
+| PRE | 5 | 11.42 | 0.667 | 0.411 | - | - |
+| - removed | 5 | 11.42 | 0.667 | 0.411 | 1/5 | 1/5 |
+| + rigid | 5 | 11.42 | 0.667 | 0.411 | 1/5 | 2/5 |
+| + articulated | 5 | 17.36 | 0.585 | 0.607 | 5/5 | 5/5 |
+| + fill | 5 | 17.37 | 0.583 | 0.604 | 2/5 | 4/5 |
+| + new things | 5 | 17.37 | 0.583 | 0.604 | 1/5 | 2/5 |
+
+### gt_region
+
+| stage | n | PSNR | LPIPS | SSIM | better PSNR | better LPIPS |
+|---|---|---|---|---|---|---|
+| PRE | 20 | 9.41 | 0.719 | 0.254 | - | - |
+| - removed | 20 | 10.21 | 0.668 | 0.299 | 13/20 | 10/20 |
+| + rigid | 20 | 10.83 | 0.625 | 0.320 | 7/20 | 8/20 |
+| + articulated | 20 | 11.61 | 0.607 | 0.354 | 5/20 | 5/20 |
+| + fill | 20 | 12.39 | 0.597 | 0.379 | 17/20 | 15/20 |
+| + new things | 18 | 13.71 | 0.550 | 0.421 | 16/18 | 18/18 |
+
+### full_image
+
+| stage | n | PSNR | LPIPS | SSIM | better PSNR | better LPIPS |
+|---|---|---|---|---|---|---|
+| PRE | 20 | 17.77 | 0.306 | 0.669 | - | - |
+| - removed | 20 | 17.81 | 0.304 | 0.670 | 12/20 | 10/20 |
+| + rigid | 20 | 17.88 | 0.302 | 0.671 | 7/20 | 9/20 |
+| + articulated | 20 | 18.09 | 0.302 | 0.673 | 5/20 | 4/20 |
+| + fill | 20 | 18.23 | 0.301 | 0.674 | 17/20 | 15/20 |
+| + new things | 18 | 18.21 | 0.303 | 0.677 | 10/18 | 13/18 |
+
+objects per scene: cantina2_op {'removed': 3, 'replaced': 4, 'moved': 3, 'opened/closed': 4}, cantinaG_op {'removed': 3, 'replaced': 4, 'moved': 3, 'opened/closed': 3}, garden2_op {'removed': 5, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, garden_op {'removed': 6, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, lounge2_op {'removed': 1, 'replaced': 1, 'moved': 2, 'opened/closed': 0}, lounge_op {'removed': 2, 'replaced': 1, 'moved': 3, 'opened/closed': 0}, lunchroom2_op {'removed': 3, 'replaced': 0, 'moved': 1, 'opened/closed': 1}, lunchroom_op {'removed': 4, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, meetingroom2_op {'removed': 3, 'replaced': 2, 'moved': 0, 'opened/closed': 0}, meetingroom_op {'removed': 3, 'replaced': 3, 'moved': 0, 'opened/closed': 0}, playground2_op {'removed': 5, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, playground_op {'removed': 7, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, porch2_op {'removed': 1, 'replaced': 3, 'moved': 0, 'opened/closed': 0}, porch_op {'removed': 2, 'replaced': 2, 'moved': 0, 'opened/closed': 0}, pots2_op {'removed': 0, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, pots_op {'removed': 0, 'replaced': 0, 'moved': 0, 'opened/closed': 0}, printingarea2_op {'removed': 3, 'replaced': 1, 'moved': 2, 'opened/closed': 4}, printingarea_op {'removed': 5, 'replaced': 1, 'moved': 3, 'opened/closed': 3}, zen2_op {'removed': 0, 'replaced': 0, 'moved': 1, 'opened/closed': 0}, zen_op {'removed': 0, 'replaced': 0, 'moved': 1, 'opened/closed': 0}
+
+### the ladder's even-view poses vs the main run's (all views), 19 rigid movers
+
+same place 17/19; within 0.25 size and 15 deg 13/19
+- cantina2_op dishwasher_01_status_magnet_1+lifted_3: {'same_place': True, 'rot_deg': 1.1, 'shift_over_size': 0.01}
+- cantina2_op blue_bowl_1_core: {'same_place': False, 'rot_deg': 52.2, 'shift_over_size': 2.24}
+- cantina2_op yellow_sponge_1: {'same_place': True, 'rot_deg': 87.1, 'shift_over_size': 0.15}
+- cantinaG_op left_dishwasher_round_status_sticker_1_core+lifted_4: {'same_place': True, 'rot_deg': 1.2, 'shift_over_size': 0.0}
+- cantinaG_op blue_bowl_on_left_counter_1: {'same_place': False, 'rot_deg': 57.6, 'shift_over_size': 2.14}
+- cantinaG_op yellow_dish_sponge_1: {'same_place': True, 'rot_deg': 50.1, 'shift_over_size': 0.18}
+- lounge2_op yellow_faceted_stool_1+lifted_0: {'same_place': True, 'rot_deg': 2.4, 'shift_over_size': 0.01}
+- lounge2_op black_cylindrical_pedestal_on_floor_1+white_circular_disc_on_floor_1: {'same_place': True, 'rot_deg': 3.6, 'shift_over_size': 0.0}
+- lounge_op yellow_faceted_stool_1: {'same_place': True, 'rot_deg': 1.7, 'shift_over_size': 0.01}
+- lounge_op overturned_table_round_top_1+overturned_table_center_post_1_core+overturned_table_round_base_1+rear_wall_socket_04_near_robot_1: {'same_place': True, 'rot_deg': 178.1, 'shift_over_size': 0.04}
+- lounge_op blue_rectangular_floor_box_1: {'same_place': True, 'rot_deg': 2.8, 'shift_over_size': 0.03}
+- lunchroom2_op lifted_0: {'same_place': True, 'rot_deg': 0.4, 'shift_over_size': 0.0}
+- lunchroom2_op white_cup_on_center_table_1: {'even': 'removed'}
+- lunchroom_op green_cylindrical_bin_1+lifted_1: {'even': 'removed'}
+- lunchroom_op white_cup_on_table_a_1: {'even': 'removed'}
+- printingarea2_op hand_sanitizer_pump_bottle_1: {'same_place': True, 'rot_deg': 0.5, 'shift_over_size': 0.01}
+- printingarea2_op lifted_4: {'same_place': True, 'rot_deg': 15.6, 'shift_over_size': 0.01}
+- printingarea_op wall_notice_07_hi_backing_sheet_1_core+wall_notice_08_hi_front_sheet_1: {'same_place': True, 'rot_deg': 1.5, 'shift_over_size': 0.01}
+- printingarea_op hand_sanitizer_pump_bottle_1: {'same_place': True, 'rot_deg': 1.4, 'shift_over_size': 0.0}
+- printingarea_op white_blue_capped_marker_on_counter_1_core: {'same_place': True, 'rot_deg': 1.0, 'shift_over_size': 0.01}
+- zen2_op rectangular_paper_or_plaque_on_bench_1: {'same_place': True, 'rot_deg': 0.4, 'shift_over_size': 0.01}
+- zen_op paper_notice_on_bench_1+lifted_0: {'same_place': True, 'rot_deg': 0.5, 'shift_over_size': 0.01}

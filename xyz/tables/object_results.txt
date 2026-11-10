@@ -1,0 +1,6 @@
+| dataset | scenes | removed | replaced | hidden | moved | turned | articulated parts | new-thing places | rigid fit IoU (median) | verify: moved/turned/not moved/other | joint fit IoU vs stay (median) | hinge deg (median) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| PASLCD | 20 | 54 | 21 | 24 | 19 | 3 | 15 | 95 | 0.74 (n=22) | 19/3/0/0 | 0.53 vs 0.12 (n=15) | 53 (n=11) |
+| SceneDiff | 20 | 15 | 6 | 2 | 13 | 0 | 0 | 76 | 0.74 (n=13) | 13/0/0/0 | - | - |
+| 3DGS-CD held-out | 5 | 4 | 0 | 0 | 6 | 0 | 0 | 6 | 0.88 (n=6) | 6/0/0/0 | - | - |
+| 3DGS-CD all photos | 5 | 4 | 0 | 0 | 7 | 0 | 0 | 9 | 0.90 (n=7) | 7/0/0/0 | - | - |

@@ -1,0 +1,22 @@
+| step | instances | median min | mean min |
+|---|---|---|---|
+| one-time PRE: PGSR splat | 18 | 74.6 | 72.7 |
+| one-time PRE: DINO distill | 17 | 4.6 | 5.4 |
+| one-time PRE: objects | 0 | n/a | n/a |
+| detect (GPU) | 20 | 4.6 | 4.7 |
+| objects (GPU) | 20 | 3.4 | 4.7 |
+| detect (judges) | 20 | 8.5 | 8.5 |
+| objects (judges) | 20 | 2.4 | 3.0 |
+| MV3DCD detect | 10 | 5.4 | 5.4 |
+| O-SCD one-time (reference 3DGS) | 0 | n/a | n/a |
+| O-SCD detect (online + offline, one run) | 20 | 0.4 | 0.6 |
+| O-SCD++ (retro.) detect | 10 | 0.2 | 0.2 |
+| 3DGS-CD detect | 20 | 1.0 | 1.0 |
+| CL-Splats detect | 20 | 1.6 | 1.7 |
+
+- one-time PRE: objects = n/a: PASLCD's PRE objects are Tessera segments (pre_objects_sch4622) made off this machine.
+- O-SCD one-time (reference 3DGS) = n/a: its reference 3DGS ships with PASLCD_online, not trained here.
+- O-SCD: oscd.py --refine gives its online and offline masks in one run (not separable from the guard log).
+- MV3DCD: the 10 instances whose run log is left (output_run{1,2}.log), its start -> its last stage's end; its per-stage guard logs are gone, so any guard wait between its stages is included.
+- O-SCD++ (retro.): guard logs exist for Instance_1 only.
+- CL-Splats: the threshold-0.375 run (the reported upper-bound masks; same cost as its default).
