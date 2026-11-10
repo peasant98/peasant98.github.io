@@ -16,9 +16,9 @@ Scene update, full image at held-out POST views (O-SCD's utils/metrics.py, its g
 | O-SCD, own masks | 20 | 22.51 | 0.756 | 0.262 |
 | O-SCD + our masks | 20 | 22.66 | 0.762 | 0.259 |
 | PRE splat, no refit | 20 | 17.77 | 0.669 | 0.306 |
-| our edit, no refit | 20 | 18.20 | 0.672 | 0.301 |
+| our edit, no refit | 20 | 18.21 | 0.673 | 0.301 |
 | PRE splat + refit | 20 | 21.99 | 0.719 | 0.263 |
-| our edit + refit | 20 | 22.05 | 0.721 | 0.261 |
+| our edit + refit | 20 | 22.04 | 0.721 | 0.260 |
 
 ### CL-Splats Real-World (every 5th day_1 photo held out)
 
