@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Emoji Box Office 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Limelight&display=swap">
+<style>
+/* Layout: a dark auditorium. One lit cream "screen" between velvet drapes holds the emoji clue,
+   ticket-stub hints sit below it, and the teams' scores run along the front row. Single dark theme by choice. */
+:root {
+  --house: #160c15;
+  --house-2: #22131f;
+  --line: #3e2535;
+  --text: #f5ebdd;
+  --muted: #b8a2a6;
+  --bulb: #ffc960;
+  --bulb-ink: #2b1608;
+  --screen: #f7eedc;
+  --screen-edge: #e0cfae;
+  --screen-ink: #2a1820;
+  --screen-muted: #7a6460;
+  --ticket: #efdcb4;
+  --velvet: #7c1d34;
+  --velvet-dark: #4b0f20;
+  --velvet-light: #9c2b47;
+  --shadow: rgba(0, 0, 0, .55);
+  --glow: rgba(255, 201, 96, .4);
+  --t1: #5fd0bd;
+  --t2: #ff8b66;
+  --t3: #b9a0ff;
+  --t4: #a9d86a;
+  --f-display: "Limelight", "Rockwell", Georgia, serif;
+  --f-label: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Barlow", "Segoe UI", system-ui, sans-serif;
+  --f-emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--house); color: var(--text); font-family: var(--f-body); font-size: 16px; line-height: 1.5; }
+#app {
+  min-height: 100%; display: flex; flex-direction: column;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: clamp(12px, 2vh, 24px);
+}
+.view { flex: 1; display: flex; flex-direction: column; width: 100%; max-width: 1500px; margin-inline: auto; min-height: 0; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--bulb); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.eyebrow { font-family: var(--f-label); font-weight: 600; text-transform: uppercase; letter-spacing: .14em; font-size: .85rem; color: var(--muted); }
+.btn {
+  font-family: var(--f-label); font-weight: 600; font-size: 1.1rem; letter-spacing: .04em;
+  padding: .55em 1.25em; border-radius: 999px; border: 1.5px solid var(--line); background: transparent;
+}
+.btn:hover:not(:disabled) { border-color: var(--muted); }
+.btn:disabled { opacity: .35; cursor: default; }
+.btn.primary { background: var(--bulb); color: var(--bulb-ink); border-color: var(--bulb); }
+.btn.primary:hover:not(:disabled) { filter: brightness(1.07); }
+.btn.small { font-size: .95rem; padding: .35em .9em; }
+.btn.warn { border-color: var(--t2); color: var(--t2); }
+kbd {
+  font-family: var(--f-label); font-weight: 600; font-size: .9em; color: var(--text);
+  border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 .4em;
+}
+.sw { width: 14px; height: 14px; border-radius: 50%; background: var(--c); flex: none; display: inline-block; }
+
+/* ---------- lobby ---------- */
+.lobby { display: grid; align-content: start; gap: clamp(20px, 3.2vh, 36px); justify-items: center; text-align: center; padding-block: clamp(8px, 3vh, 40px); }
+.marquee {
+  width: min(100%, 780px); border-radius: 18px; padding: 14px clamp(14px, 3vw, 28px);
+  background: linear-gradient(var(--velvet-light), var(--velvet) 45%, var(--velvet-dark));
+  box-shadow: 0 24px 60px -24px var(--shadow); display: grid; gap: 10px;
+}
+.bulbs { display: flex; justify-content: space-between; }
+.bulbs i { width: 10px; height: 10px; border-radius: 50%; background: var(--bulb); box-shadow: 0 0 10px var(--bulb); animation: chase 1.6s infinite; }
+@keyframes chase { 50% { opacity: .3; box-shadow: none; } }
+.brand { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.3rem, 7.4vw, 4.8rem); line-height: 1.05; margin: 0; color: var(--bulb); text-shadow: 0 0 22px var(--glow); text-wrap: balance; }
+.letterboard {
+  background: repeating-linear-gradient(to bottom, var(--screen) 0 calc(1.7em - 2px), var(--screen-edge) calc(1.7em - 2px) 1.7em);
+  color: var(--screen-ink); font-family: var(--f-label); font-weight: 700; text-transform: uppercase;
+  letter-spacing: .2em; line-height: 1.7em; font-size: clamp(.85rem, 2.2vw, 1.15rem); padding: 0 1em; border-radius: 6px;
+}
+.letterboard span { display: block; }
+.sample { display: flex; align-items: center; gap: .5em; font-size: clamp(2.2rem, 7vw, 3.4rem); }
+.sample .g { font-family: var(--f-emoji); letter-spacing: .08em; }
+.sample .q { font-family: var(--f-display); color: var(--bulb); }
+.tagline { font-size: clamp(1.05rem, 2.4vw, 1.35rem); max-width: 46ch; margin: 0; text-wrap: balance; }
+.how { display: grid; gap: clamp(18px, 3vw, 40px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); width: min(100%, 980px); text-align: left; }
+.how h2 { font-family: var(--f-label); font-weight: 700; text-transform: uppercase; letter-spacing: .14em; font-size: 1rem; color: var(--bulb); margin: 0 0 10px; }
+.how ol { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; }
+.keys { margin: 12px 0 0; color: var(--muted); font-size: .95rem; line-height: 2; }
+.team-setup { display: grid; gap: 8px; }
+.trow { display: flex; align-items: center; gap: 10px; }
+.trow input { flex: 1; min-width: 0; background: var(--house-2); border: 1.5px solid var(--line); border-radius: 10px; padding: .45em .8em; font-size: 1.05rem; }
+.trow input:focus { border-color: var(--c); outline: none; }
+.lobby-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.lobby-actions .btn { font-size: 1.3rem; }
+.note { color: var(--muted); font-size: .9rem; margin: 0; }
+
+.hub-link { justify-self: start; color: var(--muted); font-weight: 600; text-decoration: none; }
+.hub-link:hover { color: var(--text); }
+/* ---------- play ---------- */
+.play { display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto auto; gap: clamp(10px, 1.6vh, 18px); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 10px 20px; flex-wrap: wrap; }
+.where { display: flex; align-items: baseline; gap: .7em; flex-wrap: wrap; }
+.where .show { font-family: var(--f-display); font-size: clamp(1.35rem, 2.6vw, 2rem); color: var(--bulb); line-height: 1.1; }
+.progress { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.count { font-family: var(--f-label); font-weight: 600; letter-spacing: .06em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.dots { display: flex; gap: 6px; flex-wrap: wrap; }
+.dot { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--muted); background: transparent; padding: 0; }
+.dot.seen { background: var(--line); border-color: var(--line); }
+.dot.won { background: var(--c); border-color: var(--c); }
+.dot.now { outline: 2px solid var(--bulb); outline-offset: 2px; }
+.tools { display: flex; gap: 8px; }
+
+.theater {
+  --drape: clamp(10px, 3.4vw, 60px);
+  position: relative; display: grid; grid-template-columns: var(--drape) minmax(0, 1fr) var(--drape);
+  min-height: clamp(270px, 46vh, 900px); border-radius: 16px; overflow: hidden;
+  box-shadow: 0 0 90px -20px var(--glow);
+}
+.theater::before { /* scalloped valance */
+  content: ""; position: absolute; inset: 0 0 auto; height: 20px; z-index: 1;
+  background: radial-gradient(circle 20px at 50% 0, var(--velvet) 19px, transparent 20px) 0 0 / 40px 20px repeat-x;
+}
+.drape { background: repeating-linear-gradient(90deg, var(--velvet-dark) 0 5px, var(--velvet) 5px 13px, var(--velvet-light) 13px 16px, var(--velvet) 16px 22px); }
+.screen {
+  position: relative; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(14px, 3vh, 34px); padding: clamp(46px, 7vh, 76px) clamp(14px, 3vw, 40px) clamp(22px, 4vh, 44px);
+  background: radial-gradient(ellipse at 50% 45%, var(--screen) 55%, var(--screen-edge)); color: var(--screen-ink); text-align: center;
+}
+.worth {
+  position: absolute; top: clamp(26px, 3.6vh, 36px); left: 50%; translate: -50% 0; white-space: nowrap;
+  display: flex; align-items: center; gap: .5em;
+  font-family: var(--f-label); font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-size: clamp(.8rem, 1.6vmin, 1.05rem); color: var(--screen-muted);
+}
+.emojis { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: clamp(8px, 2.4vmin, 30px); }
+.em { display: flex; flex-direction: column; align-items: center; gap: .35em; }
+.glyph { font-family: var(--f-emoji); font-size: var(--es, 8rem); line-height: 1.1; }
+.cap { font-family: var(--f-label); font-weight: 600; font-size: clamp(.85rem, 1.8vmin, 1.25rem); color: var(--screen-muted); line-height: 1.2; max-width: 9em; text-wrap: balance; }
+.emojis.enter .em { animation: pop .5s cubic-bezier(.2, .9, .3, 1.25) both; animation-delay: calc(var(--k) * 90ms); }
+@keyframes pop { from { transform: scale(.4) translateY(24px); opacity: 0; } }
+.answer { display: grid; gap: .35em; justify-items: center; }
+.answer h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.9rem, 5.6vmin, 4.6rem); line-height: 1.05; margin: 0; text-wrap: balance; }
+.answer .meta { font-family: var(--f-label); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--screen-muted); font-size: clamp(.9rem, 1.8vmin, 1.2rem); }
+.answer.flip h2 { animation: flip .6s cubic-bezier(.2, .8, .2, 1); transform-origin: 50% 0; }
+@keyframes flip { from { transform: perspective(700px) rotateX(-85deg); opacity: 0; } }
+
+.hints { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.stub {
+  display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 10px 28px; border-radius: 8px;
+  border: 1.5px dashed var(--line); color: var(--muted); text-align: left;
+}
+.stub .no { font-family: var(--f-label); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; font-size: .85rem; white-space: nowrap; }
+.stub .tx { font-size: clamp(1rem, 2.1vmin, 1.45rem); font-weight: 500; min-width: 0; }
+.stub.open {
+  border: 0; color: var(--screen-ink);
+  background:
+    radial-gradient(circle at 0 50%, transparent 11px, var(--ticket) 12px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 50%, transparent 11px, var(--ticket) 12px) right / 51% 100% no-repeat;
+}
+.stub.open .no { color: var(--velvet); border-right: 2px dashed var(--screen-edge); padding-right: 14px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.controls .btn { font-size: clamp(1.05rem, 2vmin, 1.3rem); }
+.teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 10px; }
+.team { display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 16px; background: var(--house-2); border: 1px solid var(--line); border-radius: 14px; }
+.team .nm { flex: 1; min-width: 0; font-weight: 600; font-size: clamp(1rem, 2vmin, 1.35rem); overflow-wrap: anywhere; line-height: 1.2; }
+.team .sc { font-family: var(--f-label); font-weight: 700; font-size: clamp(1.7rem, 3.8vmin, 2.6rem); font-variant-numeric: tabular-nums; line-height: 1; }
+.give {
+  font-family: var(--f-label); font-weight: 700; font-size: 1.15rem; min-width: 3.8em; padding: .4em .8em;
+  border-radius: 999px; border: 2px solid var(--c); background: transparent; color: var(--c);
+}
+.give[aria-pressed="true"] { background: var(--c); color: var(--house); }
+.team.bump .sc { animation: bump .7s; }
+@keyframes bump { 40% { transform: scale(1.4); color: var(--c); } }
+.legend { text-align: center; color: var(--muted); font-size: .9rem; margin: 0; }
+
+/* ---------- round intro ---------- */
+.intro { flex: 1; display: grid; place-content: center; justify-items: center; text-align: center; gap: clamp(14px, 2.6vh, 28px); padding-block: 4vh; }
+.intro h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(3rem, 11vw, 8rem); line-height: 1; margin: 0; color: var(--bulb); text-shadow: 0 0 34px var(--glow); }
+.intro .blurb { font-size: clamp(1.1rem, 2.5vmin, 1.65rem); max-width: 40ch; margin: 0; text-wrap: balance; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.chip { display: flex; gap: .6em; align-items: center; padding: .4em 1.1em; border: 1px solid var(--line); border-radius: 999px; background: var(--house-2); font-weight: 600; }
+.chip b { font-family: var(--f-label); font-size: 1.3em; font-variant-numeric: tabular-nums; }
+.intro .row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.intro .row .btn { font-size: 1.3rem; }
+
+/* ---------- final credits ---------- */
+.final { display: grid; align-content: start; gap: clamp(18px, 3vh, 34px); justify-items: center; text-align: center; padding-block: 3vh; }
+.final h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.6rem, 9vw, 6.5rem); line-height: 1.05; margin: 0; color: var(--c, var(--bulb)); text-shadow: 0 0 34px var(--glow); text-wrap: balance; }
+.board { display: grid; gap: 8px; width: min(100%, 560px); }
+.board .chip { justify-content: space-between; font-size: 1.15rem; border-radius: 12px; }
+.board .chip span { display: flex; align-items: center; gap: .6em; min-width: 0; overflow-wrap: anywhere; }
+.credits { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 24px; width: 100%; text-align: left; }
+.credits h3 { font-family: var(--f-label); font-weight: 700; text-transform: uppercase; letter-spacing: .14em; font-size: 1rem; color: var(--bulb); margin: 0 0 8px; }
+.credits ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 5px; }
+.credits li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 10px; align-items: baseline; }
+.credits li .sw { width: 10px; height: 10px; }
+.credits li .yr { color: var(--muted); font-family: var(--f-label); font-variant-numeric: tabular-nums; }
+.final .row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+@media (max-width: 640px) {
+  .hints { grid-template-columns: 1fr; }
+  .legend { display: none; }
+  .stub { padding-inline: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <section id="lobby" class="view lobby" hidden>
+    <a class="hub-link" href="../" hidden>← All games</a>
+    <div class="marquee">
+      <div class="bulbs" aria-hidden="true"></div>
+      <h1 class="brand">Emoji Box Office 2</h1>
+      <div class="letterboard" id="board"></div>
+      <div class="bulbs" aria-hidden="true"></div>
+    </div>
+    <div class="sample" aria-label="Example clue: spider, man"><span class="g">🕷️👨</span><span class="q">= ?</span></div>
+    <p class="tagline">The sequel, and it's harder: more wordplay, older classics, and hints that give away less.</p>
+    <div class="how">
+      <div>
+        <h2>How to play</h2>
+        <ol>
+          <li>Put this on the TV. Teams shout out the movie they think the emojis spell.</li>
+          <li>Stuck? Open a hint. Each film is worth 3 points, then 2 after one hint, then 1 after two. The first hint only gives the decade.</li>
+          <li>Tap the points button for the team that got it first. The title appears, with what each emoji meant.</li>
+        </ol>
+        <p class="keys"><kbd>H</kbd> hint · <kbd>Space</kbd> reveal, then next · <kbd>1</kbd>–<kbd>4</kbd> give points · <kbd>←</kbd> back · <kbd>F</kbd> full screen</p>
+      </div>
+      <div>
+        <h2>Teams tonight</h2>
+        <div class="team-setup" id="teamList"></div>
+        <p style="margin:10px 0 0"><button class="btn small" data-act="add" id="addTeam">Add a team</button></p>
+      </div>
+    </div>
+    <div class="lobby-actions" id="lobbyActions"></div>
+    <p class="note">The score saves in this browser, so a refresh won't lose your place.</p>
+  </section>
+
+  <section id="intro" class="view" hidden>
+    <div class="intro">
+      <p class="eyebrow" id="iNum"></p>
+      <h2 id="iName"></h2>
+      <p class="blurb" id="iBlurb"></p>
+      <div class="chips" id="iChips"></div>
+      <div class="row">
+        <button class="btn" data-act="prev" id="iBack">← Back</button>
+        <button class="btn primary" data-act="next" id="iGo"></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="play" class="view play" hidden>
+    <header class="bar">
+      <div class="where" id="pWhere"></div>
+      <div class="progress"><div class="dots" id="pDots"></div><span class="count" id="pCount"></span></div>
+      <div class="tools">
+        <button class="btn small" data-act="fs" id="fsBtn">Full screen</button>
+        <button class="btn small" data-act="lobby">Lobby</button>
+      </div>
+    </header>
+    <div class="theater">
+      <div class="drape"></div>
+      <div class="screen">
+        <div class="worth" id="pWorth"></div>
+        <div class="emojis" id="pEmojis"></div>
+        <div class="answer" id="pAnswer" aria-live="polite"></div>
+      </div>
+      <div class="drape"></div>
+    </div>
+    <div class="hints" id="pHints"></div>
+    <div class="controls">
+      <button class="btn" data-act="prev">← Back</button>
+      <button class="btn" data-act="hint" id="bHint"></button>
+      <button class="btn" data-act="reveal" id="bReveal">Reveal answer</button>
+      <button class="btn" data-act="next" id="bNext"></button>
+    </div>
+    <div class="teams" id="pTeams"></div>
+    <p class="legend"><kbd>H</kbd> hint · <kbd>Space</kbd> reveal, then next · <kbd>1</kbd>–<kbd>4</kbd> give points (tap again to take back) · <kbd>←</kbd> <kbd>→</kbd> move</p>
+  </section>
+
+  <section id="final" class="view final" hidden>
+    <p class="eyebrow" id="fEyebrow"></p>
+    <h2 id="fWinner"></h2>
+    <div class="board" id="fBoard"></div>
+    <div class="credits" id="fCredits"></div>
+    <div class="row">
+      <button class="btn" data-act="prev">← Last film</button>
+      <button class="btn primary" data-act="again" id="fAgain">Play again, same teams</button>
+      <button class="btn" data-act="lobby">Lobby</button>
+    </div>
+  </section>
+</div>
+
+<script>
+// Each film: [title, year, genre (hint 1), hint 2, "emoji caption|emoji caption|…", also-accepted title]
+const ROUNDS = [
+  { name: "Late Show", blurb: "Films you know, but the emojis show scenes, not the title.", films: [
+    ["The Shawshank Redemption", 1994, "Prison drama", "Tim Robbins and Morgan Freeman, and a poster on the cell wall.", "⛓️ prison|🔨 the little rock hammer|🕳️ the tunnel behind the poster|🌧️ escape in the rain"],
+    ["The Godfather", 1972, "Crime drama", "Marlon Brando makes an offer nobody can refuse.", "😇 god|👨 father|🐴 the horse's head|🍊 oranges, a bad sign"],
+    ["The Sound of Music", 1965, "Musical", "A governess, seven children and the von Trapp family singers.", "🔊 sound|🎵 of music|🏔️ the Austrian Alps|👗 clothes sewn from curtains"],
+    ["Mary Poppins", 1964, "Disney musical", "A magical nanny, and Dick Van Dyke dancing with cartoon penguins.", "☂️ flying in by umbrella|🥄 a spoonful of sugar|🎩 the chimney sweeps|💨 the east wind"],
+    ["Rocky", 1976, "Sports drama, Best Picture winner", "Sylvester Stallone trains in Philadelphia.", "🥊 boxing|🥚 raw eggs for breakfast|🏃‍♂️ the run up the museum steps|🐢 his pet turtles"],
+    ["Dirty Dancing", 1987, "Romantic drama", "Patrick Swayze: “Nobody puts Baby in a corner.”", "🍉 “I carried a watermelon”|💃 dancing|🏕️ the summer resort|🙌 the lift"],
+    ["Gremlins", 1984, "Horror comedy", "A furry pet named Gizmo comes with three rules.", "💦 never get them wet|🌙 never feed them after midnight|☀️ keep them out of bright light|🎄 Christmas chaos"],
+    ["Ratatouille", 2007, "Pixar animation", "“Anyone can cook.”", "🐀 Remy the rat|👨‍🍳 the chef's hat|🍲 the dish|🗼 Paris"],
+    ["Night at the Museum", 2006, "Family comedy", "Ben Stiller as the new night guard.", "🌙 night|🏛️ at the museum|🦖 the T. rex skeleton|🗿 “Dum-dum, give me gum-gum!”"],
+    ["Apollo 13", 1995, "Space drama", "Tom Hanks: “Houston, we have a problem.”", "🚀 Apollo|1️⃣3️⃣ thirteen|🌕 the Moon they never land on|🔧 a square filter in a round hole"],
+    ["Twister", 1996, "Disaster movie", "Helen Hunt and Bill Paxton chase storms across Oklahoma.", "🌪️ tornadoes|🐄 the flying cow|🚚 storm chasers|📡 sensors named Dorothy"],
+    ["Cool Runnings", 1993, "Disney sports comedy", "John Candy coaches a team from a country with no snow.", "🌴 Jamaica|🛷 the bobsled|⛄ their first snow|🥇 the Olympic dream"],
+  ]},
+  { name: "Word Play", blurb: "Every title is spelled out in puns. Say the emojis out loud.", films: [
+    ["Space Jam", 1996, "Live action meets cartoons", "Michael Jordan plays basketball with the Looney Tunes.", "🌌 space|🍓 jam|🏀 the big game|🐰 Bugs Bunny"],
+    ["Saving Private Ryan", 1998, "War drama", "Tom Hanks leads a squad to find one soldier in 1944.", "💾 saving|🔒 private|👨 Ryan|🏖️ Omaha Beach"],
+    ["Good Will Hunting", 1997, "Drama", "Matt Damon as a janitor who solves math problems at MIT.", "👍 good|📜 will|🏹 hunting|🧮 math on the hallway board"],
+    ["Catch Me If You Can", 2002, "Crime comedy-drama", "Leonardo DiCaprio cons his way into being a pilot, a doctor and a lawyer.", "🎣 catch|🙋 me|❓ if|👉 you|🥫 can"],
+    ["The Breakfast Club", 1985, "Teen comedy-drama", "Five students spend a Saturday in detention.", "🥞 breakfast|♣️ club|🏫 Saturday detention|✊ the fist in the air"],
+    ["Mission: Impossible", 1996, "Spy action", "Tom Cruise as Ethan Hunt; this message will self-destruct.", "🎯 mission|🚫 im-|✅ possible|🧗 hanging from the wires"],
+    ["Sleepless in Seattle", 1993, "Romantic comedy", "A widower's son calls a radio show, and Meg Ryan is listening.", "😴 sleep|🚫 less|📍 in|☔ rainy Seattle|📻 the radio call-in"],
+    ["Hidden Figures", 2016, "Historical drama", "The NASA mathematicians behind John Glenn's orbit.", "🙈 hidden|🔢 figures|🚀 the space race|👩‍🔬 the mathematicians"],
+    ["West Side Story", 1961, "Musical, Best Picture winner", "Romeo and Juliet, with the Jets and the Sharks.", "⬅️ west|↔️ side|📖 story|🗽 rival gangs in New York", "the 2021 remake"],
+    ["When Harry Met Sally...", 1989, "Romantic comedy", "Billy Crystal asks if men and women can ever just be friends.", "⏰ when|👨 Harry|🤝 met|👩 Sally|🥪 Katz's Deli"],
+    ["Life of Pi", 2012, "Adventure, from the novel", "A boy from Pondicherry, adrift in the Pacific for 227 days.", "🧬 life|🥧 of pi|🐯 Richard Parker the tiger|🛶 the lifeboat"],
+    ["Legally Blonde", 2001, "Comedy", "Reese Witherspoon goes to Harvard Law with her chihuahua.", "⚖️ legally|👱‍♀️ blonde|🐶 Bruiser|🎓 Harvard Law"],
+  ]},
+  { name: "Golden Age", blurb: "Classics from the 1930s to the ’70s. The hardest screen.", films: [
+    ["Casablanca", 1942, "Wartime romance", "Humphrey Bogart and Ingrid Bergman in Morocco.", "🏠 casa (house)|⬜ blanca (white)|🎹 “Play it, Sam”|✈️ the goodbye at the airport"],
+    ["North by Northwest", 1959, "Spy thriller", "Alfred Hitchcock, with Cary Grant on the run.", "⬆️ north|👉 by|↖️ northwest|✈️ the crop duster|🗿 Mount Rushmore"],
+    ["Singin' in the Rain", 1952, "Musical", "Gene Kelly dances through puddles with an umbrella.", "🎤 singin'|☔ in the rain|💃 the lamp-post dance|🎞️ silent films learn to talk"],
+    ["It's a Wonderful Life", 1946, "Christmas drama", "James Stewart sees his town as if he'd never been born.", "🤩 wonderful|🧬 life|👼 Clarence the angel|🔔 a bell rings, an angel gets wings"],
+    ["Psycho", 1960, "Horror", "Alfred Hitchcock; Anthony Perkins runs a quiet motel.", "🚿 the shower scene|🔪 the knife|🏨 the Bates Motel|👵 Mother"],
+    ["The Ten Commandments", 1956, "Biblical epic", "Charlton Heston as Moses.", "🔟 ten|📜 commandments|🌊 parting the Red Sea|🔥 the burning bush"],
+    ["2001: A Space Odyssey", 1968, "Science fiction", "Stanley Kubrick; “I'm sorry, Dave. I'm afraid I can't do that.”", "🐒 the apes|🦴 the bone tossed into the air|🔴 HAL's red eye|🚀 the voyage to Jupiter"],
+    ["Citizen Kane", 1941, "Drama", "Orson Welles, often called the greatest film ever made.", "📰 the newspaper empire|🏰 Xanadu|🛷 the sled|🌹 “Rosebud”"],
+    ["Close Encounters of the Third Kind", 1977, "Science fiction", "Steven Spielberg; Richard Dreyfuss sculpts a mountain out of mashed potatoes.", "🛸 the UFOs|🎶 the five-note greeting|⛰️ Devils Tower|3️⃣ the third kind"],
+    ["Some Like It Hot", 1959, "Comedy", "Marilyn Monroe, Jack Lemmon and Tony Curtis; “Nobody's perfect.”", "👍 some|❤️ like it|🌶️ hot|👗 two musicians in disguise"],
+    ["Rebel Without a Cause", 1955, "Teen drama", "James Dean in a red jacket.", "✊ rebel|🚫 without|❓ a cause|🚗 the chickie run"],
+    ["Gone with the Wind", 1939, "Civil War epic, Best Picture winner", "Vivien Leigh as Scarlett O'Hara.", "🏃 gone|🌬️ with the wind|🔥 Atlanta burns|🏡 Tara"],
+  ]},
+].map(R => ({ ...R, films: R.films.map(([t, y, g, h, key, aka]) => ({
+  t, y, g, h, aka,
+  parts: key.split("|").map(p => { const s = p.indexOf(" "); return { e: p.slice(0, s), c: p.slice(s + 1) }; }),
+})) }));
+const TOTAL = ROUNDS.reduce((n, R) => n + R.films.length, 0);
+const COLORS = ["var(--t1)", "var(--t2)", "var(--t3)", "var(--t4)"];
+const KEY = "emoji-box-office-2-v1"; // its own save, so the original game keeps its scores
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let S, lastId = null, lastRevealed = false, bumpK = -1, armedReset = null;
+
+const RENAMED = { "Team Anisha": "Team AY", "Team Matt": "Team Matty Boy" }; // nicknames (11-09); old saved games pick them up too
+const fresh = (teams = ["Team AY", "Team Matty Boy"]) => ({ lobby: true, started: false, view: "intro", r: 0, i: 0, teams, films: {} });
+const fid = (r, i) => r + "-" + i;
+const F = (r = S.r, i = S.i) => (S.films[fid(r, i)] ||= { hints: 0, revealed: false, award: null });
+const worth = f => Math.max(1, 3 - f.hints);
+const teamName = k => (S.teams[k] || "").trim() || `Team ${k + 1}`;
+const scores = () => {
+  const s = S.teams.map(() => 0);
+  for (const f of Object.values(S.films)) if (f.award && f.award.team < s.length) s[f.award.team] += f.award.pts;
+  return s;
+};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.teams) && s.films) { s.teams = s.teams.map(n => RENAMED[n] || n); return s; } } catch (e) {}
+  return null;
+}
+function commit() { save(); render(); }
+
+/* ---------- actions ---------- */
+function startGame() { S = { ...fresh(S.teams), lobby: false, started: true }; keepAwake(); commit(); }
+function next() {
+  if (S.view === "intro") { S.view = "play"; S.i = 0; return commit(); }
+  if (S.view !== "play") return;
+  if (S.i < ROUNDS[S.r].films.length - 1) S.i++;
+  else if (S.r < ROUNDS.length - 1) { S.r++; S.i = 0; S.view = "intro"; }
+  else S.view = "final";
+  commit();
+}
+function prev() {
+  if (S.view === "play") { if (S.i > 0) S.i--; else S.view = "intro"; }
+  else if (S.view === "intro") { if (S.r === 0) return; S.r--; S.i = ROUNDS[S.r].films.length - 1; S.view = "play"; }
+  else if (S.view === "final") { S.r = ROUNDS.length - 1; S.i = ROUNDS[S.r].films.length - 1; S.view = "play"; }
+  commit();
+}
+function hint() { const f = F(); if (f.revealed || f.hints >= 2) return; f.hints++; commit(); }
+function reveal() { const f = F(); if (!f.revealed) { f.revealed = true; commit(); } }
+function award(k) {
+  if (k >= S.teams.length) return;
+  const f = F();
+  if (f.award && f.award.team === k) f.award = null;
+  else { f.award = { team: k, pts: worth(f) }; f.revealed = true; bumpK = k; }
+  commit();
+}
+function removeTeam(k) {
+  S.teams.splice(k, 1);
+  for (const f of Object.values(S.films)) {
+    if (!f.award) continue;
+    if (f.award.team === k) f.award = null; else if (f.award.team > k) f.award.team--;
+  }
+  commit();
+}
+
+/* ---------- views ---------- */
+function render() {
+  const v = S.lobby || !S.started ? "lobby" : S.view;
+  for (const id of ["lobby", "intro", "play", "final"]) $("#" + id).hidden = id !== v;
+  ({ lobby: renderLobby, intro: renderIntro, play: renderPlay, final: renderFinal })[v]();
+}
+
+function renderLobby() {
+  $("#board").innerHTML = `<span>The sequel · harder</span><span>${TOTAL} films · ${ROUNDS.length} screens</span><span>${ROUNDS.map(R => R.name.split(" ")[0]).join(" · ")}</span>`;
+  $("#teamList").innerHTML = S.teams.map((n, k) => `
+    <div class="trow" style="--c:${COLORS[k]}">
+      <span class="sw"></span>
+      <label class="sr" for="team-${k}">Team ${k + 1} name</label>
+      <input id="team-${k}" data-k="${k}" maxlength="24" value="${esc(n)}" placeholder="Team ${k + 1}">
+      <button class="btn small" data-act="rm" data-k="${k}" ${S.teams.length <= 2 ? "disabled" : ""} aria-label="Remove ${esc(teamName(k))}">Remove</button>
+    </div>`).join("");
+  $("#addTeam").disabled = S.teams.length >= 4;
+  const where = S.view === "final" ? "Back to the final credits"
+    : S.view === "intro" ? `Resume · ${ROUNDS[S.r].name}` : `Resume · ${ROUNDS[S.r].name}, film ${S.i + 1}`;
+  $("#lobbyActions").innerHTML = S.started
+    ? `<button class="btn primary" data-act="resume">${where}</button><button class="btn" data-act="new" id="newBtn">New game</button>`
+    : `<button class="btn primary" data-act="start">Start the show</button>`;
+}
+
+function chipsHTML(withScores) {
+  const sc = scores();
+  return S.teams.map((_, k) => `<span class="chip" style="--c:${COLORS[k]}"><span class="sw"></span>${esc(teamName(k))}${withScores ? ` <b>${sc[k]}</b>` : ""}</span>`).join("");
+}
+
+function renderIntro() {
+  const R = ROUNDS[S.r];
+  $("#iNum").textContent = `Screen ${S.r + 1} of ${ROUNDS.length}`;
+  $("#iName").textContent = R.name;
+  $("#iBlurb").textContent = `${R.blurb} ${R.films.length} films.`;
+  $("#iChips").innerHTML = chipsHTML(S.r > 0);
+  $("#iBack").hidden = S.r === 0;
+  $("#iGo").textContent = `Start the ${R.name} →`;
+}
+
+function renderPlay() {
+  const R = ROUNDS[S.r], m = R.films[S.i], f = F(), id = fid(S.r, S.i), w = worth(f);
+  const isNew = id !== lastId, justRevealed = f.revealed && (isNew || !lastRevealed);
+
+  $("#pWhere").innerHTML = `<span class="eyebrow">Screen ${S.r + 1} of ${ROUNDS.length}</span><span class="show">${R.name}</span>`;
+  $("#pDots").innerHTML = R.films.map((_, i) => {
+    const g = S.films[fid(S.r, i)], cls = ["dot"];
+    let style = "";
+    if (g && g.award) { cls.push("won"); style = ` style="--c:${COLORS[g.award.team]}"`; }
+    else if (g && g.revealed) cls.push("seen");
+    if (i === S.i) cls.push("now");
+    return `<button class="${cls.join(" ")}"${style} data-act="jump" data-i="${i}" aria-label="Film ${i + 1}${i === S.i ? ", showing now" : ""}"></button>`;
+  }).join("");
+  $("#pCount").textContent = `Film ${S.i + 1} of ${R.films.length}`;
+
+  $("#pWorth").innerHTML = f.award
+    ? `<span class="sw" style="--c:${COLORS[f.award.team]}"></span>${esc(teamName(f.award.team))} got it · +${f.award.pts}`
+    : `Worth ${w} point${w > 1 ? "s" : ""}`;
+
+  const em = $("#pEmojis"), n = m.parts.length, vm = n <= 3 ? 15 : n === 4 ? 13 : 11;
+  em.style.setProperty("--es", `clamp(2.6rem, ${vm}vmin, ${vm * 0.75}rem)`);
+  em.classList.toggle("enter", isNew);
+  em.innerHTML = m.parts.map((p, k) =>
+    `<span class="em" style="--k:${k}"><span class="glyph">${p.e}</span><span class="cap"${f.revealed ? "" : " hidden"}>${esc(p.c)}</span></span>`).join("");
+
+  const a = $("#pAnswer");
+  a.hidden = !f.revealed;
+  a.classList.toggle("flip", justRevealed);
+  a.innerHTML = f.revealed ? `<h2>${esc(m.t)}</h2><div class="meta">${m.y}${m.aka ? ` · also counts: ${esc(m.aka)}` : ""}</div>` : "";
+
+  const hintText = [`${Math.floor(m.y / 10) * 10}s · ${m.g}`, m.h]; // the decade only: the year shows on reveal
+  const locked = ["The decade and the genre. Prize drops to 2.", "A star or the plot. Prize drops to 1."];
+  $("#pHints").innerHTML = hintText.map((h, k) => (f.hints > k || f.revealed)
+    ? `<div class="stub open"><span class="no">Hint ${k + 1}</span><span class="tx">${esc(h)}</span></div>`
+    : `<div class="stub"><span class="no">Hint ${k + 1}</span><span class="tx">${locked[k]}</span></div>`).join("");
+
+  const bHint = $("#bHint");
+  bHint.disabled = f.revealed || f.hints >= 2;
+  bHint.textContent = f.hints >= 2 || f.revealed ? "Hints used" : `Hint ${f.hints + 1}`;
+  $("#bReveal").disabled = f.revealed;
+  $("#bReveal").classList.toggle("primary", !f.revealed);
+  const last = S.i === R.films.length - 1;
+  $("#bNext").textContent = last ? (S.r === ROUNDS.length - 1 ? "Final credits →" : "Next showing →") : "Next film →";
+  $("#bNext").classList.toggle("primary", f.revealed);
+
+  const sc = scores();
+  $("#pTeams").innerHTML = S.teams.map((_, k) => {
+    const mine = !!(f.award && f.award.team === k), pts = mine ? f.award.pts : w, nm = esc(teamName(k));
+    return `<div class="team${bumpK === k ? " bump" : ""}" style="--c:${COLORS[k]}">
+      <span class="sw"></span><span class="nm">${nm}</span><span class="sc">${sc[k]}</span>
+      <button class="give" data-act="give" data-k="${k}" aria-pressed="${mine}"
+        aria-label="${mine ? `Take back ${pts} points from ${nm}` : `Give ${pts} points to ${nm}`}">${mine ? "✓ " : ""}+${pts}</button>
+    </div>`;
+  }).join("");
+  bumpK = -1;
+  lastId = id; lastRevealed = f.revealed;
+}
+
+function renderFinal() {
+  const sc = scores(), top = Math.max(...sc), winners = S.teams.map((_, k) => k).filter(k => sc[k] === top);
+  const h = $("#fWinner");
+  if (top === 0) { $("#fEyebrow").textContent = "The credits roll"; h.textContent = "Nobody scored!"; h.style.removeProperty("--c"); }
+  else if (winners.length > 1) { $("#fEyebrow").textContent = `Tied at ${top} points`; h.textContent = "It's a tie!"; h.style.removeProperty("--c"); }
+  else { $("#fEyebrow").textContent = "And the award for Best Team goes to"; h.textContent = teamName(winners[0]); h.style.setProperty("--c", COLORS[winners[0]]); }
+  $("#fBoard").innerHTML = S.teams.map((_, k) => k).sort((a, b) => sc[b] - sc[a]).map(k =>
+    `<div class="chip" style="--c:${COLORS[k]}"><span><span class="sw"></span>${esc(teamName(k))}</span><b>${sc[k]}</b></div>`).join("");
+  $("#fCredits").innerHTML = ROUNDS.map((R, r) => `<div><h3>${R.name}</h3><ol>${R.films.map((m, i) => {
+    const g = S.films[fid(r, i)], k = g && g.award ? g.award.team : -1;
+    return `<li><span class="sw" style="--c:${k >= 0 ? COLORS[k] : "var(--line)"}" title="${k >= 0 ? esc(teamName(k)) : "Nobody"}"></span><span>${esc(m.t)}</span><span class="yr">${m.y}</span></li>`;
+  }).join("")}</ol></div>`).join("");
+}
+
+/* ---------- screen helpers ---------- */
+let lock = null;
+async function keepAwake() {
+  try { if ("wakeLock" in navigator && !lock) { lock = await navigator.wakeLock.request("screen"); lock.addEventListener("release", () => { lock = null; }); } } catch (e) {}
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S && S.started && !S.lobby) keepAwake(); });
+function toggleFs() {
+  try {
+    const d = document;
+    const p = d.fullscreenElement ? d.exitFullscreen() : d.documentElement.requestFullscreen();
+    if (p && p.catch) p.catch(() => {});
+  } catch (e) {}
+}
+
+/* ---------- input ---------- */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]");
+  if (!b || b.disabled) return;
+  if (e.detail > 0) b.blur(); // mouse clicks shouldn't leave focus where Space would re-press the button
+  const k = +b.dataset.k;
+  switch (b.dataset.act) {
+    case "start": return startGame();
+    case "resume": S.lobby = false; keepAwake(); return commit();
+    case "new":
+      if (armedReset) { clearTimeout(armedReset); armedReset = null; return startGame(); }
+      b.textContent = "Tap again to clear the scores"; b.classList.add("warn");
+      armedReset = setTimeout(() => { armedReset = null; if (S.lobby) renderLobby(); }, 3500);
+      return;
+    case "add": if (S.teams.length < 4) { S.teams.push(`Team ${S.teams.length + 1}`); commit(); } return;
+    case "rm": if (S.teams.length > 2) removeTeam(k); return;
+    case "lobby": S.lobby = true; return commit();
+    case "fs": return toggleFs();
+    case "next": return next();
+    case "prev": return prev();
+    case "hint": return hint();
+    case "reveal": return reveal();
+    case "give": return award(k);
+    case "jump": S.i = +b.dataset.i; return commit();
+    case "again": S = { ...fresh(S.teams), lobby: false, started: true }; return commit();
+  }
+});
+document.addEventListener("input", e => {
+  if (!e.target.matches("#teamList input")) return;
+  S.teams[+e.target.dataset.k] = e.target.value;
+  save();
+});
+document.addEventListener("keydown", e => {
+  if (e.target.closest("input, textarea") || e.metaKey || e.ctrlKey || e.altKey) return;
+  const v = S.lobby || !S.started ? "lobby" : S.view, key = e.key, onBtn = !!e.target.closest("button");
+  if (key === "f" || key === "F") return toggleFs();
+  if (v === "play") {
+    if (key === "h" || key === "H") hint();
+    else if (key === "r" || key === "R") reveal();
+    else if (/^[1-4]$/.test(key)) award(+key - 1);
+    else if (key === "ArrowRight" || key === "n" || key === "N") next();
+    else if (key === "ArrowLeft") prev();
+    else if ((key === " " || key === "Enter") && !onBtn) { e.preventDefault(); F().revealed ? next() : reveal(); }
+  } else if (v === "intro") {
+    if (key === "ArrowRight" || ((key === " " || key === "Enter") && !onBtn)) { e.preventDefault(); next(); }
+    else if (key === "ArrowLeft") prev();
+  } else if (v === "final" && key === "ArrowLeft") prev();
+});
+
+/* ---------- boot ---------- */
+if (/\/games\/[^/]+\/?(index\.html)?$/.test(location.pathname)) document.querySelector(".hub-link").hidden = false;
+document.querySelectorAll(".bulbs").forEach(row => {
+  row.innerHTML = Array.from({ length: 22 }, (_, i) => `<i style="animation-delay:${(i % 4) * 0.4}s"></i>`).join("");
+});
+if (!document.fullscreenEnabled) $("#fsBtn").hidden = true;
+function boot(data) {
+  S = (data && data.S) || load() || fresh();
+  render();
+}
+window.claude?.hot?.snapshot?.(() => ({ S }));
+window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+</script>
+</body>
+</html>

@@ -48,12 +48,15 @@ h1 { font-family: var(--f-hub); font-weight: 800; font-size: clamp(3rem, 9vw, 5.
   display: grid; grid-template-rows: auto 1fr auto; gap: 18px; text-decoration: none; border-radius: 22px; padding: 22px;
   border: 1.5px solid var(--line); transition: transform .2s ease, border-color .2s ease; min-width: 0;
 }
-.game:hover { transform: translateY(-4px); border-color: var(--accent); }
+.game:hover, .game:focus-within { transform: translateY(-4px); border-color: var(--accent); }
 .game h2 { margin: 0; font-weight: 400; line-height: 1; color: var(--accent); }
 .game p { margin: 0; }
 .game .what { font-size: 1.08rem; }
 .game .facts { color: var(--muted); font-size: .95rem; margin-top: 6px; }
-.play { justify-self: start; font-weight: 700; padding: .5em 1.2em; border-radius: 999px; background: var(--accent); color: var(--dark-ink); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.play { font-weight: 700; padding: .5em 1.2em; border-radius: 999px; background: var(--accent); color: var(--dark-ink); text-decoration: none; border: 1.5px solid var(--accent); }
+.play.alt { background: transparent; color: var(--accent); }
+.play:hover { filter: brightness(1.08); }
 .art { height: 170px; border-radius: 14px; overflow: hidden; position: relative; }
 
 /* Emoji Box Office: a lit screen between drapes */
@@ -72,7 +75,7 @@ h1 { font-family: var(--f-hub); font-weight: 800; font-size: clamp(3rem, 9vw, 5.
   background: repeating-radial-gradient(circle, var(--nd-vinyl) 0 2px, var(--nd-groove) 2px 3px);
   animation: spin 2.4s linear infinite; animation-play-state: paused;
 }
-.nd:hover .record, .nd:focus-visible .record { animation-play-state: running; }
+.nd:hover .record, .nd:focus-within .record { animation-play-state: running; }
 .record::after { content: "’80s"; position: absolute; inset: 32%; border-radius: 50%; background: var(--nd-pink); color: var(--dark-ink); display: grid; place-items: center; font-family: "Shrikhand", Georgia, serif; font-size: 1rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -95,29 +98,29 @@ footer { color: var(--muted); font-size: .92rem; border-top: 1px solid var(--lin
 <main class="wrap">
   <header>
     <h1>Game Night <span class="date">November 9</span></h1>
-    <p class="lede">Three party games for the TV. One person hosts from a laptop, and everyone else shouts answers from the couch.</p>
+    <p class="lede">Three party games for the TV. One person hosts from a laptop, and everyone else shouts answers from the couch. Each game now has a harder v2.</p>
   </header>
 
   <section class="games" aria-label="Games">
-    <a class="game ebo" href="emoji-box-office/">
+    <div class="game ebo">
       <div class="art" aria-hidden="true"><div class="drape"></div><div class="screen">🦁👑🐗🐒</div><div class="drape"></div></div>
       <div>
         <h2>Emoji Box Office</h2>
         <p class="what">Guess the American movie from the emojis. Each hint lowers the prize.</p>
-        <p class="facts">Teams · 40 movies · 3 rounds, easy to hard · about 40 minutes</p>
+        <p class="facts">Teams · 40 movies, or 36 harder ones in v2 (more puns, older classics) · about 40 minutes</p>
       </div>
-      <span class="play">Play →</span>
-    </a>
-    <a class="game nd" href="needle-drop/">
+      <div class="actions"><a class="play" href="emoji-box-office-v2/">Play v2, harder →</a><a class="play alt" href="emoji-box-office/">Original</a></div>
+    </div>
+    <div class="game nd">
       <div class="art" aria-hidden="true"><div class="record"></div></div>
       <div>
         <h2>Needle Drop</h2>
         <p class="what">Hear two seconds of a hit, then name the song and the artist.</p>
-        <p class="facts">Teams · 36 songs from the 1970s to now · needs internet for the clips</p>
+        <p class="facts">Teams · 36 songs from the 1970s to now · v2: deeper cuts, 1-second clips from mid-song · needs internet</p>
       </div>
-      <span class="play">Play →</span>
-    </a>
-    <a class="game be" href="best-experts/">
+      <div class="actions"><a class="play" href="needle-drop-v2/">Play v2, harder →</a><a class="play alt" href="needle-drop/">Original</a></div>
+    </div>
+    <div class="game be">
       <div class="art" aria-hidden="true">
         <span class="pill" style="--c:var(--be-tennis)">🎾 Tennis</span><span class="pill" style="--c:var(--be-nba)">🏀 NBA</span><span class="pill" style="--c:var(--be-avatar)">🌀 Avatar</span>
         <span class="pill" style="--c:var(--be-friends)">☕ Friends</span><span class="pill" style="--c:var(--be-80s)">📼 The ’80s</span>
@@ -126,10 +129,10 @@ footer { color: var(--muted); font-size: .92rem; border-top: 1px solid var(--lin
       <div>
         <h2>Best <span>Experts</span></h2>
         <p class="what">Everyone defends their own specialty. A miss can be stolen by anyone else.</p>
-        <p class="facts">Individual players · 58 questions · Champion and Best Expert awards</p>
+        <p class="facts">Individual players · 58 questions, all new and harder in v2 · Champion and Best Expert awards</p>
       </div>
-      <span class="play">Play →</span>
-    </a>
+      <div class="actions"><a class="play" href="best-experts-v2/">Play v2, harder →</a><a class="play alt" href="best-experts/">Original</a></div>
+    </div>
   </section>
 
   <section class="tips">
