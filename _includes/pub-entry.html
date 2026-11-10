@@ -2,7 +2,9 @@
   One publication row: teaser media on the left, details on the right.
   Title and teaser both link to the project website, else the publication page.
   Expects `include.pub` (a _publications document). Renders a looping muted
-  video when `teaser` ends in .mp4, otherwise an image.
+  video when `teaser` ends in .mp4, otherwise an image. The venue shows as a
+  short pill (`venue_short`, full venue on hover) and `tldr` as one sentence;
+  the longer excerpt stays on the publication's own page.
 {% endcomment %}
 
 {% assign pub = include.pub %}
@@ -32,13 +34,11 @@
     {% if pub.authors %}<p class="sw-pub__authors">{{ authors }}</p>{% endif %}
 
     <p class="sw-pub__venue">
-      {{ pub.venue }}{% if pub.date %}, {{ pub.date | date: "%B %Y" }}{% endif %}{% if pub.badge %}
+      {% if pub.venue_short %}<span class="sw-venue" title="{{ pub.venue | escape }}{% if pub.date %}, {{ pub.date | date: '%B %Y' }}{% endif %}">{{ pub.venue_short }}</span>{% else %}{{ pub.venue }}{% if pub.date %}, {{ pub.date | date: "%B %Y" }}{% endif %}{% endif %}{% if pub.badge %}
       <span class="sw-badge">{{ pub.badge }}</span>{% endif %}
     </p>
 
-    {% if pub.excerpt and include.show_blurb != false %}
-      <p class="sw-pub__blurb">{{ pub.excerpt | strip_html | strip }}</p>
-    {% endif %}
+    {% if pub.tldr %}<p class="sw-pub__blurb">{{ pub.tldr }}</p>{% endif %}
 
     {% if pub.links %}
       <ul class="sw-links">

@@ -27,15 +27,9 @@ redirect_from:
   </div>
 </div>
 
-**I'm a Computer Science PhD in Robotics and AI at Stanford University**. I am currently advised by [Monroe Kennedy](https://profiles.stanford.edu/monroe-kennedy) and [Jeannette Bohg](https://web.stanford.edu/~bohg/). I am interested in **data-efficient 3D vision and tactile sensing for robotics**, and in **vision-only autonomous driving**. I am generously funded by the [National Science Foundation Graduate Fellowship](https://www.nsfgrfp.org). 
+I'm a PhD student in Computer Science at Stanford, advised by [Monroe Kennedy](https://profiles.stanford.edu/monroe-kennedy) and [Jeannette Bohg](https://web.stanford.edu/~bohg/). I work on **data-efficient 3D vision and tactile sensing for robotics** and on **vision-only autonomous driving**, funded by the [NSF Graduate Research Fellowship](https://www.nsfgrfp.org).
 
-Prior to this, I worked at **Microsoft as a Software Engineer** in Redmond on the Customer Experience Platform. Before this, during my undergrad at the University of Colorado Boulder, I worked in the [HIRO](https://hiro-group.ronc.one) group as an undergraduate researcher, advised by Professor [Alessandro Roncone](https://alessandro.ronc.one/). I was also a researcher in the [SBS](https://www.colorado.edu/lab/sbs) lab, advised by Professor [Wangda Zuo](https://www.colorado.edu/ceae/wangda-zuo).
-
-I also enjoy teaching, and I received the **Stanford Centennial Teaching Award** — you can read the [spotlight here](https://engineering.stanford.edu/spotlight/matt-strong).
-
-I enjoy running, basketball (following+playing), driving my Corolla, frisbee, lifting, Beat Saber, and hiking. Check out my [Strava](https://www.strava.com/athletes/26495451)!
-
-My best languages: Python, C++, Typescript, C#, 中文 (in progress)
+Before Stanford, I was a **software engineer at Microsoft**. As an undergrad at CU Boulder, I did research in the [HIRO group](https://hiro-group.ronc.one) with [Alessandro Roncone](https://alessandro.ronc.one/) and the [SBS lab](https://www.colorado.edu/lab/sbs) with [Wangda Zuo](https://www.colorado.edu/ceae/wangda-zuo). I also received the **Stanford Centennial Teaching Award** ([spotlight](https://engineering.stanford.edu/spotlight/matt-strong)).
 
 <h2 class="sw-section-title">Selected Work</h2>
 

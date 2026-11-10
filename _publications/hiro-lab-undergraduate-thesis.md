@@ -6,6 +6,8 @@ permalink: /publication/hiro-lab-undergraduate-thesis
 excerpt: 'My undergraduate thesis covering my prior 2 years of robotics research.'
 date: 2021-05-07
 venue: 'University of Colorado Boulder Undergraduate Thesis in Computer Science'
+venue_short: "Undergraduate Thesis 2021"  # shown in publication rows; full venue on hover
+tldr: "My undergraduate thesis, covering two years of research on robotic skin for close human-robot collaboration."  # one line under each publication row
 authors: "Matthew Strong"
 teaser: "/files/paper_images/hiro-lab-undergraduate-thesis-image.png"
 links:

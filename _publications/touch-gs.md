@@ -6,6 +6,8 @@ permalink: /publication/touch-gs
 excerpt: 'Touch-GS combines the power of vision and touch to generate high-quality few-shot and challenging scenes, such as few-view object centric scenes, mirrors, and transparent objects.'
 authors: "Aiden Swann*, Matthew Strong*, Won Kyung Do, Gadiel Sznaier Camps, Mac Schwager, Monroe Kennedy III"
 venue: "IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)"
+venue_short: "IROS 2024"  # shown in publication rows; full venue on hover
+tldr: "Combines vision and touch to build Gaussian splats of hard scenes: few views, mirrors, transparent objects."  # one line under each publication row
 date: 2024-10-01
 teaser: "/assets/teasers/touch-gs.mp4"
 teaser_poster: "/assets/teasers/touch-gs.jpg"

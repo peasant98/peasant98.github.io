@@ -5,6 +5,8 @@ permalink: /publication/dexfruit
 excerpt: 'DexFruit is a robotic manipulation framework that enables gentle, autonomous handling of fragile fruit using optical tactile sensing and introduces FruitSplat, a novel technique to represent and quantify visual damage in high-resolution 3D via Gaussian Splatting.'
 authors: "Aiden Swann*, Alex Qiu*, Matthew Strong, Angelina Zhang, Samuel Morstein, Kai Rayle, Monroe Kennedy III"
 venue: "IEEE Robotics and Automation Letters (RA-L)"
+venue_short: "RA-L 2025"  # shown in publication rows; full venue on hover
+tldr: "Gentle robotic handling of fragile fruit with optical tactile sensing, plus 3D damage inspection with Gaussian splats."  # one line under each publication row
 date: 2025-12-01
 teaser: "/assets/teasers/dexfruit.mp4"
 teaser_poster: "/assets/teasers/dexfruit.jpg"

@@ -5,6 +5,8 @@ permalink: /publication/tensor-touch
 excerpt: 'TensorTouch is a comprehensive framework for stress tensor estimation from 3D optical tactile sensors, combining finite element analysis with deep learning to extract detailed contact information including stress tensors, deformation fields, and force distributions at pixel-level resolution.'
 authors: "Won Kyung Do, Matthew Strong, Aiden Swann, Boshu Lei, Monroe Kennedy III"
 venue: "IEEE Transactions on Robotics (T-RO)"
+venue_short: "T-RO 2026"  # shown in publication rows; full venue on hover
+tldr: "Calibrates optical tactile sensors to estimate stress tensors, deformation and force at pixel resolution."  # one line under each publication row
 date: 2026-04-01
 teaser: "/assets/teasers/tensor-touch.mp4"
 teaser_poster: "/assets/teasers/tensor-touch.jpg"

@@ -6,6 +6,8 @@ permalink: /publication/mr-crabs
 excerpt: 'A fully integrated perception system for near-ground bimanual mobile manipulation: a holonomic bimanual robot with dual RealSense depth cameras, a small LIDAR, and a pan-and-tilt bottom camera that improves mapping and search.'
 authors: "Giuse Pham*, Matthew Strong*, Alex Qiu, Joonwon Kang, Monroe Kennedy III"
 venue: "ICRA Workshop on Act to Sense to Act Better"
+venue_short: "ICRA 2026 Workshop"  # shown in publication rows; full venue on hover
+tldr: "A bimanual mobile robot with depth cameras, LIDAR and a pan-tilt camera for near-ground manipulation and search."  # one line under each publication row
 date: 2026-06-01
 teaser: "/assets/teasers/mr-crabs.jpg"
 links:

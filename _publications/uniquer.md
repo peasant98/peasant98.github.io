@@ -5,6 +5,8 @@ permalink: /publication/uniquer
 excerpt: 'UniQueR formulates feedforward reconstruction as sparse 3D query inference, learning compact 3D anchor points that infer scene structure including occluded geometry in a single forward pass.'
 authors: "Chensheng Peng, Quentin Herau, Jiezhi Yang, Yichen Xie, Yihan Hu, Wenzhao Zheng, Matthew Strong, Masayoshi Tomizuka, Wei Zhan"
 venue: "European Conference on Computer Vision (ECCV)"
+venue_short: "ECCV 2026"  # shown in publication rows; full venue on hover
+tldr: "Feedforward 3D reconstruction as sparse 3D queries, inferring occluded geometry in a single forward pass."  # one line under each publication row
 date: 2026-09-01
 teaser: "/assets/teasers/uniquer.jpg"
 links:

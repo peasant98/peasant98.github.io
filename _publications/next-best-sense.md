@@ -5,6 +5,8 @@ permalink: /publication/next-best-sense
 excerpt: 'Next Best Sense draws upon state of the art vision models to train few-shot Gaussian Splatting scenes, and turns to impressive next best view selection methods to guide robotic manipulator next best view and touch selection in the wild.'
 authors: "Matthew Strong*, Boshu Lei*, Aiden Swann, Wen Jiang, Kostas Daniilidis, Monroe Kennedy III"
 venue: "IEEE International Conference on Robotics and Automation (ICRA)"
+venue_short: "ICRA 2025"  # shown in publication rows; full venue on hover
+tldr: "Chooses where to look and touch next to train few-shot Gaussian splats, guided by FisherRF."  # one line under each publication row
 date: 2025-05-01
 teaser: "/assets/teasers/next-best-sense.jpg"
 featured: true

@@ -186,11 +186,20 @@
   }
 
   & &__venue {
-    margin: 0;
+    margin: .3em 0 0;
     font-size: .84em;
     line-height: 1.4;
-    font-style: italic;
     color: var(--sw-muted);
+  }
+
+  .sw-venue {
+    display: inline-block;
+    padding: .1em .65em;
+    border-radius: 999px;
+    background: var(--sw-blue-100);
+    color: var(--sw-blue-700);
+    font-size: .92em;
+    font-weight: 600;
   }
 
   & &__blurb {
@@ -308,6 +317,7 @@
   margin-bottom: .8em;
   font-size: .94em;
   line-height: 1.55;
+  color: var(--sw-ink);
 }
 
 /* ---------- home page has no author sidebar, so use the full column ---------- */

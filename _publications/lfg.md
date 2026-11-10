@@ -5,6 +5,8 @@ permalink: /publication/lfg
 excerpt: 'LFG learns a unified pseudo-4D representation of geometry, semantics, motion, and short-term future evolution directly from unposed, unlabeled single-view driving videos, reaching state-of-the-art planning with a single front camera.'
 authors: "Matthew Strong, Wei-Jer Chang, Quentin Herau, Jiezhi Yang, Yihan Hu, Chensheng Peng, Wei Zhan"
 venue: "IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)"
+venue_short: "CVPR 2026"  # shown in publication rows; full venue on hover
+tldr: "Pretrains a driving model on unlabeled, unposed videos, reaching state-of-the-art planning from a single front camera."  # one line under each publication row
 date: 2026-06-01
 teaser: "/assets/teasers/lfg.mp4"
 teaser_poster: "/assets/teasers/lfg.jpg"

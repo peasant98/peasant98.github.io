@@ -5,6 +5,8 @@ permalink: /publication/hiro-lab-shiro
 excerpt: 'A method for soft hierarchical reinforcement learning to accelerate learning for challenging locomotion tasks'
 date: 2022-12-24
 venue: 'Arxiv'
+venue_short: "arXiv 2022"  # shown in publication rows; full venue on hover
+tldr: "Soft hierarchical reinforcement learning that speeds up learning on hard locomotion tasks."  # one line under each publication row
 authors: "Kandai Watanabe*, Matthew Strong*, Omer Eldar"
 teaser: "/files/paper_images/hiro-lab-shiro-image.png"
 links:

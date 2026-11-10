@@ -3,8 +3,10 @@ title: "J-PARSE: Jacobian-based Projection Algorithm for Resolving Singularities
 collection: publications
 permalink: /publication/jparse
 excerpt: 'J-PARSE is a method for smooth first-order inverse kinematic control of serial manipulators near kinematic singularities, expanding the available workspace for applications in servoing, teleoperation, and learning.'
-date: 2025-05-01
-venue: 'ArXiv'
+date: 2026-09-15  # T-RO camera-ready; on arXiv since May 2025
+venue: 'IEEE Transactions on Robotics (T-RO)'
+venue_short: "T-RO 2026"  # shown in publication rows; full venue on hover
+tldr: "Smooth inverse kinematics near singularities, so manipulators can use more of their workspace in servoing, teleoperation and learning."  # one line under each publication row
 authors: "Shivani Guptasarma, Matthew Strong, HongHao Zhen, Monroe Kennedy III"
 teaser: "/assets/teasers/jparse.mp4"
 teaser_poster: "/assets/teasers/jparse.jpg"

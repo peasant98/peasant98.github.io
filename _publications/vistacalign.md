@@ -5,6 +5,8 @@ permalink: /publication/vistacalign
 excerpt: 'VisTacAlign co-trains 3D-visual-tactile dexterous policies on human and robot demonstrations by closing the human-robot gap in every modality: glove-tracked hand motion is retargeted to the robot hand, the human hand is replaced by the robot hand in the point cloud, and tactile glove signals are aligned to the robot fingertip sensors.'
 authors: "Julien Poffet, Matthew Strong, Ankush Dhawan, Baiyu Shi, Shalika Neelaveni, Yujia Yuan, Zhenan Bao, Monroe Kennedy III"
 venue: "arXiv"
+venue_short: "arXiv 2026"  # shown in publication rows; full venue on hover
+tldr: "Co-trains dexterous policies on human and robot demonstrations by aligning vision, hand motion and touch."  # one line under each publication row
 date: 2026-09-25
 teaser: "/assets/teasers/vistacalign.mp4"
 teaser_poster: "/assets/teasers/vistacalign.jpg"

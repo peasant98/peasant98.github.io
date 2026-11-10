@@ -5,6 +5,8 @@ permalink: /publication/real2sem2real
 excerpt: 'Real2Sem2Real turns one monocular RGB video of a human demonstration into thousands of robot demonstrations across the object instances of a category: it tracks each object with DINOv3-distilled Gaussian splats, aligns digital cousins to the demonstration semantically, and carries the human grasp over to every cousin. Vision-language-action policies trained on its data match or exceed teleoperation on two real robots and four tasks.'
 authors: "Matthew Strong*, Ankush K. Dhawan*, Julien Poffet, Giuse Pham, Jinho So, Monroe Kennedy III"
 venue: "In submission"
+venue_short: "In submission"  # shown in publication rows; full venue on hover
+tldr: "Turns one human RGB video into thousands of robot demonstrations across a whole object category."  # one line under each publication row
 date: 2026-10-20
 teaser: "/assets/teasers/real2sem2real.mp4"
 teaser_poster: "/assets/teasers/real2sem2real.jpg"

@@ -6,6 +6,8 @@ permalink: /publication/hiro-lab-octomap
 excerpt: 'A probabilistic fusion of external depth and onboard proximity data into a volumetric 3-D map of a robot’s environment, reducing the space a manipulator must treat as unknown.'
 date: 2021-09-27
 venue: '2021 IEEE/RSJ International Conference on Intelligent Robots and Systems [IROS] 4th Workshop on Proximity Perception'
+venue_short: "IROS 2021 Workshop"  # shown in publication rows; full venue on hover
+tldr: "Fuses external depth and onboard proximity data into a 3D map, shrinking the space a robot must treat as unknown."  # one line under each publication row
 authors: "Matthew Strong*, Caleb Escobedo*, Alessandro Roncone"
 teaser: "/files/paper_images/hiro-lab-octomap-image.png"
 links:
