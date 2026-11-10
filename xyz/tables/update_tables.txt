@@ -24,11 +24,11 @@ Scene update, full image at held-out POST views (O-SCD's utils/metrics.py, its g
 
 | method | n | PSNR | SSIM | LPIPS |
 |---|---|---|---|---|
-| O-SCD, own masks, before refit | 2 | 15.69 | 0.730 | 0.297 |
-| O-SCD + our masks, before refit | 2 | 18.75 | 0.829 | 0.250 |
-| O-SCD, own masks | 2 | 33.90 | 0.945 | 0.121 |
-| O-SCD + our masks | 2 | 33.94 | 0.946 | 0.120 |
-| PRE splat, no refit | 2 | 17.84 | 0.745 | 0.302 |
-| our edit, no refit | 2 | 18.14 | 0.750 | 0.294 |
-| PRE splat + refit | 2 | 32.21 | 0.938 | 0.140 |
-| our edit + refit | 2 | 32.26 | 0.938 | 0.137 |
+| O-SCD, own masks, before refit | 3 | 16.31 | 0.715 | 0.288 |
+| O-SCD + our masks, before refit | 3 | 19.38 | 0.797 | 0.241 |
+| O-SCD, own masks | 3 | 31.41 | 0.924 | 0.124 |
+| O-SCD + our masks | 3 | 31.43 | 0.924 | 0.123 |
+| PRE splat, no refit | 3 | 18.56 | 0.721 | 0.296 |
+| our edit, no refit | 3 | 18.89 | 0.729 | 0.286 |
+| PRE splat + refit | 3 | 29.95 | 0.910 | 0.147 |
+| our edit + refit | 3 | 30.04 | 0.912 | 0.143 |
