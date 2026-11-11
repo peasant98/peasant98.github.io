@@ -1,0 +1,50 @@
+O-SCD / O-SCD++ on their own reference reconstruction vs on OUR before-change splat (same Gaussians as our method), PASLCD, scored as the main result (MV3DCD evaluate.py metric per image, mean per instance, then over instances).
+
+### instances where every row exists (n=10)
+
+| row | n | F1 | IoU | precision | recall |
+|---|---|---|---|---|---|
+| Ours | 10 | 0.920 | 0.858 | 0.904 | 0.942 |
+| O-SCD online, own base | 10 | 0.655 | 0.504 | 0.676 | 0.688 |
+| O-SCD online, OUR base | 10 | 0.632 | 0.487 | 0.629 | 0.694 |
+| O-SCD offline, own base | 10 | 0.716 | 0.577 | 0.667 | 0.825 |
+| O-SCD offline, OUR base | 10 | 0.708 | 0.569 | 0.649 | 0.843 |
+| O-SCD++ retro, own base | 10 | 0.735 | 0.598 | 0.709 | 0.807 |
+| O-SCD++ retro, OUR base | 10 | 0.699 | 0.557 | 0.644 | 0.827 |
+
+### all instances each row has
+
+| row | n | F1 | IoU | precision | recall |
+|---|---|---|---|---|---|
+| Ours | 20 | 0.912 | 0.846 | 0.900 | 0.931 |
+| O-SCD online, own base | 20 | 0.643 | 0.489 | 0.655 | 0.679 |
+| O-SCD online, OUR base | 20 | 0.587 | 0.444 | 0.570 | 0.680 |
+| O-SCD offline, own base | 20 | 0.702 | 0.558 | 0.644 | 0.821 |
+| O-SCD offline, OUR base | 20 | 0.662 | 0.523 | 0.597 | 0.830 |
+| O-SCD++ retro, own base | 10 | 0.735 | 0.598 | 0.709 | 0.807 |
+| O-SCD++ retro, OUR base | 20 | 0.650 | 0.507 | 0.586 | 0.823 |
+
+### the 5 judge-ablation instances
+
+| row | n | F1 | IoU | precision | recall |
+|---|---|---|---|---|---|
+| Ours | 5 | 0.901 | 0.827 | 0.884 | 0.926 |
+| O-SCD online, own base | 5 | 0.659 | 0.505 | 0.741 | 0.628 |
+| O-SCD online, OUR base | 5 | 0.655 | 0.506 | 0.693 | 0.656 |
+| O-SCD offline, own base | 5 | 0.738 | 0.595 | 0.713 | 0.790 |
+| O-SCD offline, OUR base | 5 | 0.732 | 0.588 | 0.704 | 0.803 |
+| O-SCD++ retro, own base | 5 | 0.745 | 0.604 | 0.761 | 0.754 |
+| O-SCD++ retro, OUR base | 5 | 0.710 | 0.564 | 0.694 | 0.772 |
+
+### instances whose conversion passes the alignment check (render within 8 dB of O-SCD's own reference; excluded: lounge2_op)
+
+| row | n | F1 | IoU | precision | recall |
+|---|---|---|---|---|---|
+| Ours | 19 | 0.914 | 0.849 | 0.902 | 0.932 |
+| O-SCD online, own base | 19 | 0.643 | 0.489 | 0.658 | 0.678 |
+| O-SCD online, OUR base | 19 | 0.606 | 0.461 | 0.594 | 0.676 |
+| O-SCD offline, own base | 19 | 0.705 | 0.563 | 0.652 | 0.817 |
+| O-SCD offline, OUR base | 19 | 0.686 | 0.544 | 0.623 | 0.827 |
+| O-SCD++ retro, own base | 10 | 0.735 | 0.598 | 0.709 | 0.807 |
+| O-SCD++ retro, OUR base | 19 | 0.674 | 0.528 | 0.611 | 0.821 |
+
