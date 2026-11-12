@@ -1,12 +1,12 @@
 key,section,group,method,metric,value,n,kind,note
 cd-paslcd-ours-f1,cd,PASLCD,Ours,F1,0.912,20,ours,pose-free · two-stage judge
 cd-paslcd-ours-iou,cd,PASLCD,Ours,IoU,0.846,20,ours,pose-free · two-stage judge
-cd-paslcd-o-scdpp-retro-f1,cd,PASLCD,O-SCD++ (retro.),F1,0.726,20,baseline,
-cd-paslcd-o-scdpp-retro-iou,cd,PASLCD,O-SCD++ (retro.),IoU,0.586,20,baseline,
-cd-paslcd-o-scd-offline-f1,cd,PASLCD,O-SCD (offline),F1,0.7,20,baseline,
-cd-paslcd-o-scd-offline-iou,cd,PASLCD,O-SCD (offline),IoU,0.556,20,baseline,
-cd-paslcd-o-scd-online-f1,cd,PASLCD,O-SCD (online),F1,0.638,20,baseline,
-cd-paslcd-o-scd-online-iou,cd,PASLCD,O-SCD (online),IoU,0.486,20,baseline,
+cd-paslcd-o-scdpp-retro-f1,cd,PASLCD,O-SCD++ (retro.),F1,0.716,20,baseline,all 20 rescored 11-11
+cd-paslcd-o-scdpp-retro-iou,cd,PASLCD,O-SCD++ (retro.),IoU,0.573,20,baseline,all 20 rescored 11-11
+cd-paslcd-o-scd-offline-f1,cd,PASLCD,O-SCD (offline),F1,0.702,20,baseline,
+cd-paslcd-o-scd-offline-iou,cd,PASLCD,O-SCD (offline),IoU,0.558,20,baseline,
+cd-paslcd-o-scd-online-f1,cd,PASLCD,O-SCD (online),F1,0.643,20,baseline,
+cd-paslcd-o-scd-online-iou,cd,PASLCD,O-SCD (online),IoU,0.489,20,baseline,
 cd-paslcd-mv3dcd-f1,cd,PASLCD,MV3DCD,F1,0.612,20,baseline,
 cd-paslcd-mv3dcd-iou,cd,PASLCD,MV3DCD,IoU,0.461,20,baseline,
 cd-paslcd-cl-splats-oracle-thr-f1,cd,PASLCD,CL-Splats (oracle thr.),F1,0.44,20,bound,threshold picked on test GT = upper bound
