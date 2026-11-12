@@ -1,7 +1,7 @@
 ---
 title: 'The exoskeleton expansion: improving walking and running economy'
 arxiv: ''
-date: '2020-12-01'
+date: '2020-02-01'
 added: '2026-11-12'
 authors: Gregory S. Sawicki, Owen N. Beck, Inseung Kang, Aaron J. Young
 venue: Journal of NeuroEngineering and Rehabilitation
