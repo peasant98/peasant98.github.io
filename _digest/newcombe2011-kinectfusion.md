@@ -4,6 +4,7 @@ arxiv: ''
 date: '2011-10-01'
 added: '2026-11-05'
 authors: Richard A. Newcombe, Shahram Izadi, Otmar Hilliges, David Molyneaux, David Kim, Andrew J. Davison, Pushmeet Kohli, Jamie Shotton, Steve Hodges, Andrew Fitzgibbon
+pis: [Otmar Hilliges, Andrew Davison]
 venue: IEEE International Symposium on Mixed and Augmented Reality (ISMAR)
 doi: 10.1109/ISMAR.2011.6092378
 pdf: https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/ismar2011.pdf

@@ -4,6 +4,7 @@ arxiv: ''
 date: '1996-08-01'
 added: '2026-11-05'
 authors: Lydia E. Kavraki, Petr Švestka, Jean-Claude Latombe, Mark H. Overmars
+pis: [Lydia Kavraki]
 venue: IEEE Transactions on Robotics and Automation
 doi: 10.1109/70.508439
 pdf: https://www.cs.cmu.edu/~motionplanning/papers/sbp_papers/PRM/prmbasic_01.pdf

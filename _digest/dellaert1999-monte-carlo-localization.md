@@ -4,6 +4,7 @@ arxiv: ''
 date: '1999-05-01'
 added: '2026-11-05'
 authors: Frank Dellaert, Dieter Fox, Wolfram Burgard, Sebastian Thrun
+pis: [Frank Dellaert, Dieter Fox, Wolfram Burgard]
 venue: IEEE International Conference on Robotics and Automation (ICRA)
 doi: 10.1109/ROBOT.1999.772544
 pdf: https://www.cvlibs.net/projects/autonomous_vision_survey/literature/Dellaert1999ICRA.pdf

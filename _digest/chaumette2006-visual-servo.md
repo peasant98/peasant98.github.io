@@ -4,6 +4,7 @@ arxiv: ''
 date: '2006-12-01'
 added: '2026-11-05'
 authors: François Chaumette, Seth Hutchinson
+pis: [Seth Hutchinson]
 venue: IEEE Robotics & Automation Magazine
 doi: 10.1109/MRA.2006.250573
 pdf: https://inria.hal.science/inria-00350283/document

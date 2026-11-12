@@ -4,6 +4,7 @@ arxiv: ''
 date: '2011-05-01'
 added: '2026-11-05'
 authors: Rainer Kümmerle, Giorgio Grisetti, Hauke Strasdat, Kurt Konolige, Wolfram Burgard
+pis: [Wolfram Burgard]
 venue: IEEE International Conference on Robotics and Automation (ICRA)
 doi: 10.1109/ICRA.2011.5979949
 pdf: http://ais.informatik.uni-freiburg.de/publications/papers/kuemmerle11icra.pdf

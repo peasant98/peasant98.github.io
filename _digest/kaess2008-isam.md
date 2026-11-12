@@ -4,6 +4,7 @@ arxiv: ''
 date: '2008-12-01'
 added: '2026-11-05'
 authors: Michael Kaess, Ananth Ranganathan, Frank Dellaert
+pis: [Frank Dellaert]
 venue: IEEE Transactions on Robotics
 doi: 10.1109/TRO.2008.2006706
 pdf: https://www.cs.cmu.edu/~kaess/pub/Kaess08tro.pdf

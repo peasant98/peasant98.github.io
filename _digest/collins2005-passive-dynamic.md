@@ -4,6 +4,7 @@ arxiv: ''
 date: '2005-02-01'
 added: '2026-11-05'
 authors: Steve Collins, Andy Ruina, Russ Tedrake, Martijn Wisse
+pis: [Steven Collins, Russ Tedrake]
 venue: Science
 doi: 10.1126/science.1107799
 pdf: https://groups.csail.mit.edu/robotics-center/public_papers/Collins05.pdf

@@ -4,6 +4,7 @@ arxiv: ''
 date: '1987-02-01'
 added: '2026-11-05'
 authors: Oussama Khatib
+pis: [Oussama Khatib]
 venue: IEEE Journal on Robotics and Automation
 doi: 10.1109/JRA.1987.1087068
 pdf: https://khatib.stanford.edu/publications/pdfs/Khatib_1987_RA.pdf

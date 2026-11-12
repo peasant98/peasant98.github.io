@@ -4,6 +4,7 @@ arxiv: ''
 date: '2014-09-01'
 added: '2026-11-05'
 authors: Jakob Engel, Thomas Schöps, Daniel Cremers
+pis: [Daniel Cremers]
 venue: European Conference on Computer Vision (ECCV)
 doi: 10.1007/978-3-319-10605-2_54
 pdf: https://jakobengel.github.io/pdf/engel14eccv.pdf

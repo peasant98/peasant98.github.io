@@ -4,6 +4,7 @@ arxiv: ''
 date: '1986-03-01'
 added: '2026-11-05'
 authors: Oussama Khatib
+pis: [Oussama Khatib]
 venue: The International Journal of Robotics Research
 doi: 10.1177/027836498600500106
 pdf: https://khatib.stanford.edu/publications/pdfs/Khatib_1986_IJRR.pdf

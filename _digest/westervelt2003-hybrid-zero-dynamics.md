@@ -4,6 +4,7 @@ arxiv: ''
 date: '2003-01-01'
 added: '2026-11-05'
 authors: Eric R. Westervelt, Jessy W. Grizzle, Daniel E. Koditschek
+pis: [Jessy Grizzle]
 venue: IEEE Transactions on Automatic Control
 doi: 10.1109/TAC.2002.806653
 pdf: https://grizzle.robotics.umich.edu/files/hybrid_zdyn_TAC.pdf

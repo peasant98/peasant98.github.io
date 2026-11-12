@@ -4,6 +4,7 @@ arxiv: ''
 date: '2013-06-01'
 added: '2026-11-05'
 authors: John Schulman, Jonathan Ho, Alex Lee, Ibrahim Awwal, Henry Bradlow, Pieter Abbeel
+pis: [Pieter Abbeel]
 venue: 'Robotics: Science and Systems (RSS)'
 doi: 10.15607/RSS.2013.IX.031
 pdf: https://www.roboticsproceedings.org/rss09/p31.pdf

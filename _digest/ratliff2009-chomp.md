@@ -4,6 +4,7 @@ arxiv: ''
 date: '2009-05-01'
 added: '2026-11-05'
 authors: Nathan Ratliff, Matt Zucker, J. Andrew Bagnell, Siddhartha Srinivasa
+pis: [Siddhartha Srinivasa]
 venue: IEEE International Conference on Robotics and Automation (ICRA)
 doi: 10.1109/ROBOT.2009.5152817
 pdf: https://www.ri.cmu.edu/pub_files/2009/5/icra09-chomp.pdf

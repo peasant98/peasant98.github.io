@@ -4,6 +4,7 @@ arxiv: ''
 date: '2000-04-01'
 added: '2026-11-05'
 authors: Antonio Bicchi, Vijay Kumar
+pis: [Antonio Bicchi, Vijay Kumar]
 venue: IEEE International Conference on Robotics and Automation (ICRA)
 doi: 10.1109/ROBOT.2000.844081
 pdf: https://www.centropiaggio.unipi.it/sites/default/files/surveys-icra00.pdf

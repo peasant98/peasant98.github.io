@@ -4,6 +4,7 @@ arxiv: ''
 date: '1985-03-01'
 added: '2026-11-05'
 authors: Neville Hogan
+pis: [Neville Hogan]
 venue: Journal of Dynamic Systems, Measurement, and Control
 doi: 10.1115/1.3140702
 pdf: https://newmanlab.mit.edu/wp-content/uploads/2025/02/1985-impedance-control-an-approach-to-manipulation-part-I-theory.pdf
