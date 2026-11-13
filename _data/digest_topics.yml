@@ -1,63 +1,81 @@
 # Topics for the Paper Digest (/digest/). Entries in _digest/ list one or more
-# `topics:` by slug. The By-topic view shows them in this order.
+# `topics:` by slug. The By-topic view shows them in this order. `short` labels the Seminal tab's topic chips.
 # `arxiv:` (optional) is an arXiv search for a topic that cs.RO alone covers thinly: when the digest
 # has had no paper on it for two days, `digest.py candidates` lists what that search finds so the
 # agent can pick one (see scripts/digest/AGENT.md).
 - slug: foundations
   name: Robotics foundations
+  short: "Foundations"
   blurb: The classic papers the field is built on, from kinematics, control and estimation to planning and grasp analysis.
 - slug: tactile-sensing
   name: Tactile sensing
+  short: "Tactile"
   blurb: Sensors that let robots feel contact, and policies that use touch.
 - slug: dexterous-manipulation
   name: Dexterous manipulation
+  short: "Dexterous"
   blurb: Multi-fingered hands for grasping, in-hand reorientation and assembly.
 - slug: grasping
   name: Grasping
+  short: "Grasping"
   blurb: Choosing and executing grasps, from analytic grasp quality to grasping learned at scale.
 - slug: imitation-learning
   name: Imitation learning and data collection
+  short: "Imitation"
   blurb: Learning from demonstrations, from teleoperation and handheld rigs to human video.
 - slug: foundation-models
   name: Robot foundation models
+  short: "Foundation models"
   blurb: Large pretrained vision-language-action policies and the data behind them.
 - slug: rl-sim2real
   name: RL and sim-to-real
+  short: "RL & sim-to-real"
   blurb: Reinforcement learning in simulation and transfer to real robots.
 - slug: legged-locomotion
   name: Legged locomotion
+  short: "Legged"
   blurb: Quadrupeds and bipeds that walk, run and climb, mostly with controllers learned in simulation.
 - slug: humanoids
   name: Humanoids and mobile manipulation
+  short: "Humanoids"
   blurb: Humanoid whole-body control and teleoperation, and mobile robots that manipulate.
 - slug: robot-vision
   name: Computer vision for robots
+  short: "Vision"
   blurb: Features, geometry and calibration, then detection, segmentation, depth and tracking, the vision that robot perception builds on.
 - slug: 3d-perception
   name: 3D perception and scene representation
+  short: "3D perception"
   blurb: Object pose tracking, Gaussian splatting and building simulations from the real world.
 - slug: planning-control
   name: Planning and control
+  short: "Planning & control"
   blurb: Motion planning, trajectory optimization, model-predictive control and task-and-motion planning.
 - slug: hri-teleop
   name: HRI and teleoperation
+  short: "HRI & teleop"
   blurb: Human-robot interaction, shared autonomy and the teleoperation systems used to collect data.
 - slug: human-motion
   name: Human motion prediction
+  short: "Human motion"
   blurb: Predicting how and where people will move, from trajectories and gait to intent, for robots that work around people.
   arxiv: 'abs:"human motion prediction" OR abs:"human trajectory prediction" OR abs:"pedestrian trajectory prediction" OR abs:"human motion forecasting" OR abs:"gait prediction" OR abs:"human intent prediction"'
 - slug: assistive-haptics
   name: Assistive robotics and haptics
+  short: "Assistive & haptics"
   blurb: Assistive arms, prostheses, rehabilitation robots and the haptic feedback that connects them to people.
 - slug: exoskeletons
   name: Exoskeletons and wearable robots
+  short: "Exoskeletons"
   blurb: Exoskeletons and exosuits that assist walking and lifting, and how their assistance is tuned to each person.
   arxiv: 'abs:exoskeleton OR abs:exosuit OR abs:"wearable robot"'
 - slug: hardware-actuators
   name: Robot hardware and actuators
+  short: "Hardware"
   blurb: New robot designs, from hands and arms to legged and humanoid platforms, and the actuators and transmissions that drive them.
   arxiv: 'cat:cs.RO AND (ti:actuator OR ti:actuators OR ti:actuation OR ti:"robot hand" OR ti:"robotic hand" OR abs:"mechanical design" OR abs:"hardware design" OR abs:"artificial muscle")'
 - slug: bci
   name: Brain-computer interfaces
+  short: "BCI"
   blurb: Decoding intent from brain and muscle signals, from EEG and implanted arrays to wrist EMG, to control robots and computers.
   arxiv: 'abs:"brain-computer interface" OR abs:"brain-machine interface" OR abs:"neural decoding" OR abs:neuroprosthesis OR abs:"neuromotor interface"'
