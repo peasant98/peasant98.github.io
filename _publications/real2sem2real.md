@@ -6,6 +6,7 @@ excerpt: 'Real2Sem2Real turns one monocular RGB video of a human demonstration i
 authors: "Matthew Strong*, Ankush K. Dhawan*, Julien Poffet, Giuse Pham, Jinho So, Monroe Kennedy III"
 venue: "In submission"
 venue_short: "In submission"  # shown in publication rows; full venue on hover
+badge: "Featured in The Stanford Daily"
 tldr: "Turns one human RGB video into thousands of robot demonstrations across a whole object category."  # one line under each publication row
 date: 2026-10-20
 teaser: "/assets/teasers/real2sem2real.mp4"
@@ -17,6 +18,8 @@ links:
 ---
 
 Check out our website: [Real2Sem2Real](https://real2sem2real.github.io)! Arxiv [here](https://arxiv.org/abs/2610.28880)
+
+Featured in The Stanford Daily.
 
 <b>Abstract:</b>
 
