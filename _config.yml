@@ -193,6 +193,11 @@ collections:
 
 # Defaults
 defaults:
+  # /viz/: unlisted standalone pages (shared by link only): kept out of the sitemap; each page also sets noindex
+  - scope:
+      path: "viz"
+    values:
+      sitemap: false
   # _posts
   - scope:
       path: ""
