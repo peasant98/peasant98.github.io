@@ -21,6 +21,12 @@ links:
 
 Check out our website: [TouchGS](https://armlabstanford.github.io/touch-gs)! Arxiv [here](https://arxiv.org/abs/2403.09875)
 
+<video controls muted loop playsinline preload="none" width="100%" poster="/files/videos/touchgs-mirror-viz.jpg">
+  <source src="/files/videos/touchgs-mirror-viz.mp4" type="video/mp4">
+</video>
+
+Mirror scene from the public Touch-GS dataset: vision-only depth puts the mirror behind the glass; DenseTact touches fused with vision depth recover a solid mirror surface.
+
 <video id="splash-video" autoplay controls muted loop playsinline
               preload="metadata" width="100%">
               <source src="/files/videos/all-renders.mp4"
