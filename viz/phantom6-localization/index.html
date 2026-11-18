@@ -59,6 +59,7 @@
   <div class="key"><span style="--c: var(--found)">camera found from the photo</span>
                    <span style="--c: var(--scan)">scan camera (truth)</span></div>
   <div class="metrics" id="metrics"></div>
+  <label><input type="checkbox" id="line" checked> <span style="color: var(--found); font-weight: 600">Red centerline</span> (from the mesh)</label>
   <label><input type="checkbox" id="tube" checked> Segmented tube splat</label>
   <label><input type="checkbox" id="mesh"> Tube mesh</label>
   <label><input type="checkbox" id="scene"> Whole scene splat</label>
@@ -141,6 +142,18 @@ const tube = new SplatMesh({ url: 'tube.ply', onLoad: done });
 const sceneSplat = new SplatMesh({ url: 'scene.ply', onLoad: done });
 sceneSplat.visible = false;
 scene.add(tube, sceneSplat);
+// vessel centerline from the mesh: thin red tubes drawn over everything, so it shows through the splat
+const centerline = new THREE.Group(); centerline.renderOrder = 10; scene.add(centerline);
+fetch('centerline.json').then(r => r.ok ? r.json() : []).then(lines => {
+  const mat = new THREE.MeshBasicMaterial({ color: 0xff1a1a, depthTest: false, depthWrite: false, transparent: true });
+  for (const l of lines) {
+    if (l.length < 2) continue;
+    const curve = new THREE.CatmullRomCurve3(l.map(p => new THREE.Vector3(...p)), false, 'centripetal');
+    const m = new THREE.Mesh(new THREE.TubeGeometry(curve, Math.max(4, l.length * 2), 0.0022, 8, false), mat);
+    m.renderOrder = 10; centerline.add(m);
+  }
+  if (!lines.length) $('line').closest('label').style.display = 'none';
+});
 let mesh = null;
 new GLTFLoader().load('mesh.glb', g => {
   mesh = g.scene;
@@ -198,6 +211,7 @@ window.addEventListener('resize', resize);
 resize();
 
 $('tube').onchange = e => { tube.visible = e.target.checked; };
+$('line').onchange = e => { centerline.visible = e.target.checked; };
 $('scene').onchange = e => { sceneSplat.visible = e.target.checked; };
 $('mesh').onchange = e => { if (mesh) mesh.visible = e.target.checked; };
 $('cams').onchange = e => { cams.visible = e.target.checked && !photoMode; };
