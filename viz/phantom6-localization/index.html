@@ -35,6 +35,10 @@
   button { width: 100%; margin-top: 6px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
            background: var(--ink); color: var(--bg); font: inherit; font-weight: 600; cursor: pointer; }
   button.secondary { background: transparent; color: var(--ink); }
+  .seg { display: flex; gap: 4px; margin: 4px 0 10px; flex-wrap: wrap; }
+  .seg button { width: auto; flex: 1 1 auto; margin: 0; padding: 6px 8px; font-weight: 600;
+                background: transparent; color: var(--ink); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
   #status { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); background: var(--panel);
             border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; color: var(--muted); }
   .collapse { display: none; }
@@ -51,18 +55,19 @@
 </script>
 </head>
 <body>
-<div id="stage"><img id="photo" src="photo.jpg" alt="The input photo"></div>
+<div id="stage"><img id="photo" alt="The input photo"></div>
 <div class="panel" id="panel">
   <h1>Vascular phantom, localized from one photo <button class="collapse" id="collapse">hide</button></h1>
-  <p>The pose of the scanned vessel network is found from a single RGB photo (<span id="frame"></span>) with the
-     Real2Sem2Real tracker. The scan's own camera for that photo is the ground truth.</p>
+  <p>The pose of the scanned vessel network is found from a single RGB photo with the Real2Sem2Real tracker.</p>
+  <div class="seg" id="photos" role="group" aria-label="Photo"></div>
+  <p id="note"></p>
   <div class="key"><span style="--c: var(--found)">camera found from the photo</span>
-                   <span style="--c: var(--scan)">scan camera (truth)</span></div>
+                   <span id="scanKey" style="--c: var(--scan)">scan camera (truth)</span></div>
   <div class="metrics" id="metrics"></div>
   <label><input type="checkbox" id="line" checked> <span style="color: var(--found); font-weight: 600">Red centerline</span> (from the mesh)</label>
   <label><input type="checkbox" id="tube" checked> Segmented tube splat</label>
   <label><input type="checkbox" id="mesh"> Tube mesh</label>
-  <label><input type="checkbox" id="scene"> Whole scene splat</label>
+  <label><input type="checkbox" id="scene"> Whole scene splat (from the scan)</label>
   <label><input type="checkbox" id="cams" checked> Cameras</label>
   <div class="row" id="opRow" style="display:none">
     <label for="op" style="cursor:default">Overlay on the photo</label>
@@ -80,14 +85,6 @@ import { SparkRenderer, SplatMesh } from '@sparkjsdev/spark';
 
 const D = await (await fetch('data.json')).json();
 const $ = id => document.getElementById(id);
-$('frame').textContent = D.frame;
-const M = D.metrics;
-$('metrics').innerHTML = [
-  ['Rotation error', `${M.rotation_error_deg.toFixed(1)}°`],
-  ['Position error', `${M.translation_error_pct_of_camera_distance.toFixed(1)}% of camera distance`],
-  ['Image error (median / 95%)', `${M.px_error_median.toFixed(1)} / ${M.px_error_p95.toFixed(1)} px`],
-].map(([k, v]) => `<span>${k}</span><b>${v}</b>`).join('');
-
 const stage = $('stage'), photo = $('photo');
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -95,102 +92,149 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 stage.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 const up = new THREE.Vector3(...D.up).normalize();
-const center = new THREE.Vector3(...D.center);
 const camera = new THREE.PerspectiveCamera(40, 1, 0.01, 50);
 camera.up.copy(up);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 scene.add(new THREE.HemisphereLight(0xffffff, 0x6b7280, 1.4));
-const sun = new THREE.DirectionalLight(0xffffff, 2.0); sun.position.copy(up.clone().multiplyScalar(3)).add(new THREE.Vector3(1, 1, 0));
+const sun = new THREE.DirectionalLight(0xffffff, 2.0);
+sun.position.copy(up.clone().multiplyScalar(3)).add(new THREE.Vector3(1, 1, 0));
 scene.add(sun);
-
-// cameras: OpenCV world-to-camera matrices -> centre and axes (x right, y down, z forward)
-function cvCamera(w2c) {
-  const m = new THREE.Matrix4().set(...w2c.flat()).invert();
-  const e = m.elements;                                         // column-major
-  return { C: new THREE.Vector3(e[12], e[13], e[14]), x: new THREE.Vector3(e[0], e[1], e[2]),
-           y: new THREE.Vector3(e[4], e[5], e[6]), z: new THREE.Vector3(e[8], e[9], e[10]) };
-}
-const [fx, , cx] = D.K[0], [, fy, cy] = D.K[1], W = D.W, H = D.H;
-function frustum(cam, color, depth, texture) {
-  const g = new THREE.Group();
-  const corner = (u, v) => cam.C.clone().addScaledVector(cam.x, (u - cx) / fx * depth)
-                                        .addScaledVector(cam.y, (v - cy) / fy * depth).addScaledVector(cam.z, depth);
-  const c = [corner(0, 0), corner(W, 0), corner(W, H), corner(0, H)];
-  const pts = [cam.C, c[0], cam.C, c[1], cam.C, c[2], cam.C, c[3], c[0], c[1], c[1], c[2], c[2], c[3], c[3], c[0]];
-  g.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color })));
-  if (texture) {
-    const q = new THREE.BufferGeometry();
-    q.setAttribute('position', new THREE.Float32BufferAttribute(c.flatMap(p => p.toArray()), 3));
-    q.setAttribute('uv', new THREE.Float32BufferAttribute([0, 1, 1, 1, 1, 0, 0, 0], 2));
-    q.setIndex([0, 1, 2, 0, 2, 3]);
-    g.add(new THREE.Mesh(q, new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, transparent: true, opacity: 0.9 })));
-  }
-  return g;
-}
-const found = cvCamera(D.w2c_found), truth = cvCamera(D.w2c_scan);
-const tex = new THREE.TextureLoader().load('photo.jpg'); tex.colorSpace = THREE.SRGBColorSpace;
-const cams = new THREE.Group();
-cams.add(frustum(found, 0xe8322f, 0.13, tex), frustum(truth, 0x22a447, 0.13, null));
-scene.add(cams);
-
-// splats and mesh
 const spark = new SparkRenderer({ renderer }); scene.add(spark);
-let pending = 3;
-const done = () => { if (--pending === 0) $('status').style.display = 'none'; };
-const tube = new SplatMesh({ url: 'tube.ply', onLoad: done });
-const sceneSplat = new SplatMesh({ url: 'scene.ply', onLoad: done });
-sceneSplat.visible = false;
-scene.add(tube, sceneSplat);
-// vessel centerline from the mesh: thin red tubes drawn over everything, so it shows through the splat
-const centerline = new THREE.Group(); centerline.renderOrder = 10; scene.add(centerline);
-fetch('centerline.json').then(r => r.ok ? r.json() : []).then(lines => {
-  const mat = new THREE.MeshBasicMaterial({ color: 0xff1a1a, depthTest: false, depthWrite: false, transparent: true });
-  for (const l of lines) {
-    if (l.length < 2) continue;
-    const curve = new THREE.CatmullRomCurve3(l.map(p => new THREE.Vector3(...p)), false, 'centripetal');
-    const m = new THREE.Mesh(new THREE.TubeGeometry(curve, Math.max(4, l.length * 2), 0.0022, 8, false), mat);
-    m.renderOrder = 10; centerline.add(m);
-  }
-  if (!lines.length) $('line').closest('label').style.display = 'none';
-});
+
+// ---- shared: scene splat and tube mesh ----
+let pending = 2;
+const loaded = () => { if (--pending <= 0) $('status').style.display = 'none'; };
+const sceneSplat = new SplatMesh({ url: 'scene.ply' });
+sceneSplat.visible = false; scene.add(sceneSplat);
 let mesh = null;
 new GLTFLoader().load('mesh.glb', g => {
   mesh = g.scene;
-  mesh.traverse(o => { if (o.isMesh) o.material = new THREE.MeshStandardMaterial({ color: 0xe8ae1c, roughness: 0.35, metalness: 0.0, transparent: true }); });
-  mesh.visible = $('mesh').checked; scene.add(mesh); done();
+  mesh.traverse(o => { if (o.isMesh) o.material = new THREE.MeshStandardMaterial({ color: 0xe8ae1c, roughness: 0.35, transparent: true }); });
+  mesh.visible = $('mesh').checked; scene.add(mesh); loaded();
 });
 
-// free orbit: start behind and above the found camera, looking at the tube
-const orbitHome = () => {
-  const pull = 1.35 * Math.max(1, 1.3 * window.innerHeight / window.innerWidth);   // narrow screens: step back
-  camera.position.copy(found.C).sub(center).multiplyScalar(pull).add(center).addScaledVector(up, 0.15);
-  controls.target.copy(center); controls.enabled = true; camera.up.copy(up); camera.updateProjectionMatrix();
-};
-orbitHome();
+// ---- one localized photo: its camera(s), tube splat, centerline ----
+function cvCamera(w2c) {                       // OpenCV world-to-camera -> centre and axes (x right, y down, z fwd)
+  const e = new THREE.Matrix4().set(...w2c.flat()).invert().elements;
+  return { C: new THREE.Vector3(e[12], e[13], e[14]), x: new THREE.Vector3(e[0], e[1], e[2]),
+           y: new THREE.Vector3(e[4], e[5], e[6]), z: new THREE.Vector3(e[8], e[9], e[10]) };
+}
+class PhotoView {
+  constructor(p) {
+    this.p = p; this.ready = false;
+    [this.fx, , this.cx] = p.K[0]; [, this.fy, this.cy] = p.K[1];
+    this.found = cvCamera(p.w2c_found);
+    this.scan = p.w2c_scan ? cvCamera(p.w2c_scan) : null;
+    this.center = new THREE.Vector3(...p.center);
+    this.group = new THREE.Group(); this.group.visible = false; scene.add(this.group);
+    this.cams = new THREE.Group(); this.group.add(this.cams);
+    this.line = new THREE.Group(); this.line.renderOrder = 10; this.group.add(this.line);
+  }
+  load() {                                      // fetch this photo's files once, the first time it is shown
+    if (this.loading) return this.loading;
+    const tex = new THREE.TextureLoader().load(`photo_${this.p.id}.jpg`); tex.colorSpace = THREE.SRGBColorSpace;
+    this.cams.add(this.frustum(this.found, 0xe8322f, tex));
+    if (this.scan) this.cams.add(this.frustum(this.scan, 0x22a447, null));
+    const tubeLoaded = new Promise(res => { this.tube = new SplatMesh({ url: `tube_${this.p.id}.ply`, onLoad: res }); });
+    this.group.add(this.tube);
+    const lineLoaded = fetch(`centerline_${this.p.id}.json`).then(r => r.json()).then(lines => {
+      const mat = new THREE.MeshBasicMaterial({ color: 0xff1a1a, depthTest: false, depthWrite: false, transparent: true });
+      for (const l of lines) {
+        const curve = new THREE.CatmullRomCurve3(l.map(q => new THREE.Vector3(...q)), false, 'centripetal');
+        const m = new THREE.Mesh(new THREE.TubeGeometry(curve, Math.max(4, l.length * 2), 0.0022, 8, false), mat);
+        m.renderOrder = 10; this.line.add(m);
+      }
+    });
+    this.loading = Promise.all([tubeLoaded, lineLoaded]).then(() => { this.ready = true; });
+    return this.loading;
+  }
+  frustum(cam, color, texture, depth = 0.13) {
+    const { fx, fy, cx, cy } = this, W = this.p.W, H = this.p.H, g = new THREE.Group();
+    const corner = (u, v) => cam.C.clone().addScaledVector(cam.x, (u - cx) / fx * depth)
+                                          .addScaledVector(cam.y, (v - cy) / fy * depth).addScaledVector(cam.z, depth);
+    const c = [corner(0, 0), corner(W, 0), corner(W, H), corner(0, H)];
+    const pts = [cam.C, c[0], cam.C, c[1], cam.C, c[2], cam.C, c[3], c[0], c[1], c[1], c[2], c[2], c[3], c[3], c[0]];
+    g.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color })));
+    if (texture) {
+      const q = new THREE.BufferGeometry();
+      q.setAttribute('position', new THREE.Float32BufferAttribute(c.flatMap(v => v.toArray()), 3));
+      q.setAttribute('uv', new THREE.Float32BufferAttribute([0, 1, 1, 1, 1, 0, 0, 0], 2));
+      q.setIndex([0, 1, 2, 0, 2, 3]);
+      g.add(new THREE.Mesh(q, new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, transparent: true, opacity: 0.9 })));
+    }
+    return g;
+  }
+}
+const views = D.photos.map(p => new PhotoView(p));
+let view = null, photoMode = false;
 
-// look through the found camera: exact intrinsics, letterboxed to the photo's aspect, photo behind the render
-let photoMode = false;
-const R = new THREE.Matrix4().makeBasis(found.x.clone(), found.y.clone().negate(), found.z.clone().negate());
+function showMetrics(p) {
+  const m = p.metrics, rows = p.w2c_scan
+    ? [['Rotation error', `${m.rotation_error_deg.toFixed(1)}°`],
+       ['Position error', `${m.translation_error_pct_of_camera_distance.toFixed(1)}% of camera distance`],
+       ['Image error (median / 95%)', `${m.px_error_median.toFixed(1)} / ${m.px_error_p95.toFixed(1)} px`]]
+    : [['Overlap with the tube mask', `IoU ${m.silhouette_iou.toFixed(2)}`],
+       ['Focal length (no EXIF)', `${m.f35} mm equiv.`]];
+  $('metrics').innerHTML = rows.map(([k, v]) => `<span>${k}</span><b>${v}</b>`).join('');
+  $('scanKey').style.display = p.w2c_scan ? '' : 'none';
+  $('note').textContent = p.w2c_scan
+    ? `${p.frame} is a frame of the scan, so the scan's own camera (green) is the ground truth.`
+    : `${p.frame} is a new photo, not part of the scan, so there is no ground-truth camera. The splat is cropped to the vessels inside the box.`;
+}
+function applyToggles() {
+  if (!view) return;
+  view.cams.visible = $('cams').checked && !photoMode;
+  view.line.visible = $('line').checked;
+  if (view.tube) view.tube.visible = $('tube').checked;
+}
+async function select(id) {
+  const next = views.find(v => v.p.id === id) || views[0];
+  if (photoMode) exitPhoto();
+  for (const v of views) v.group.visible = false;
+  view = next; view.group.visible = true;
+  document.querySelectorAll('#photos button').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === view.p.id));
+  showMetrics(view.p); photo.src = `photo_${view.p.id}.jpg`;
+  const u = new URL(location); u.searchParams.set('photo', view.p.id); history.replaceState(null, '', u);
+  if (!view.ready) { $('status').style.display = ''; $('status').textContent = 'Loading…'; }
+  await view.load(); applyToggles(); setOpacity(1);
+  if (view === next) { $('status').style.display = pending > 0 ? '' : 'none'; orbitHome(); }
+}
+for (const v of views) {
+  const b = document.createElement('button'); b.textContent = v.p.label; b.dataset.id = v.p.id;
+  b.onclick = () => select(v.p.id); $('photos').appendChild(b);
+}
+if (views.length < 2) $('photos').style.display = 'none';
+
+// ---- free orbit / look through the found camera ----
+function orbitHome() {
+  const pull = 1.35 * Math.max(1, 1.3 * window.innerHeight / window.innerWidth);
+  camera.position.copy(view.found.C).sub(view.center).multiplyScalar(pull).add(view.center).addScaledVector(up, 0.15);
+  controls.target.copy(view.center); controls.enabled = true; camera.up.copy(up); resize();
+}
 function setOpacity(a) {
-  tube.opacity = sceneSplat.opacity = a;
+  if (view && view.tube) view.tube.opacity = a;
+  sceneSplat.opacity = a;
   if (mesh) mesh.traverse(o => { if (o.isMesh) o.material.opacity = a; });
 }
 function enterPhoto() {
   photoMode = true; controls.enabled = false;
-  camera.position.copy(found.C); camera.quaternion.setFromRotationMatrix(R);
-  photo.style.display = 'block'; cams.visible = false;
+  const f = view.found;
+  camera.position.copy(f.C);
+  camera.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(f.x.clone(), f.y.clone().negate(), f.z.clone().negate()));
+  photo.style.display = 'block'; applyToggles();
   $('opRow').style.display = ''; $('look').style.display = 'none'; $('orbit').style.display = '';
   setOpacity(+$('op').value); resize();
 }
 function exitPhoto() {
-  photoMode = false; photo.style.display = 'none'; cams.visible = $('cams').checked;
+  photoMode = false; photo.style.display = 'none';
   $('opRow').style.display = 'none'; $('look').style.display = ''; $('orbit').style.display = 'none';
-  setOpacity(1); orbitHome(); resize();
+  setOpacity(1); applyToggles(); orbitHome();
 }
 function resize() {
   const vw = window.innerWidth, vh = window.innerHeight;
   let w = vw, h = vh, l = 0, t = 0;
+  const W = view ? view.p.W : 16, H = view ? view.p.H : 9;
   if (photoMode) {
     if (vw / vh > W / H) { h = vh; w = vh * W / H; l = (vw - w) / 2; } else { w = vw; h = vw * H / W; t = (vh - h) / 2; }
     Object.assign(photo.style, { left: `${l}px`, top: `${t}px`, width: `${w}px`, height: `${h}px` });
@@ -198,8 +242,8 @@ function resize() {
   Object.assign(renderer.domElement.style, { left: `${l}px`, top: `${t}px`, width: `${w}px`, height: `${h}px` });
   renderer.setSize(w, h, false);
   camera.aspect = w / h; camera.updateProjectionMatrix();
-  if (photoMode) {                                              // projection from K (OpenGL axes, y up)
-    const n = camera.near, f = camera.far;
+  if (photoMode) {                              // projection from K (OpenGL axes, y up)
+    const n = camera.near, f = camera.far, { fx, fy, cx, cy } = view;
     camera.projectionMatrix.set(2 * fx / W, 0, 1 - 2 * cx / W, 0,
                                 0, 2 * fy / H, 2 * cy / H - 1, 0,
                                 0, 0, -(f + n) / (f - n), -2 * f * n / (f - n),
@@ -208,18 +252,19 @@ function resize() {
   }
 }
 window.addEventListener('resize', resize);
-resize();
 
-$('tube').onchange = e => { tube.visible = e.target.checked; };
-$('line').onchange = e => { centerline.visible = e.target.checked; };
+$('tube').onchange = applyToggles;
+$('line').onchange = applyToggles;
+$('cams').onchange = applyToggles;
 $('scene').onchange = e => { sceneSplat.visible = e.target.checked; };
 $('mesh').onchange = e => { if (mesh) mesh.visible = e.target.checked; };
-$('cams').onchange = e => { cams.visible = e.target.checked && !photoMode; };
 $('op').oninput = e => setOpacity(+e.target.value);
 $('look').onclick = enterPhoto;
 $('orbit').onclick = exitPhoto;
 $('collapse').onclick = () => { $('panel').classList.toggle('closed'); $('collapse').textContent = $('panel').classList.contains('closed') ? 'show' : 'hide'; };
 
+await select(new URLSearchParams(location.search).get('photo') || D.photos[0].id);
+loaded();
 renderer.setAnimationLoop(() => {
   if (!photoMode) controls.update();
   renderer.render(scene, camera);
