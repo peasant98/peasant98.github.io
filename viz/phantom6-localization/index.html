@@ -83,7 +83,16 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { SparkRenderer, SplatMesh } from '@sparkjsdev/spark';
 
-const D = await (await fetch('data.json')).json();
+// every file is fetched with the build id, so a browser can never mix files from two builds (GitHub Pages
+// lets browsers keep files for 10 minutes)
+const BUILD = 'be0df92a61', v = u => `${u}?v=${BUILD}`;
+function fail(msg) {
+  const s = document.getElementById('status');
+  s.style.display = ''; s.textContent = `Could not load the viewer (${msg}). Please reload the page.`;
+}
+window.addEventListener('error', e => fail(e.message));
+window.addEventListener('unhandledrejection', e => fail(e.reason && e.reason.message || e.reason));
+const D = await (await fetch(v('data.json'))).json();
 const $ = id => document.getElementById(id);
 const stage = $('stage'), photo = $('photo');
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -105,10 +114,10 @@ const spark = new SparkRenderer({ renderer }); scene.add(spark);
 // ---- shared: scene splat and tube mesh ----
 let pending = 2;
 const loaded = () => { if (--pending <= 0) $('status').style.display = 'none'; };
-const sceneSplat = new SplatMesh({ url: 'scene.ply' });
+const sceneSplat = new SplatMesh({ url: v('scene.ply') });
 sceneSplat.visible = false; scene.add(sceneSplat);
 let mesh = null;
-new GLTFLoader().load('mesh.glb', g => {
+new GLTFLoader().load(v('mesh.glb'), g => {
   mesh = g.scene;
   mesh.traverse(o => { if (o.isMesh) o.material = new THREE.MeshStandardMaterial({ color: 0xe8ae1c, roughness: 0.35, transparent: true }); });
   mesh.visible = $('mesh').checked; scene.add(mesh); loaded();
@@ -133,12 +142,12 @@ class PhotoView {
   }
   load() {                                      // fetch this photo's files once, the first time it is shown
     if (this.loading) return this.loading;
-    const tex = new THREE.TextureLoader().load(`photo_${this.p.id}.jpg`); tex.colorSpace = THREE.SRGBColorSpace;
+    const tex = new THREE.TextureLoader().load(v(`photo_${this.p.id}.jpg`)); tex.colorSpace = THREE.SRGBColorSpace;
     this.cams.add(this.frustum(this.found, 0xe8322f, tex));
     if (this.scan) this.cams.add(this.frustum(this.scan, 0x22a447, null));
-    const tubeLoaded = new Promise(res => { this.tube = new SplatMesh({ url: `tube_${this.p.id}.ply`, onLoad: res }); });
+    const tubeLoaded = new Promise(res => { this.tube = new SplatMesh({ url: v(`tube_${this.p.id}.ply`), onLoad: res }); });
     this.group.add(this.tube);
-    const lineLoaded = fetch(`centerline_${this.p.id}.json`).then(r => r.json()).then(lines => {
+    const lineLoaded = fetch(v(`centerline_${this.p.id}.json`)).then(r => r.json()).then(lines => {
       const mat = new THREE.MeshBasicMaterial({ color: 0xff1a1a, depthTest: false, depthWrite: false, transparent: true });
       for (const l of lines) {
         const curve = new THREE.CatmullRomCurve3(l.map(q => new THREE.Vector3(...q)), false, 'centripetal');
@@ -194,7 +203,7 @@ async function select(id) {
   for (const v of views) v.group.visible = false;
   view = next; view.group.visible = true;
   document.querySelectorAll('#photos button').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === view.p.id));
-  showMetrics(view.p); photo.src = `photo_${view.p.id}.jpg`;
+  showMetrics(view.p); photo.src = v(`photo_${view.p.id}.jpg`);
   const u = new URL(location); u.searchParams.set('photo', view.p.id); history.replaceState(null, '', u);
   if (!view.ready) { $('status').style.display = ''; $('status').textContent = 'Loading…'; }
   await view.load(); applyToggles(); setOpacity(1);
