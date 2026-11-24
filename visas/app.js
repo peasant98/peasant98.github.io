@@ -62,6 +62,7 @@ class Store {
       const tx = db.transaction(['people', 'meta'], 'readwrite');
       records.forEach(r => tx.objectStore('people').put(r));
       tx.objectStore('meta').put(vault, 'vault');
+      tx.objectStore('meta').delete('faceid'); // wraps the old key; turned on again after a change
       tx.oncomplete = resolve;
       tx.onerror = tx.onabort = () => reject(tx.error);
     });
@@ -93,13 +94,33 @@ class Vault {
    * @return {Promise<CryptoKey>} A non-extractable AES-GCM key.
    */
   static async derive(passcode, salt, kdf) {
-    const raw = await hashwasm.argon2id({
+    const raw = await Vault.deriveRaw(passcode, salt, kdf);
+    const key = await Vault.importKey(raw);
+    raw.fill(0);
+    return key;
+  }
+
+  /** @return {Promise<Uint8Array>} The 32 raw key bytes for a passcode (wipe them after use). */
+  static deriveRaw(passcode, salt, kdf) {
+    return hashwasm.argon2id({
       password: passcode.normalize('NFC'), salt, parallelism: 1, iterations: kdf.passes,
       memorySize: kdf.memoryKiB, hashLength: 32, outputType: 'binary',
     });
-    const key = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']);
-    raw.fill(0);
-    return key;
+  }
+
+  /** @return {Promise<CryptoKey>} A non-extractable AES-GCM key from raw bytes. */
+  static importKey(raw) {
+    return crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']);
+  }
+
+  /** @return {Promise<boolean>} Whether this key opens the vault's check value. */
+  static async fits(key, vault) {
+    try {
+      await Vault.decrypt(key, vault.check, 'check');
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /**
@@ -128,12 +149,7 @@ class Vault {
   /** @return {Promise<CryptoKey|null>} The key if the passcode is right, else null. */
   static async open(vault, passcode) {
     const key = await Vault.derive(passcode, vault.salt, vault.kdf);
-    try {
-      await Vault.decrypt(key, vault.check, 'check');
-      return key;
-    } catch (e) {
-      return null;
-    }
+    return (await Vault.fits(key, vault)) ? key : null;
   }
 
   /** @return {string|null} Why a new passcode is too weak, or null if it's fine. */
@@ -344,6 +360,79 @@ class Editor {
   close() { if (this.dialog.open) this.dialog.close(); }
 }
 
+/**
+ * Face ID unlock with a passkey (WebAuthn) and its PRF extension: Face ID releases a secret that only this
+ * passkey can produce, and that secret decrypts a copy of the vault key. Without Face ID (or the passcode)
+ * the copy is useless. Needs iOS 18+ (PRF in iCloud Keychain passkeys).
+ */
+class FaceId {
+  static SALT = new TextEncoder().encode('visa-wallet face-id unlock v1');
+
+  /** @return {Promise<boolean>} Whether the device has a biometric/passcode platform authenticator. */
+  static async available() {
+    try {
+      return Boolean(window.PublicKeyCredential &&
+                     await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable());
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Creates the passkey (first Face ID prompt). Must run straight from a tap.
+   * @return {Promise<{id: Uint8Array, secret: ArrayBuffer|undefined}>} Credential id, and the PRF secret if
+   *     the platform already returns it at creation.
+   */
+  static async create() {
+    const cred = await navigator.credentials.create({ publicKey: {
+      rp: { name: 'Visa Wallet' },
+      user: { id: crypto.getRandomValues(new Uint8Array(16)), name: 'Visa Wallet', displayName: 'Visa Wallet' },
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+      authenticatorSelection: { authenticatorAttachment: 'platform', residentKey: 'required',
+                                userVerification: 'required' },
+      extensions: { prf: { eval: { first: FaceId.SALT } } },
+    } });
+    const prf = cred.getClientExtensionResults().prf || {};
+    if (!prf.enabled && !prf.results) throw new Error('no-prf');
+    return { id: new Uint8Array(cred.rawId), secret: prf.results?.first };
+  }
+
+  /**
+   * Asks for Face ID and returns the passkey's secret. Must run straight from a tap.
+   * @param {Uint8Array} id Credential id.
+   * @return {Promise<ArrayBuffer>}
+   */
+  static async secret(id) {
+    const cred = await navigator.credentials.get({ publicKey: {
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      allowCredentials: [{ type: 'public-key', id }],
+      userVerification: 'required',
+      extensions: { prf: { eval: { first: FaceId.SALT } } },
+    } });
+    const flags = new Uint8Array(cred.response.authenticatorData)[32];
+    if (!(flags & 0x04)) throw new Error('not-verified'); // UV bit: Face ID (or device passcode) was used
+    const out = cred.getClientExtensionResults().prf?.results?.first;
+    if (!out) throw new Error('no-prf');
+    return out;
+  }
+
+  /** @return {Promise<CryptoKey>} The key that wraps the vault key, from a passkey secret. */
+  static async wrapKey(secret) {
+    const base = await crypto.subtle.importKey('raw', secret, 'HKDF', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'HKDF', hash: 'SHA-256', salt: FaceId.SALT,
+                                     info: new TextEncoder().encode('wrap') },
+                                   base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+
+  /** @return {string} A short, human message for a failed Face ID step. */
+  static explain(e) {
+    if (e.message === 'no-prf') return "Face ID can't protect a key on this iPhone (needs iOS 18 or newer).";
+    if (e.name === 'NotAllowedError') return 'Face ID was cancelled.';
+    return `Face ID didn't work (${e.name || e.message}).`;
+  }
+}
+
 /** Passcode screen: set a passcode on first run, unlock afterwards, throttle wrong guesses. */
 class LockScreen {
   constructor(store) {
@@ -371,24 +460,57 @@ class LockScreen {
         `this phone and can't be recovered. ${ERASE_AFTER} wrong tries in a row erase everything.`
       : 'The visas are encrypted on this phone.';
     this.confirm.hidden = !setup;
+    const faceid = setup ? null : await this.store.getMeta('faceid');
+    const faceBtn = document.getElementById('lock-faceid');
+    faceBtn.hidden = !faceid;
+    // With Face ID on, the passcode is a fallback: hidden behind "Use passcode" and no keyboard popping up.
+    const usePass = document.getElementById('lock-use-pass');
+    this.form.classList.toggle('face-first', Boolean(faceid));
+    usePass.hidden = !faceid;
+    usePass.onclick = () => {
+      this.form.classList.remove('face-first');
+      usePass.hidden = true;
+      this.input.focus();
+    };
+    if (faceid) document.getElementById('lock-title').textContent = 'Locked';
     document.getElementById('lock-submit').textContent = setup ? 'Set passcode' : 'Unlock';
     document.getElementById('lock-forgot').hidden = setup;
     this.form.reset();
     this.say('');
-    setTimeout(() => this.input.focus(), 50);
+    if (!faceid) setTimeout(() => this.input.focus(), 50);
 
     return new Promise(resolve => {
-      this.form.onsubmit = async e => {
-        e.preventDefault();
-        const code = this.input.value;
-        const key = setup ? await this.create(code) : await this.check(vault, code);
+      const done = key => {
         if (!key) return;
         this.form.reset();
         this.el.hidden = true;
         document.body.classList.remove('locked');
         resolve(key);
       };
+      this.form.onsubmit = async e => {
+        e.preventDefault();
+        const code = this.input.value;
+        done(setup ? await this.create(code) : await this.check(vault, code));
+      };
+      faceBtn.onclick = async () => done(await this.faceUnlock(vault, faceid));
     });
+  }
+
+  /** @return {Promise<CryptoKey|null>} The vault key via Face ID, or null (message shown). */
+  async faceUnlock(vault, faceid) {
+    let raw;
+    try {
+      const secret = await FaceId.secret(faceid.id);
+      raw = new Uint8Array(await Vault.decrypt(await FaceId.wrapKey(secret), faceid.wrapped, 'faceid'));
+    } catch (e) {
+      return this.say(e.name === 'OperationError' ? 'Face ID key no longer matches. Use the passcode.'
+                                                  : `${FaceId.explain(e)} Use the passcode.`);
+    }
+    const key = await Vault.importKey(raw);
+    raw.fill(0);
+    if (!(await Vault.fits(key, vault))) return this.say('Face ID key no longer matches. Use the passcode.');
+    await this.store.setMeta('fails', { count: 0, until: 0 });
+    return key;
   }
 
   async create(code) {
@@ -459,6 +581,14 @@ class App {
       this.change.showModal();
     };
     document.getElementById('change-cancel').onclick = () => this.change.close();
+    this.faceDialog = document.getElementById('faceid');
+    document.getElementById('faceid-toggle').onclick = () => this.toggleFaceId();
+    document.getElementById('faceid-cancel').onclick = () => this.faceDialog.close();
+    this.faceDialog.addEventListener('close', () => {
+      this.raw?.fill(0);
+      this.raw = null;
+      this.cred = null;
+    });
     document.getElementById('change-form').onsubmit = e => {
       e.preventDefault();
       this.changePasscode(e.target.elements);
@@ -485,6 +615,75 @@ class App {
     })));
     this.draw();
     this.poke();
+    this.showFaceIdState();
+  }
+
+  async showFaceIdState() {
+    const on = Boolean(await this.store.getMeta('faceid'));
+    const btn = document.getElementById('faceid-toggle');
+    btn.textContent = on ? 'Turn off Face ID' : 'Turn on Face ID';
+    btn.hidden = !on && !(await FaceId.available());
+  }
+
+  /**
+   * Turns Face ID off, or walks through turning it on: passcode (checked), then a tap for each Face ID
+   * prompt (iOS only shows them straight from a tap).
+   */
+  async toggleFaceId() {
+    if (await this.store.getMeta('faceid')) {
+      if (!confirm('Turn off Face ID? You will unlock with the passcode only.')) return;
+      await this.store.run('meta', 'readwrite', s => s.delete('faceid'));
+      return this.showFaceIdState();
+    }
+    const f = document.getElementById('faceid-form');
+    const msg = document.getElementById('faceid-msg');
+    const step = document.getElementById('faceid-step');
+    f.reset();
+    msg.textContent = '';
+    step.hidden = true;
+    f.querySelector('[type=submit]').hidden = false;
+    this.faceDialog.showModal();
+    f.onsubmit = async e => {
+      e.preventDefault();
+      msg.textContent = 'Checking…';
+      const vault = await this.store.getMeta('vault');
+      const raw = await Vault.deriveRaw(f.code.value, vault.salt, vault.kdf);
+      if (!(await Vault.fits(await Vault.importKey(raw), vault))) {
+        raw.fill(0);
+        msg.textContent = 'Wrong passcode.';
+        return;
+      }
+      this.raw = raw;
+      msg.textContent = '';
+      f.querySelector('[type=submit]').hidden = true;
+      step.hidden = false;
+      step.textContent = 'Set up Face ID';
+      step.onclick = () => this.enrollFaceId(step, msg);
+    };
+  }
+
+  async enrollFaceId(step, msg) {
+    try {
+      if (!this.cred) this.cred = await FaceId.create();
+      let secret = this.cred.secret;
+      if (!secret) { // iOS creates the passkey first; a second Face ID tap returns its secret
+        if (step.textContent !== 'Confirm with Face ID') {
+          step.textContent = 'Confirm with Face ID';
+          msg.textContent = 'Passkey saved. Tap once more to confirm.';
+          return;
+        }
+        secret = await FaceId.secret(this.cred.id);
+      }
+      const wrapped = await Vault.encrypt(await FaceId.wrapKey(secret), this.raw, 'faceid');
+      await this.store.setMeta('faceid', { id: this.cred.id, wrapped });
+      this.cred = null;
+      this.faceDialog.close();
+      this.showFaceIdState();
+      alert('Face ID is on. The passcode still works as a backup.');
+    } catch (e) {
+      console.warn('Face ID setup failed:', e.name, e.message);
+      msg.textContent = FaceId.explain(e);
+    }
   }
 
   /** Forgets the key and every decrypted byte, then asks for the passcode again. */
@@ -496,6 +695,7 @@ class App {
     this.viewer.close();
     this.editor.close();
     if (this.change.open) this.change.close();
+    if (this.faceDialog.open) this.faceDialog.close();
     document.getElementById('change-form').reset();
     this.cards.replaceChildren();
     this.start();
@@ -562,11 +762,13 @@ class App {
     const salt = crypto.getRandomValues(new Uint8Array(16));
     const key = await Vault.derive(f.code.value, salt, KDF);
     const records = await Promise.all(this.people.map(p => App.seal(p, key)));
+    const hadFace = Boolean(await this.store.getMeta('faceid'));
     await this.store.rekey(records, await Vault.seal(key, salt));
     this.key = key;
     f.old.form.reset();
     this.change.close();
-    alert('Passcode changed.');
+    this.showFaceIdState();
+    alert(hadFace ? 'Passcode changed. Turn Face ID on again (it used the old passcode).' : 'Passcode changed.');
   }
 
   draw() {
@@ -630,7 +832,7 @@ function status(p) {
   return `<span class="status${days <= 30 ? ' warn' : ''}">${days} day${days === 1 ? '' : 's'} left</span>`;
 }
 
-const APP_VERSION = 6; // keep in step with VERSION in sw.js
+const APP_VERSION = 7; // keep in step with VERSION in sw.js
 document.getElementById('app-version').textContent = `Version ${APP_VERSION}`;
 
 // Updates: check for a new version whenever the app comes to the front, and reload into it as soon as it

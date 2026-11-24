@@ -272,6 +272,10 @@ button { font: inherit; cursor: pointer; }
 .lock .solid-btn { width: 100%; padding: 12px; font-size: 1rem; }
 .lock .text-btn { margin-top: 10px; }
 .lock .text-btn[hidden] { display: none; }
+.lock .faceid-btn { margin-bottom: 14px; padding: 14px; font-size: 1.05rem; }
+.lock form.face-first #lock-input, .lock form.face-first #lock-submit { display: none; }
+.lock .faceid-btn[hidden], .sheet .solid-btn[hidden], .foot .text-btn[hidden] { display: none; }
+.sheet-note { margin: 0 0 12px; color: var(--muted); font-size: 0.85rem; }
 
 /* While locked or in the app switcher, nothing behind the lock is drawn. */
 body.locked > :not(.lock),

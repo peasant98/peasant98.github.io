@@ -33,7 +33,8 @@
   </p>
   <p class="foot">Encrypted on this device with your passcode. Nothing is uploaded.<br>
     Locks when you leave the app for 30 s or after 3 min idle.
-    <button class="text-btn" id="change-code">Change passcode</button><br>
+    <button class="text-btn" id="change-code">Change passcode</button>
+    <button class="text-btn" id="faceid-toggle" hidden>Turn on Face ID</button><br>
     <small id="app-version"></small></p>
 
   <dialog id="change" class="sheet">
@@ -51,16 +52,34 @@
     </form>
   </dialog>
 
+  <dialog id="faceid" class="sheet">
+    <form method="dialog" id="faceid-form" autocomplete="off">
+      <h2>Turn on Face ID</h2>
+      <p class="sheet-note">Face ID will unlock the visas. A passkey named "Visa Wallet" is saved in your
+        iCloud Keychain. The passcode keeps working as a backup.</p>
+      <label>Passcode<input name="code" type="password" autocomplete="current-password" required></label>
+      <p class="lock-msg" id="faceid-msg" role="alert"></p>
+      <div class="sheet-actions">
+        <span></span>
+        <button type="button" class="text-btn" id="faceid-cancel">Cancel</button>
+        <button type="submit" class="solid-btn">Next</button>
+        <button type="button" class="solid-btn" id="faceid-step" hidden>Set up Face ID</button>
+      </div>
+    </form>
+  </dialog>
+
   <!-- Passcode screen (shown until unlocked) -->
   <section id="lock" class="lock">
     <form id="lock-form" autocomplete="off">
       <img src="icons/icon-192.png" alt="" class="lock-icon">
       <h2 id="lock-title">Enter passcode</h2>
       <p id="lock-sub"></p>
+      <button type="button" class="solid-btn faceid-btn" id="lock-faceid" hidden>Unlock with Face ID</button>
       <input id="lock-input" type="password" autocomplete="current-password" placeholder="Passcode" required>
       <input id="lock-confirm" type="password" autocomplete="new-password" placeholder="Same passcode again" hidden>
       <p id="lock-msg" class="lock-msg" role="alert"></p>
       <button type="submit" class="solid-btn" id="lock-submit">Unlock</button>
+      <button type="button" class="text-btn" id="lock-use-pass" hidden>Use passcode</button>
       <button type="button" class="text-btn" id="lock-forgot">Forgot passcode?</button>
     </form>
   </section>
