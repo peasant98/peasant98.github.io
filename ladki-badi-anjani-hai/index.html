@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dance Practice</title>
+<meta name="description" content="Ladki Badi Anjani Hai: mirrored, section by section, any speed, with the dancers' 3D motion.">
+<style>
+  :root {
+    --bg: #14151a; --panel: #1d1f26; --panel2: #262934; --text: #e9eaef; --muted: #9aa0ad;
+    --accent: #f4a340; --accent2: #49a6ff; --loop: #3ccf8e; --line: #343846;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  header { padding: 10px 16px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  header h1 { font-size: 17px; margin: 0; }
+  header span { color: var(--muted); font-size: 13px; }
+  main { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 12px; padding: 0 16px 16px; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+  #stage { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 6px; overflow: hidden; background: #000; }
+  #stage video, #stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+  #stage.flip video, #stage.flip iframe { transform: scaleX(-1); }
+  #shield { position: absolute; inset: 0; cursor: pointer; }      /* clicks toggle play, not the embed's UI */
+  #three { width: 100%; aspect-ratio: 4 / 3; border-radius: 6px; overflow: hidden; background: #0e0f13; }
+  .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  button { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px;
+           padding: 6px 10px; font: inherit; cursor: pointer; }
+  button:hover { border-color: var(--muted); }
+  button.on { background: var(--accent); color: #111; border-color: var(--accent); }
+  #play { min-width: 74px; font-weight: 600; }
+  input[type=range] { flex: 1; min-width: 120px; accent-color: var(--accent); }
+  input[type=number] { width: 70px; background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+                       border-radius: 6px; padding: 5px; font: inherit; }
+  label { color: var(--muted); display: inline-flex; align-items: center; gap: 4px; }
+  .time { font-variant-numeric: tabular-nums; color: var(--muted); min-width: 120px; }
+  #ratenote { color: var(--muted); font-size: 12px; }
+  #timeline { position: relative; height: 46px; margin-top: 10px; display: flex; border-radius: 6px;
+              overflow: hidden; border: 1px solid var(--line); cursor: pointer; user-select: none; }
+  #timeline .seg { position: relative; height: 100%; border-right: 1px solid var(--bg); background: var(--panel2);
+                   display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--muted);
+                   overflow: hidden; white-space: nowrap; }
+  #timeline .seg.dance:nth-child(odd) { background: #2b2f3c; }
+  #timeline .seg.cur { color: var(--text); font-weight: 600; }
+  #timeline .seg.sel { box-shadow: inset 0 -4px 0 var(--loop); }
+  #cursor { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--accent); pointer-events: none; }
+  #counts { display: flex; gap: 4px; }
+  #counts div { width: 30px; height: 30px; border-radius: 6px; background: var(--panel2); display: flex;
+                align-items: center; justify-content: center; font-weight: 700; color: var(--muted); }
+  #counts div.now { background: var(--accent); color: #111; }
+  #seclabel { font-size: 16px; font-weight: 600; min-width: 150px; }
+  #list { margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+  #list button { text-align: left; display: flex; justify-content: space-between; gap: 6px; }
+  #list button.cur { border-color: var(--accent); }
+  #list button.sel { background: #1f3a2f; border-color: var(--loop); }
+  #list a { color: var(--muted); text-decoration: none; font-size: 12px; }
+  #list a:hover { color: var(--text); }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; margin-right: 10px; color: var(--muted); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .keys { color: var(--muted); font-size: 12px; margin-top: 8px; }
+  .keys a { color: var(--muted); }
+  kbd { background: var(--panel2); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; font-size: 11px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Ladki Badi Anjani Hai: dance practice</h1>
+  <span id="meta"></span>
+</header>
+<main>
+  <section class="card">
+    <div id="stage"><div id="player"></div><div id="shield"></div></div>
+    <div id="timeline"><div id="cursor"></div></div>
+    <div class="row">
+      <button id="play">Play</button>
+      <button id="prev" title="Previous section (Left)">&#9664; Section</button>
+      <button id="next" title="Next section (Right)">Section &#9654;</button>
+      <button id="restart" title="Back to the section start (R)">Restart section</button>
+      <button id="loop" title="Loop the selected section(s) (L)">Loop</button>
+      <label title="Pause between loop repeats">gap <input id="gap" type="number" min="0" max="10" step="0.5" value="1"> s</label>
+      <span class="time" id="time">0:00.0 / 0:00.0</span>
+    </div>
+    <div class="row">
+      <span id="seclabel">-</span>
+      <div id="counts"></div>
+    </div>
+    <div class="row">
+      <label>speed</label>
+      <input id="speed" type="range" min="0.1" max="2" step="0.05" value="1">
+      <input id="speednum" type="number" step="0.05" value="1">
+      <button class="sp" data-v="0.25">0.25x</button>
+      <button class="sp" data-v="0.5">0.5x</button>
+      <button class="sp" data-v="0.75">0.75x</button>
+      <button class="sp" data-v="1">1x</button>
+      <span id="ratenote"></span>
+    </div>
+    <div class="row">
+      <button id="fback" title="One frame back (,)">&#8722;1 frame</button>
+      <button id="ffwd" title="One frame forward (.)">+1 frame</button>
+      <label><input id="mirror" type="checkbox" checked> mirrored (follow along)</label>
+    </div>
+    <div id="list"></div>
+    <div class="keys">
+      <kbd>Space</kbd> play/pause &nbsp; <kbd>&#8592;</kbd><kbd>&#8594;</kbd> section &nbsp;
+      <kbd>R</kbd> restart section &nbsp; <kbd>L</kbd> loop &nbsp; <kbd>[</kbd><kbd>]</kbd> speed &minus;/+ &nbsp;
+      <kbd>,</kbd><kbd>.</kbd> frame &nbsp; shift-click sections to loop a range
+    </div>
+    <div class="keys" id="credit"></div>
+  </section>
+  <section class="card">
+    <div id="three"></div>
+    <div class="row">
+      <span>3D view:</span>
+      <button class="view on" data-view="front">Front (video)</button>
+      <button class="view" data-view="back">Behind them</button>
+      <button class="view" data-view="side">Side</button>
+      <button class="view" data-view="top">Top</button>
+    </div>
+    <div class="row legend" id="legend"></div>
+    <div class="keys">3D motion: MediaPipe Pose per dancer (skeletons, drag to orbit). Depth is approximate:
+      the camera reframes during the video.</div>
+  </section>
+</main>
+
+<script>
+  // Which video plays the dance. 'file': a local copy (here already mirrored);
+  // 'youtube': the original video, embedded. A publish step may replace this.
+  window.PRACTICE = {"source": "youtube", "id": "IV_vS4DC6zc", "sourceMirrored": false, "credit": "Choreography and video: <a href=\"https://youtu.be/IV_vS4DC6zc\">Nritya Nation</a> (embedded from YouTube). Mirroring, 8-count sections and the 3D motion are added here."};
+</script>
+<script type="importmap">
+  {"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+               "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const CFG = window.PRACTICE;
+const $ = (id) => document.getElementById(id);
+const FRAME = 1 / 30;
+
+// ---------- video sources: one interface, a <video> file or a YouTube embed ----------
+class FileSource {
+  constructor(src) {
+    this.v = document.createElement('video');
+    Object.assign(this.v, { src, preload: 'auto', playsInline: true });
+    $('player').replaceWith(this.v);
+    this.minRate = 0.0625; this.maxRate = 4;
+  }
+  ready() {
+    return new Promise((res) => (this.v.readyState >= 1 ? res() :
+      this.v.addEventListener('loadedmetadata', res, { once: true })));
+  }
+  get time() { return this.v.currentTime; }
+  get duration() { return this.v.duration || 0; }
+  get paused() { return this.v.paused; }
+  get ended() { return this.v.ended; }
+  play() { this.v.play(); }
+  pause() { this.v.pause(); }
+  seek(t) { this.v.currentTime = t; }
+  setRate(r) { this.v.playbackRate = r; }
+  get rate() { return this.v.playbackRate; }
+}
+
+class YouTubeSource {
+  constructor(id) { this.id = id; this.minRate = 0.25; this.maxRate = 2; this.lastRate = 1; }
+  ready() {
+    return new Promise((res) => {
+      window.onYouTubeIframeAPIReady = () => {
+        this.p = new YT.Player('player', {
+          videoId: this.id,
+          playerVars: { controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3, modestbranding: 1, rel: 0,
+                        playsinline: 1 },
+          events: { onReady: res, onPlaybackRateChange: (e) => { this.lastRate = e.data; } },
+        });
+      };
+      const s = document.createElement('script');
+      s.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(s);
+    });
+  }
+  get time() { return this.p.getCurrentTime() || 0; }
+  get duration() { return this.p.getDuration() || 0; }
+  get paused() { const s = this.p.getPlayerState(); return s !== 1 && s !== 3; }
+  get ended() { return this.p.getPlayerState() === 0; }
+  play() { this.p.playVideo(); }
+  pause() { this.p.pauseVideo(); }
+  seek(t) { this.p.seekTo(t, true); }
+  setRate(r) { this.p.setPlaybackRate(r); }      // YouTube may round to a rate it supports
+  get rate() { return this.lastRate; }
+}
+
+const player = CFG.source === 'youtube' ? new YouTubeSource(CFG.id) : new FileSource(CFG.file);
+const [sectionsData, motion] = await Promise.all([
+  fetch('sections.json').then((r) => r.json()),
+  fetch('motion3d.json').then((r) => r.json()),
+  player.ready(),
+]);
+const sections = sectionsData.sections;
+$('meta').textContent = `${sections.length} sections, ${sectionsData.tempo_bpm} bpm, 8-counts from the music's beat`;
+if (CFG.credit) $('credit').innerHTML = CFG.credit;
+
+// ---------- state ----------
+let sel = [0, 0];            // selected section range (loop range)
+let looping = false;
+let waiting = false;         // pausing between loop repeats
+let wantRate = 1;
+const store = {               // per-viewer conveniences; may be unavailable
+  get(k, d) { try { const v = localStorage.getItem('dp-' + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('dp-' + k, JSON.stringify(v)); } catch { /* ignore */ } },
+};
+
+const fmt = (t) => `${Math.floor(t / 60)}:${(t % 60).toFixed(1).padStart(4, '0')}`;
+const sectionAt = (t) => {
+  for (let i = sections.length - 1; i >= 0; i--) if (t >= sections[i].start - 1e-3) return i;
+  return 0;
+};
+const shortLabel = (s) => s.label.startsWith('8-count') ? s.label.replace('8-count ', '') : s.label.split(' ')[0];
+
+// ---------- timeline + list ----------
+function buildSections() {
+  const tl = $('timeline'), list = $('list');
+  const dur = player.duration || sections[sections.length - 1].end;
+  sections.forEach((s, i) => {
+    const seg = document.createElement('div');
+    seg.className = 'seg' + (s.label.startsWith('8-count') ? ' dance' : '');
+    seg.style.width = `${100 * (s.end - s.start) / dur}%`;
+    seg.textContent = shortLabel(s);
+    seg.title = `${s.label}  ${fmt(s.start)}-${fmt(s.end)}`;
+    seg.dataset.i = i;
+    tl.insertBefore(seg, $('cursor'));
+    const b = document.createElement('button');
+    b.dataset.i = i;
+    b.innerHTML = `<span>${s.label}<br><small style="color:var(--muted)">${fmt(s.start)}</small></span>` +
+      (CFG.clips && s.clip ? `<a href="sections/${s.clip}" download title="this section as its own clip">clip</a>` : '');
+    list.appendChild(b);
+  });
+  const pick = (e) => {
+    const el = e.target.closest('[data-i]');
+    if (!el || e.target.tagName === 'A') return;
+    const i = +el.dataset.i;
+    sel = e.shiftKey ? [Math.min(sel[0], i), Math.max(sel[1], i)] : [i, i];
+    store.set('sel', sel);
+    player.seek(sections[sel[0]].start);
+  };
+  tl.addEventListener('click', pick);
+  list.addEventListener('click', pick);
+}
+
+let shown = {};
+function refresh() {
+  const t = player.time, cur = sectionAt(t), playing = !player.paused;
+  const key = [cur, looping, sel.join(), playing].join('|');
+  if (key !== shown.key) {
+    document.querySelectorAll('[data-i]').forEach((el) => {
+      const i = +el.dataset.i;
+      el.classList.toggle('cur', i === cur);
+      el.classList.toggle('sel', looping && i >= sel[0] && i <= sel[1]);
+    });
+    const s = sections[cur];
+    $('seclabel').textContent = s.label;
+    $('counts').innerHTML = s.beats.map((_, k) => `<div>${k + 1}</div>`).join('');
+    $('play').textContent = playing ? 'Pause' : 'Play';
+    $('loop').classList.toggle('on', looping);
+    shown.key = key;
+  }
+  const s = sections[cur];
+  let n = -1;
+  s.beats.forEach((b, k) => { if (t >= b - 0.03) n = k; });
+  [...$('counts').children].forEach((d, k) => d.classList.toggle('now', k === n));
+  const dur = player.duration || 1;
+  $('cursor').style.left = `${100 * t / dur}%`;
+  $('time').textContent = `${fmt(t)} / ${fmt(dur)}`;
+  const got = player.rate;
+  $('ratenote').textContent = Math.abs(got - wantRate) > 1e-3 ? `(YouTube plays at ${got}x)` : '';
+}
+
+// ---------- transport ----------
+function setSpeed(v) {
+  v = Math.min(player.maxRate, Math.max(player.minRate, +v || 1));
+  wantRate = v;
+  player.setRate(v);
+  $('speed').value = Math.min(2, v);
+  $('speednum').value = +v.toFixed(3);
+  document.querySelectorAll('.sp').forEach((b) => b.classList.toggle('on', +b.dataset.v === v));
+  store.set('speed', v);
+}
+function goSection(i) {
+  i = Math.max(0, Math.min(sections.length - 1, i));
+  sel = [i, i];
+  player.seek(sections[i].start);
+}
+const togglePlay = () => (player.paused ? player.play() : player.pause());
+const step = (d) => { player.pause(); player.seek(Math.max(0, player.time + d)); };
+
+$('play').onclick = togglePlay;
+$('shield').onclick = togglePlay;
+$('prev').onclick = () => goSection(sectionAt(player.time) - 1);
+$('next').onclick = () => goSection(sectionAt(player.time) + 1);
+$('restart').onclick = () => player.seek(sections[looping ? sel[0] : sectionAt(player.time)].start);
+$('loop').onclick = () => {
+  looping = !looping;
+  if (looping) { const c = sectionAt(player.time); if (c < sel[0] || c > sel[1]) sel = [c, c]; }
+  store.set('loop', looping);
+};
+$('speed').oninput = (e) => setSpeed(e.target.value);
+$('speednum').min = player.minRate; $('speednum').max = player.maxRate;
+$('speednum').onchange = (e) => setSpeed(e.target.value);
+document.querySelectorAll('.sp').forEach((b) => (b.onclick = () => setSpeed(b.dataset.v)));
+$('fback').onclick = () => step(-FRAME);
+$('ffwd').onclick = () => step(FRAME);
+$('gap').onchange = (e) => store.set('gap', +e.target.value);
+function setMirror(on) {
+  // The motion was measured on the mirrored video: unmirrored, the 3D flips too.
+  $('stage').classList.toggle('flip', on !== !!CFG.sourceMirrored);
+  figuresRoot.scale.x = on ? 1 : -1;
+  store.set('mirror', on);
+}
+$('mirror').onchange = (e) => setMirror(e.target.checked);
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' && e.target.type === 'number') return;
+  const k = e.key;
+  if (k === ' ') { e.preventDefault(); togglePlay(); }
+  else if (k === 'ArrowLeft') { e.preventDefault(); $('prev').click(); }
+  else if (k === 'ArrowRight') { e.preventDefault(); $('next').click(); }
+  else if (k === 'r' || k === 'R') $('restart').click();
+  else if (k === 'l' || k === 'L') $('loop').click();
+  else if (k === '[') setSpeed(wantRate - 0.05);
+  else if (k === ']') setSpeed(wantRate + 0.05);
+  else if (k === ',') step(-FRAME);
+  else if (k === '.') step(FRAME);
+});
+
+function loopCheck() {
+  if (!looping || waiting || player.paused) return;
+  const end = sections[sel[1]].end;
+  if (player.time >= end - 0.03 || player.ended) {
+    const gap = +$('gap').value || 0;
+    const restart = () => { player.seek(sections[sel[0]].start); player.play(); waiting = false; };
+    if (gap > 0) { waiting = true; player.pause(); setTimeout(restart, gap * 1000); }
+    else restart();
+  }
+}
+
+// ---------- 3D ----------
+const BONES = [[11, 12], [11, 13], [13, 15], [12, 14], [14, 16], [15, 17], [15, 19], [15, 21], [17, 19],
+  [16, 18], [16, 20], [16, 22], [18, 20], [11, 23], [12, 24], [23, 24], [23, 25], [25, 27], [27, 29],
+  [27, 31], [29, 31], [24, 26], [26, 28], [28, 30], [28, 32], [30, 32]];
+const JOINTS = [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28];
+const COLORS = [0xf4a340, 0x49a6ff];
+const holder = $('three');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
+holder.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0e0f13);
+const camera = new THREE.PerspectiveCamera(40, 4 / 3, 0.05, 100);
+const controls = new OrbitControls(camera, renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x334455, 1.6));
+const sun = new THREE.DirectionalLight(0xffffff, 1.4); sun.position.set(2, 4, 3); scene.add(sun);
+scene.add(new THREE.GridHelper(6, 24, 0x3a4050, 0x262a35));
+
+// Centre the dancers: their median hip position, the floor under their feet.
+const hips = [], feet = [];
+motion.dancers.forEach((d) => d.frames.forEach((f) => {
+  if (!f) return;
+  hips.push([(f[23][0] + f[24][0]) / 2, (f[23][2] + f[24][2]) / 2]);
+  feet.push(Math.min(f[27][1], f[28][1], f[29][1], f[30][1], f[31][1], f[32][1]));
+}));
+const median = (a) => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)] ?? 0; };
+const center = new THREE.Vector3(median(hips.map((h) => h[0])), median(feet), median(hips.map((h) => h[1])));
+const figuresRoot = new THREE.Group(); scene.add(figuresRoot);
+
+class Figure {
+  constructor(color) {
+    this.group = new THREE.Group(); figuresRoot.add(this.group);
+    const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.5 });
+    this.bones = BONES.map(() => this.add(new THREE.CylinderGeometry(0.028, 0.028, 1, 10), mat));
+    this.joints = JOINTS.map(() => this.add(new THREE.SphereGeometry(0.04, 14, 10), mat));
+    this.head = this.add(new THREE.SphereGeometry(0.1, 20, 14), mat);
+    this.up = new THREE.Vector3(0, 1, 0);
+    this.shown = true;
+  }
+  add(geometry, material) { const m = new THREE.Mesh(geometry, material); this.group.add(m); return m; }
+  set(points) {
+    this.group.visible = !!points && this.shown;
+    if (!points) return;
+    const p = points.map((q) => new THREE.Vector3(q[0] - center.x, q[1] - center.y, q[2] - center.z));
+    BONES.forEach(([a, b], k) => {
+      const m = this.bones[k], d = new THREE.Vector3().subVectors(p[b], p[a]);
+      m.position.copy(p[a]).addScaledVector(d, 0.5);
+      m.scale.set(1, Math.max(d.length(), 1e-4), 1);
+      m.quaternion.setFromUnitVectors(this.up, d.normalize());
+    });
+    JOINTS.forEach((j, k) => this.joints[k].position.copy(p[j]));
+    this.head.position.copy(p[7]).add(p[8]).multiplyScalar(0.5).lerp(p[0], 0.3);
+  }
+}
+const figures = motion.dancers.map((d, i) => new Figure(COLORS[i]));
+$('legend').innerHTML = motion.dancers.map((d, i) =>
+  `<label><input type="checkbox" data-f="${i}" checked><span class="dot" style="background:#${COLORS[i].toString(16).padStart(6, '0')}"></span>${d.name}</label>`).join('');
+$('legend').addEventListener('change', (e) => { figures[+e.target.dataset.f].shown = e.target.checked; });
+
+const VIEWS = {   // camera position relative to the dancers (the video camera looks along -z)
+  front: [0, 1.3, 4.2], back: [0, 1.5, -4.2], side: [4.2, 1.3, 0], top: [0, 6, 0.01],
+};
+function setView(name) {
+  camera.position.set(...VIEWS[name]);
+  controls.target.set(0, 0.9, 0);
+  controls.update();
+  document.querySelectorAll('.view').forEach((b) => b.classList.toggle('on', b.dataset.view === name));
+  store.set('view', name);
+}
+document.querySelectorAll('.view').forEach((b) => (b.onclick = () => setView(b.dataset.view)));
+
+function poseAt(d, t) {
+  const f = t * motion.fps, i = Math.floor(f), a = f - i;
+  const p0 = d.frames[i], p1 = d.frames[i + 1];
+  if (!p0 && !p1) return null;
+  if (!p0 || !p1) return p0 || p1;
+  return p0.map((q, k) => q.map((v, c) => v + a * (p1[k][c] - v)));
+}
+function resize() {
+  const w = holder.clientWidth, h = holder.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(holder);
+
+function tick() {
+  loopCheck();
+  const t = player.time;
+  motion.dancers.forEach((d, i) => figures[i].set(poseAt(d, t)));
+  controls.update();
+  renderer.render(scene, camera);
+  refresh();
+  requestAnimationFrame(tick);
+}
+
+// ---------- start ----------
+buildSections();
+sel = store.get('sel', [0, 0]);
+looping = store.get('loop', false);
+$('gap').value = store.get('gap', 1);
+setSpeed(store.get('speed', 1));
+const mir = store.get('mirror', true);
+$('mirror').checked = mir;
+setMirror(mir);
+setView(store.get('view', 'front'));
+resize();
+tick();
+</script>
+</body>
+</html>
