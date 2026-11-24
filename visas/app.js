@@ -630,5 +630,16 @@ function status(p) {
   return `<span class="status${days <= 30 ? ' warn' : ''}">${days} day${days === 1 ? '' : 's'} left</span>`;
 }
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+const APP_VERSION = 6; // keep in step with VERSION in sw.js
+document.getElementById('app-version').textContent = `Version ${APP_VERSION}`;
+
+// Updates: check for a new version whenever the app comes to the front, and reload into it as soon as it
+// has been downloaded (a reload only re-shows the passcode screen; nothing stored is lost).
+if ('serviceWorker' in navigator) {
+  const hadController = Boolean(navigator.serviceWorker.controller);
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    document.addEventListener('visibilitychange', () => document.hidden || reg.update().catch(() => {}));
+  });
+  navigator.serviceWorker.addEventListener('controllerchange', () => hadController && location.reload());
+}
 new App().start();
