@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Visas">
+  <meta name="theme-color" content="#0b1120">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Visa Wallet</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Visas</h1>
+    <div class="top-btns">
+      <button class="icon-btn" id="lock-btn" aria-label="Lock"><svg width="18" height="20" viewBox="0 0 18 20" aria-hidden="true"><rect x="1.5" y="8.5" width="15" height="10.5" rx="2.5" fill="currentColor"/><path d="M4.75 8.5V6a4.25 4.25 0 0 1 8.5 0v2.5" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></button>
+      <button class="icon-btn" id="add-btn" aria-label="Add a person">+</button>
+    </div>
+  </header>
+
+  <main id="cards" class="cards" aria-live="polite"></main>
+
+  <p class="hint" id="install-hint" hidden>
+    To keep this on your phone: tap <b>Share</b> <span aria-hidden="true">&#x2191;</span>, then
+    <b>Add to Home Screen</b>. Your PDFs stay on this phone only and work without signal.
+  </p>
+  <p class="foot">Encrypted on this device with your passcode. Nothing is uploaded.<br>
+    Locks when you leave the app for 30 s or after 3 min idle.
+    <button class="text-btn" id="change-code">Change passcode</button></p>
+
+  <dialog id="change" class="sheet">
+    <form method="dialog" id="change-form" autocomplete="off">
+      <h2>Change passcode</h2>
+      <label>Current passcode<input name="old" type="password" autocomplete="current-password" required></label>
+      <label>New passcode<input name="code" type="password" autocomplete="new-password" required></label>
+      <label>New passcode again<input name="again" type="password" autocomplete="new-password" required></label>
+      <p class="lock-msg" id="change-msg" role="alert"></p>
+      <div class="sheet-actions">
+        <span></span>
+        <button type="button" class="text-btn" id="change-cancel">Cancel</button>
+        <button type="submit" class="solid-btn">Change</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Passcode screen (shown until unlocked) -->
+  <section id="lock" class="lock">
+    <form id="lock-form" autocomplete="off">
+      <img src="icons/icon-192.png" alt="" class="lock-icon">
+      <h2 id="lock-title">Enter passcode</h2>
+      <p id="lock-sub"></p>
+      <input id="lock-input" type="password" autocomplete="current-password" placeholder="Passcode" required>
+      <input id="lock-confirm" type="password" autocomplete="new-password" placeholder="Same passcode again" hidden>
+      <p id="lock-msg" class="lock-msg" role="alert"></p>
+      <button type="submit" class="solid-btn" id="lock-submit">Unlock</button>
+      <button type="button" class="text-btn" id="lock-forgot">Forgot passcode?</button>
+    </form>
+  </section>
+
+  <!-- Full-screen PDF viewer -->
+  <section id="viewer" class="viewer" hidden>
+    <div class="viewer-bar">
+      <button class="text-btn" id="viewer-close">Done</button>
+      <span id="viewer-title"></span>
+      <button class="text-btn" id="viewer-share">Share</button>
+    </div>
+    <div class="viewer-tools">
+      <button class="pill" data-zoom="-1" aria-label="Zoom out">&minus;</button>
+      <button class="pill" data-zoom="0">Fit</button>
+      <button class="pill" data-zoom="1" aria-label="Zoom in">+</button>
+    </div>
+    <div id="pages" class="pages"></div>
+  </section>
+
+  <!-- Add / edit sheet -->
+  <dialog id="editor" class="sheet">
+    <form method="dialog" id="edit-form">
+      <h2 id="edit-title">Add person</h2>
+      <label>Name<input name="name" required autocomplete="off" placeholder="e.g. Matt"></label>
+      <label>eVisa PDF
+        <input name="pdf" type="file" accept="application/pdf,.pdf">
+        <small id="edit-file"></small>
+      </label>
+      <label>Country<input name="country" autocomplete="off" placeholder="e.g. India"></label>
+      <label>Visa / application no.<input name="number" autocomplete="off"></label>
+      <div class="row">
+        <label>Valid from<input name="from" type="date"></label>
+        <label>Valid until<input name="until" type="date"></label>
+      </div>
+      <div class="sheet-actions">
+        <button type="button" class="text-btn danger" id="edit-delete" hidden>Delete</button>
+        <span></span>
+        <button type="button" class="text-btn" id="edit-cancel">Cancel</button>
+        <button type="submit" class="solid-btn" value="save">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="lib/pdf.min.js"></script>
+  <script src="lib/argon2.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
