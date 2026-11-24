@@ -145,27 +145,37 @@ class Vault {
   }
 
   /**
-   * Packs a person (fields + PDF bytes) into one buffer: [header length][header JSON][pdf].
-   * @param {Object} person Person with an optional pdf Blob.
+   * Packs a person into one buffer: [header length][header JSON][eVisa PDF][arrival card].
+   * @param {Object} person Person with optional `pdf` (eVisa) and `arrival` (PDF or image) Blobs.
    * @return {Promise<Uint8Array>}
    */
   static async pack(person) {
-    const { pdf, ...fields } = person;
+    const { pdf, arrival, ...fields } = person;
+    const visaBytes = pdf ? new Uint8Array(await pdf.arrayBuffer()) : new Uint8Array(0);
+    const arrivalBytes = arrival ? new Uint8Array(await arrival.arrayBuffer()) : new Uint8Array(0);
+    fields.pdfSize = visaBytes.length;
+    fields.arrivalType = arrival ? arrival.type : '';
     const header = new TextEncoder().encode(JSON.stringify(fields));
-    const body = pdf ? new Uint8Array(await pdf.arrayBuffer()) : new Uint8Array(0);
-    const out = new Uint8Array(4 + header.length + body.length);
+    const out = new Uint8Array(4 + header.length + visaBytes.length + arrivalBytes.length);
     new DataView(out.buffer).setUint32(0, header.length);
     out.set(header, 4);
-    out.set(body, 4 + header.length);
+    out.set(visaBytes, 4 + header.length);
+    out.set(arrivalBytes, 4 + header.length + visaBytes.length);
     return out;
   }
 
-  /** Inverse of pack(). */
+  /** Inverse of pack(). Records saved before arrival cards existed hold only the PDF after the header. */
   static unpack(buffer) {
     const bytes = new Uint8Array(buffer);
     const n = new DataView(buffer).getUint32(0);
     const person = JSON.parse(new TextDecoder().decode(bytes.subarray(4, 4 + n)));
-    if (bytes.length > 4 + n) person.pdf = new Blob([bytes.subarray(4 + n)], { type: 'application/pdf' });
+    const visaEnd = 4 + n + (person.pdfSize ?? bytes.length - 4 - n);
+    if (visaEnd > 4 + n) person.pdf = new Blob([bytes.subarray(4 + n, visaEnd)], { type: 'application/pdf' });
+    if (bytes.length > visaEnd) {
+      person.arrival = new Blob([bytes.subarray(visaEnd)], { type: person.arrivalType || 'application/pdf' });
+    }
+    delete person.pdfSize;
+    delete person.arrivalType;
     return person;
   }
 }
@@ -209,7 +219,7 @@ class PdfRenderer {
   }
 }
 
-/** Full-screen, zoomable view of one person's PDF. */
+/** Full-screen, zoomable view of one document (PDF or image). */
 class Viewer {
   constructor() {
     this.el = document.getElementById('viewer');
@@ -226,19 +236,32 @@ class Viewer {
     });
   }
 
-  /** @param {Object} person A decrypted person with a pdf blob. */
-  async open(person) {
-    this.person = person;
+  /**
+   * @param {{blob: Blob, title: string, fileName: string}} item The document to show.
+   */
+  async open(item) {
+    this.item = item;
     this.zoom = 0;
-    document.getElementById('viewer-title').textContent = person.name;
+    document.getElementById('viewer-title').textContent = item.title;
     this.el.hidden = false;
-    this.doc = await PdfRenderer.open(person.pdf);
+    if (item.blob.type.startsWith('image/')) {
+      this.url = URL.createObjectURL(item.blob);
+      this.doc = null;
+    } else {
+      this.doc = await PdfRenderer.open(item.blob);
+    }
     await this.render();
   }
 
   async render() {
     const token = (this.token = {});
     const width = this.pages.clientWidth * ZOOMS[this.zoom] - (this.zoom ? 0 : 16);
+    if (this.url) {
+      const img = Object.assign(document.createElement('img'), { src: this.url, alt: this.item.title });
+      img.style.width = `${width}px`;
+      this.pages.replaceChildren(img);
+      return;
+    }
     const dpr = Math.min(window.devicePixelRatio || 1, 3);
     const canvases = [];
     for (let i = 1; this.doc && i <= this.doc.numPages; i++) {
@@ -254,15 +277,17 @@ class Viewer {
     this.pages.replaceChildren();
     this.doc?.destroy();
     this.doc = null;
-    this.person = null;
+    if (this.url) URL.revokeObjectURL(this.url);
+    this.url = null;
+    this.item = null;
   }
 
-  /** Shares the original PDF (AirDrop, Files, print) or downloads it. */
+  /** Shares the original file (AirDrop, Files, print) or downloads it. */
   async share() {
-    const file = new File([this.person.pdf], this.person.fileName || `${this.person.name}-evisa.pdf`,
-                          { type: 'application/pdf' });
+    const { blob, fileName, title } = this.item;
+    const file = new File([blob], fileName, { type: blob.type });
     if (navigator.canShare?.({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: `${this.person.name} eVisa` }); } catch (e) { /* cancelled */ }
+      try { await navigator.share({ files: [file], title }); } catch (e) { /* cancelled */ }
       return;
     }
     const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(file), download: file.name });
@@ -294,6 +319,9 @@ class Editor {
         until: f.until.value,
       };
       if (file) Object.assign(person, { pdf: file, fileName: file.name, thumb: null });
+      const arrival = f.arrival.files[0];
+      if (arrival) Object.assign(person, { arrival, arrivalName: arrival.name });
+      else if (f.dropArrival.checked) Object.assign(person, { arrival: null, arrivalName: '' });
       this.dialog.close();
       onSave(person);
     };
@@ -307,6 +335,8 @@ class Editor {
     for (const k of ['name', 'country', 'number', 'from', 'until']) f[k].value = person[k] || '';
     document.getElementById('edit-title').textContent = isNew ? 'Add person' : `Edit ${person.name}`;
     document.getElementById('edit-file').textContent = person.fileName ? `Current: ${person.fileName}` : '';
+    document.getElementById('edit-arrival').textContent = person.arrival ? `Current: ${person.arrivalName}` : '';
+    document.getElementById('drop-arrival').hidden = !person.arrival;
     document.getElementById('edit-delete').hidden = isNew;
     this.dialog.showModal();
   }
@@ -552,12 +582,13 @@ class App {
                     ['Valid until', fmt(p.until)]].filter(([, v]) => v);
     el.innerHTML = `
       ${p.thumb ? '<img class="thumb" alt="">' : ''}
-      <div class="kicker">eVisa</div>
+      <div class="kicker">eVisa${p.arrival ? ' + arrival card' : ''}</div>
       <div class="name"></div>
       ${fields.length ? `<dl>${fields.map(() => '<div><dt></dt><dd></dd></div>').join('')}</dl>` : ''}
       <p>${status(p)}</p>
       <div class="actions">
-        <button class="open">${p.pdf ? 'Show visa' : 'Add PDF'}</button>
+        <button class="open">${p.pdf ? 'eVisa' : 'Add eVisa'}</button>
+        <button class="open-arrival">${p.arrival ? 'Arrival card' : '+ Arrival card'}</button>
         <button class="edit">Edit</button>
       </div>`;
     if (p.thumb) el.querySelector('.thumb').src = p.thumb;
@@ -566,7 +597,13 @@ class App {
       d.querySelector('dt').textContent = fields[k][0];
       d.querySelector('dd').textContent = fields[k][1];
     });
-    el.querySelector('.open').onclick = () => (p.pdf ? this.viewer.open(p) : this.editor.open(p, false));
+    el.querySelector('.open').onclick = () => (p.pdf
+      ? this.viewer.open({ blob: p.pdf, title: `${p.name}: eVisa`, fileName: p.fileName || `${p.name}-evisa.pdf` })
+      : this.editor.open(p, false));
+    el.querySelector('.open-arrival').onclick = () => (p.arrival
+      ? this.viewer.open({ blob: p.arrival, title: `${p.name}: arrival card`,
+                           fileName: p.arrivalName || `${p.name}-arrival-card` })
+      : this.editor.open(p, false));
     el.querySelector('.edit').onclick = () => this.editor.open(p, false);
     return el;
   }

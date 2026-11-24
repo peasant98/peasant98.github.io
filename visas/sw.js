@@ -1,5 +1,5 @@
 // Caches the app so it opens with no signal. Bump VERSION when any file changes.
-const VERSION = 'visa-wallet-v4';
+const VERSION = 'visa-wallet-v5';
 const FILES = [
   './', 'index.html', 'style.css', 'app.js', 'manifest.webmanifest',
   'lib/pdf.min.js', 'lib/pdf.worker.min.js', 'lib/argon2.umd.min.js',
