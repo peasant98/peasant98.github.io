@@ -121,7 +121,9 @@ button { font: inherit; cursor: pointer; }
   font-weight: 700;
 }
 
-.card .open-arrival {
+.card .docs { margin-top: 8px; }
+
+.card .doc {
   flex: 1;
   padding: 12px 8px;
   border: 0; border-radius: 12px;

@@ -10,6 +10,11 @@ const CARD_COLORS = [
   'linear-gradient(135deg, #b45309, #431407)',
 ];
 const ZOOMS = [1, 1.5, 2, 3];
+/** Documents a person can carry besides the eVisa; each is a PDF or an image. */
+const EXTRA_DOCS = [
+  { key: 'arrival', label: 'Arrival card' },
+  { key: 'suvidha', label: 'Air Suvidha' },
+];
 const MAX_CANVAS_PIXELS = 12e6; // iOS refuses canvases much above ~16.7 MP
 // Argon2id (memory-hard, so GPU guessing is slow even if someone copies the encrypted data off the phone).
 const KDF = { name: 'argon2id', memoryKiB: 64 * 1024, passes: 3 };
@@ -161,37 +166,50 @@ class Vault {
   }
 
   /**
-   * Packs a person into one buffer: [header length][header JSON][eVisa PDF][arrival card].
-   * @param {Object} person Person with optional `pdf` (eVisa) and `arrival` (PDF or image) Blobs.
+   * Packs a person into one buffer: [header length][header JSON][eVisa PDF][extra documents].
+   * @param {Object} person Person with optional `pdf` (eVisa) and EXTRA_DOCS Blobs (PDF or image).
    * @return {Promise<Uint8Array>}
    */
   static async pack(person) {
-    const { pdf, arrival, ...fields } = person;
-    const visaBytes = pdf ? new Uint8Array(await pdf.arrayBuffer()) : new Uint8Array(0);
-    const arrivalBytes = arrival ? new Uint8Array(await arrival.arrayBuffer()) : new Uint8Array(0);
-    fields.pdfSize = visaBytes.length;
-    fields.arrivalType = arrival ? arrival.type : '';
+    const { pdf, ...fields } = person;
+    const blobs = [pdf, ...EXTRA_DOCS.map(d => person[d.key])];
+    const bytes = await Promise.all(blobs.map(async b => (b ? new Uint8Array(await b.arrayBuffer()) : new Uint8Array(0))));
+    EXTRA_DOCS.forEach(d => delete fields[d.key]);
+    fields.pdfSize = bytes[0].length;
+    fields.parts = EXTRA_DOCS.map((d, k) => ({ key: d.key, type: blobs[k + 1]?.type || '', size: bytes[k + 1].length }));
     const header = new TextEncoder().encode(JSON.stringify(fields));
-    const out = new Uint8Array(4 + header.length + visaBytes.length + arrivalBytes.length);
+    const out = new Uint8Array(4 + header.length + bytes.reduce((n, b) => n + b.length, 0));
     new DataView(out.buffer).setUint32(0, header.length);
     out.set(header, 4);
-    out.set(visaBytes, 4 + header.length);
-    out.set(arrivalBytes, 4 + header.length + visaBytes.length);
+    let at = 4 + header.length;
+    for (const b of bytes) { out.set(b, at); at += b.length; }
     return out;
   }
 
-  /** Inverse of pack(). Records saved before arrival cards existed hold only the PDF after the header. */
+  /**
+   * Inverse of pack(). Older records: no pdfSize = eVisa only (v4); pdfSize but no parts = eVisa
+   * plus an arrival card filling the rest (v5-v7).
+   */
   static unpack(buffer) {
     const bytes = new Uint8Array(buffer);
     const n = new DataView(buffer).getUint32(0);
     const person = JSON.parse(new TextDecoder().decode(bytes.subarray(4, 4 + n)));
-    const visaEnd = 4 + n + (person.pdfSize ?? bytes.length - 4 - n);
-    if (visaEnd > 4 + n) person.pdf = new Blob([bytes.subarray(4 + n, visaEnd)], { type: 'application/pdf' });
-    if (bytes.length > visaEnd) {
-      person.arrival = new Blob([bytes.subarray(visaEnd)], { type: person.arrivalType || 'application/pdf' });
+    let at = 4 + n;
+    const take = (size, type) => {
+      const blob = size ? new Blob([bytes.subarray(at, at + size)], { type: type || 'application/pdf' }) : null;
+      at += size;
+      return blob;
+    };
+    const pdf = take(person.pdfSize ?? bytes.length - at, 'application/pdf');
+    if (pdf) person.pdf = pdf;
+    const parts = person.parts ?? [{ key: 'arrival', type: person.arrivalType, size: bytes.length - at }];
+    for (const { key, type, size } of parts) {
+      const blob = take(size, type);
+      if (blob) person[key] = blob;
     }
     delete person.pdfSize;
     delete person.arrivalType;
+    delete person.parts;
     return person;
   }
 }
@@ -335,9 +353,11 @@ class Editor {
         until: f.until.value,
       };
       if (file) Object.assign(person, { pdf: file, fileName: file.name, thumb: null });
-      const arrival = f.arrival.files[0];
-      if (arrival) Object.assign(person, { arrival, arrivalName: arrival.name });
-      else if (f.dropArrival.checked) Object.assign(person, { arrival: null, arrivalName: '' });
+      for (const { key } of EXTRA_DOCS) {
+        const doc = f[key].files[0];
+        if (doc) Object.assign(person, { [key]: doc, [`${key}Name`]: doc.name });
+        else if (f[`drop_${key}`].checked) Object.assign(person, { [key]: null, [`${key}Name`]: '' });
+      }
       this.dialog.close();
       onSave(person);
     };
@@ -351,8 +371,10 @@ class Editor {
     for (const k of ['name', 'country', 'number', 'from', 'until']) f[k].value = person[k] || '';
     document.getElementById('edit-title').textContent = isNew ? 'Add person' : `Edit ${person.name}`;
     document.getElementById('edit-file').textContent = person.fileName ? `Current: ${person.fileName}` : '';
-    document.getElementById('edit-arrival').textContent = person.arrival ? `Current: ${person.arrivalName}` : '';
-    document.getElementById('drop-arrival').hidden = !person.arrival;
+    for (const { key } of EXTRA_DOCS) {
+      document.getElementById(`edit-${key}`).textContent = person[key] ? `Current: ${person[`${key}Name`]}` : '';
+      document.getElementById(`drop-${key}`).hidden = !person[key];
+    }
     document.getElementById('edit-delete').hidden = isNew;
     this.dialog.showModal();
   }
@@ -784,14 +806,16 @@ class App {
                     ['Valid until', fmt(p.until)]].filter(([, v]) => v);
     el.innerHTML = `
       ${p.thumb ? '<img class="thumb" alt="">' : ''}
-      <div class="kicker">eVisa${p.arrival ? ' + arrival card' : ''}</div>
+      <div class="kicker">${['eVisa', ...EXTRA_DOCS.filter(d => p[d.key]).map(d => d.label)].join(' + ')}</div>
       <div class="name"></div>
       ${fields.length ? `<dl>${fields.map(() => '<div><dt></dt><dd></dd></div>').join('')}</dl>` : ''}
       <p>${status(p)}</p>
       <div class="actions">
         <button class="open">${p.pdf ? 'eVisa' : 'Add eVisa'}</button>
-        <button class="open-arrival">${p.arrival ? 'Arrival card' : '+ Arrival card'}</button>
         <button class="edit">Edit</button>
+      </div>
+      <div class="actions docs">
+        ${EXTRA_DOCS.map(d => `<button class="doc" data-doc="${d.key}">${p[d.key] ? '' : '+ '}${d.label}</button>`).join('')}
       </div>`;
     if (p.thumb) el.querySelector('.thumb').src = p.thumb;
     el.querySelector('.name').textContent = p.name;
@@ -802,10 +826,12 @@ class App {
     el.querySelector('.open').onclick = () => (p.pdf
       ? this.viewer.open({ blob: p.pdf, title: `${p.name}: eVisa`, fileName: p.fileName || `${p.name}-evisa.pdf` })
       : this.editor.open(p, false));
-    el.querySelector('.open-arrival').onclick = () => (p.arrival
-      ? this.viewer.open({ blob: p.arrival, title: `${p.name}: arrival card`,
-                           fileName: p.arrivalName || `${p.name}-arrival-card` })
-      : this.editor.open(p, false));
+    for (const d of EXTRA_DOCS) {
+      el.querySelector(`.doc[data-doc="${d.key}"]`).onclick = () => (p[d.key]
+        ? this.viewer.open({ blob: p[d.key], title: `${p.name}: ${d.label}`,
+                             fileName: p[`${d.key}Name`] || `${p.name}-${d.key}` })
+        : this.editor.open(p, false));
+    }
     el.querySelector('.edit').onclick = () => this.editor.open(p, false);
     return el;
   }
@@ -832,7 +858,7 @@ function status(p) {
   return `<span class="status${days <= 30 ? ' warn' : ''}">${days} day${days === 1 ? '' : 's'} left</span>`;
 }
 
-const APP_VERSION = 7; // keep in step with VERSION in sw.js
+const APP_VERSION = 8; // keep in step with VERSION in sw.js
 document.getElementById('app-version').textContent = `Version ${APP_VERSION}`;
 
 // Updates: check for a new version whenever the app comes to the front, and reload into it as soon as it
