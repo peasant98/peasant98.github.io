@@ -113,7 +113,7 @@
     <div class="row">
       <span>3D view:</span>
       <button class="view on" data-view="front">Front (video)</button>
-      <button class="view" data-view="back">Behind them</button>
+      <button class="view" data-view="back" title="As if standing behind the dancers: their left and right are yours">Behind them</button>
       <button class="view" data-view="side">Side</button>
       <button class="view" data-view="top">Top</button>
     </div>
@@ -311,10 +311,19 @@ document.querySelectorAll('.sp').forEach((b) => (b.onclick = () => setSpeed(b.da
 $('fback').onclick = () => step(-FRAME);
 $('ffwd').onclick = () => step(FRAME);
 $('gap').onchange = (e) => store.set('gap', +e.target.value);
+let mirrorOn = true, viewName = 'front';
+function applyHandedness() {
+  // The motion was measured on the MIRRORED video (scale 1 = as in it). The
+  // front / side / top views follow the video's toggle; "Behind them" always
+  // shows the real dancers (unmirrored) from behind, as if standing behind
+  // them: their left and right are the viewer's (the mirrored dancers seen
+  // from behind would have left and right swapped back).
+  figuresRoot.scale.x = viewName === 'back' || !mirrorOn ? -1 : 1;
+}
 function setMirror(on) {
-  // The motion was measured on the mirrored video: unmirrored, the 3D flips too.
   $('stage').classList.toggle('flip', on !== !!CFG.sourceMirrored);
-  figuresRoot.scale.x = on ? 1 : -1;
+  mirrorOn = on;
+  applyHandedness();
   store.set('mirror', on);
 }
 $('mirror').onchange = (e) => setMirror(e.target.checked);
@@ -406,6 +415,8 @@ const VIEWS = {   // camera position relative to the dancers (the video camera l
   front: [0, 1.3, 4.2], back: [0, 1.5, -4.2], side: [4.2, 1.3, 0], top: [0, 6, 0.01],
 };
 function setView(name) {
+  viewName = name;
+  applyHandedness();
   camera.position.set(...VIEWS[name]);
   controls.target.set(0, 0.9, 0);
   controls.update();
